@@ -367,9 +367,7 @@ img {
   margin-left: calc(var(--gap) * -2);
 }
 .post-content .highlight pre {
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 0;
+  margin: 0;
 }
 /* table */
 .post-content .highlighttable {
