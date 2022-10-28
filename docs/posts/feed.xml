@@ -6,7 +6,119 @@
     <description>Recent content in Posts on REPL: Rest-Eat-Program Loop</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Sun, 23 Oct 2022 09:54:07 +0900</lastBuildDate><atom:link href="https://blog.nsfisis.dev/posts/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 28 Oct 2022 21:55:23 +0900</lastBuildDate><atom:link href="https://blog.nsfisis.dev/posts/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[備忘録] このサイト用の VPS をセットアップしたときのメモ</title>
+      <link>https://blog.nsfisis.dev/posts/2022-10-28/setup-server-for-this-site/</link>
+      <pubDate>Fri, 28 Oct 2022 21:55:23 +0900</pubDate>
+      
+      <guid>https://blog.nsfisis.dev/posts/2022-10-28/setup-server-for-this-site/</guid>
+      <description><![CDATA[ <h1 id="はじめに">はじめに</h1>
+<p>これまでこの blog は GitHub Pages でホストしていたのだが、先日 VPS に移行した。そのときにおこなったサーバのセットアップ作業を書き残しておく。99 % 自分用の備忘録。別のベンダに移したりしたくなったら見に来る。</p>
+<p>未来の自分へ: 特に自動化してないので、せいぜい苦しんでくれ。</p>
+<h1 id="vps">VPS</h1>
+<p><a href="https://vps.sakura.ad.jp/">さくらの VPS</a> の 2 GB プラン。そこまで真面目に選定していないので、困ったら移動するかも。</p>
+<h1 id="事前準備">事前準備</h1>
+<h2 id="サーバのホスト名を決める">サーバのホスト名を決める</h2>
+<p>モチベーションが上がるという効能がある。今回は藤原定家から取って &ldquo;teika&rdquo; にした。たいていいつも源氏物語の帖か小倉百人一首の歌人から選んでいる。</p>
+<h2 id="ssh-の鍵生成">SSH の鍵生成</h2>
+<p>ローカルマシンで鍵を生成する。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ ssh-keygen -t ed25519 -b <span style="color:#ae81ff">521</span> -f ~/.ssh/teika.key
+</span></span><span style="display:flex;"><span>$ ssh-keygen -t ed25519 -b <span style="color:#ae81ff">521</span> -f ~/.ssh/github2teika.key
+</span></span></code></pre></div><p><code>teika.key</code> はローカルからサーバへの接続用、<code>github2teika.key</code> は、GitHub Actions からサーバへのデプロイ用。</p>
+<h2 id="ssh-の設定">SSH の設定</h2>
+<p><code>.ssh/config</code> に設定しておく。</p>
+<pre tabindex="0"><code class="language-ssh_config" data-lang="ssh_config">Host teika
+    HostName **********
+    User **********
+    Port **********
+    IdentityFile ~/.ssh/teika.key
+</code></pre><h1 id="基本のセットアップ">基本のセットアップ</h1>
+<h2 id="ssh-接続">SSH 接続</h2>
+<p>VPS 契約時に設定した管理者ユーザとパスワードを使ってログインする。</p>
+<h2 id="ユーザを作成する">ユーザを作成する</h2>
+<p>管理者ユーザで作業すると危ないので、メインで使うユーザを作成する。<code>sudo</code> グループに追加して <code>sudo</code> できるようにし、<code>su</code> で切り替え。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo adduser **********
+</span></span><span style="display:flex;"><span>$ sudo adduser ********** sudo
+</span></span><span style="display:flex;"><span>$ su **********
+</span></span><span style="display:flex;"><span>$ cd
+</span></span></code></pre></div><h2 id="ホスト名を変える">ホスト名を変える</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo hostname teika
+</span></span></code></pre></div><h2 id="公開鍵を置く">公開鍵を置く</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ mkdir ~/.ssh
+</span></span><span style="display:flex;"><span>$ chmod <span style="color:#ae81ff">700</span> ~/.ssh
+</span></span><span style="display:flex;"><span>$ vi ~/.ssh/authorized_keys
+</span></span></code></pre></div><p><code>authorized_keys</code> には、ローカルで生成した <code>~/.ssh/teika.key.pub</code> と <code>~/.ssh/github2teika.key.pub</code> の内容をコピーする。</p>
+<h2 id="ssh-の設定-1">SSH の設定</h2>
+<p>SSH の設定を変更し、少しでも安全にしておく。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+</span></span><span style="display:flex;"><span>$ sudo vi /etc/ssh/sshd_config
+</span></span></code></pre></div><ul>
+<li><code>Port</code> を変更</li>
+<li><code>PermitRootLogin</code> を <code>no</code> に</li>
+<li><code>PasswordAuthentication</code> を <code>no</code> に</li>
+</ul>
+<p>そして設定を反映。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo systemctl restart sshd
+</span></span><span style="display:flex;"><span>$ sudo systemctl status sshd
+</span></span></code></pre></div><h2 id="ssh-で接続確認">SSH で接続確認</h2>
+<p>今の SSH セッションは閉じずに、ターミナルを別途開いて疎通確認する。セッションを閉じてしまうと、SSH の設定に不備があった場合に締め出しをくらう。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ ssh teika
+</span></span></code></pre></div><h2 id="ポートの遮断">ポートの遮断</h2>
+<p>デフォルトの 22 番を閉じ、設定したポートだけ空ける。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo ufw deny ssh
+</span></span><span style="display:flex;"><span>$ sudo ufw allow *******
+</span></span><span style="display:flex;"><span>$ sudo ufw enable
+</span></span><span style="display:flex;"><span>$ sudo ufw reload
+</span></span><span style="display:flex;"><span>$ sudo ufw status
+</span></span></code></pre></div><p>ここでもう一度 SSH の接続確認を挟む。</p>
+<h2 id="github-用の-ssh-鍵">GitHub 用の SSH 鍵</h2>
+<p>GitHub に置いてある private リポジトリをサーバから clone したいので、SSH 鍵を生成して置いておく。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ ssh-keygen -t ed25519 -b <span style="color:#ae81ff">521</span> -f ~/.ssh/github.key
+</span></span><span style="display:flex;"><span>$ cat ~/.ssh/github.key.pub
+</span></span></code></pre></div><p><a href="https://github.com/settings/ssh">GitHub の設定画面</a> から、この公開鍵を追加する。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ vi ~/.ssh/config
+</span></span></code></pre></div><p>設定はこう。</p>
+<pre tabindex="0"><code class="language-ssh_config" data-lang="ssh_config">Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github.key
+</code></pre><p>最後に接続できるか確認しておく。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>ssh -T github.com
+</span></span></code></pre></div><h2 id="パッケージの更新">パッケージの更新</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo apt update
+</span></span><span style="display:flex;"><span>$ sudo apt upgrade
+</span></span><span style="display:flex;"><span>$ sudo apt update
+</span></span><span style="display:flex;"><span>$ sudo apt upgrade
+</span></span><span style="display:flex;"><span>$ sudo apt autoremove
+</span></span></code></pre></div><h1 id="サイトホスティング用のセットアップ">サイトホスティング用のセットアップ</h1>
+<h2 id="dns-に-ip-アドレスを登録する">DNS に IP アドレスを登録する</h2>
+<p>このサーバは固定の IP アドレスがあるので、<code>A</code> レコードに直接入れるだけで済んだ。</p>
+<h2 id="使うソフトウェアのインストール">使うソフトウェアのインストール</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo apt install docker docker-compose git make
+</span></span></code></pre></div><h2 id="メインユーザが-docker-を使えるように">メインユーザが Docker を使えるように</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>sudo adduser ********** docker
+</span></span></code></pre></div><h2 id="httphttps-を通す">HTTP/HTTPS を通す</h2>
+<p>80 番と 443 番を空ける。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ sudo ufw allow 80/tcp
+</span></span><span style="display:flex;"><span>$ sudo ufw allow 443/tcp
+</span></span><span style="display:flex;"><span>$ sudo ufw reload
+</span></span><span style="display:flex;"><span>$ sudo ufw status
+</span></span></code></pre></div><h2 id="リポジトリのクローン">リポジトリのクローン</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ cd
+</span></span><span style="display:flex;"><span>$ git clone git@github.com:nsfisis/nsfisis.dev.git
+</span></span><span style="display:flex;"><span>$ cd nsfisis.dev
+</span></span><span style="display:flex;"><span>$ git submodule update --init
+</span></span></code></pre></div><h2 id="certbot-で証明書取得">certbot で証明書取得</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ docker-compose up -d acme-challenge
+</span></span><span style="display:flex;"><span>$ make setup
+</span></span></code></pre></div><h2 id="サーバを稼動させる">サーバを稼動させる</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell-session" data-lang="shell-session"><span style="display:flex;"><span>$ make serve
+</span></span></code></pre></div><h1 id="感想">感想</h1>
+<p>(業務でなく) 個人だと数年ぶりのサーバセットアップで、これだけでも割と時間を食ってしまった。とはいえ式年遷宮は楽しいので、これからも定期的にやっていきたい。コンテナデプロイにしたい気持ちもあるのだが、色々実験したい関係上、本物のサーバも欲しくはある。次の式年遷宮では、手順の一部だけでも自動化したいところ。</p>
+]]></description>
+    </item>
+    
     <item>
       <title>PHPerKaigi 2023: ボツになったトークン問題 その 1</title>
       <link>https://blog.nsfisis.dev/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/</link>

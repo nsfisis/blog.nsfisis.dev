@@ -2,6 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.nsfisis.dev/posts/2022-10-28/setup-server-for-this-site/</loc>
+    <lastmod>2022-10-28+09:00</lastmod>
+  </url><url>
+    <loc>https://blog.nsfisis.dev/tags/note-to-self/</loc>
+    <lastmod>2022-10-28+09:00</lastmod>
+  </url><url>
+    <loc>https://blog.nsfisis.dev/posts/</loc>
+    <lastmod>2022-10-28+09:00</lastmod>
+  </url><url>
+    <loc>https://blog.nsfisis.dev/tags/</loc>
+    <lastmod>2022-10-28+09:00</lastmod>
+  </url><url>
     <loc>https://blog.nsfisis.dev/tags/php/</loc>
     <lastmod>2022-10-23+09:00</lastmod>
   </url><url>
@@ -9,12 +21,6 @@
     <lastmod>2022-10-23+09:00</lastmod>
   </url><url>
     <loc>https://blog.nsfisis.dev/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/</loc>
-    <lastmod>2022-10-23+09:00</lastmod>
-  </url><url>
-    <loc>https://blog.nsfisis.dev/posts/</loc>
-    <lastmod>2022-10-23+09:00</lastmod>
-  </url><url>
-    <loc>https://blog.nsfisis.dev/tags/</loc>
     <lastmod>2022-10-23+09:00</lastmod>
   </url><url>
     <loc>https://blog.nsfisis.dev/posts/2022-09-29/write-fizzbuzz-in-php-2-letters-per-line/</loc>
