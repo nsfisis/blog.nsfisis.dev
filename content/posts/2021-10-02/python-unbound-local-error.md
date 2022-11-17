@@ -2,7 +2,6 @@
 title: "[Python] クロージャとUnboundLocalError: local variable 'x' referenced before assignment"
 date: 2021-10-02T09:32:37+09:00
 tags: ["python", "python3"]
-aliases: ['/posts/python-unbound-local-error/']
 summary: |
   Python における UnboundLocalError の理由と対処法。
 changelog:

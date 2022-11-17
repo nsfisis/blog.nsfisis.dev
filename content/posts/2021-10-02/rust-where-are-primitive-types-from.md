@@ -2,7 +2,6 @@
 title: "Rust のプリミティブ型はどこからやって来るか"
 date: 2021-10-02T09:39:27+09:00
 tags: ["rust"]
-aliases: ['/posts/rust-where-are-primitive-types-from/']
 summary: |
   Rust のプリミティブ型は予約語ではなく普通の識別子である。どのようにこれが名前解決されるのかを調べた。
 changelog:

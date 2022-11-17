@@ -2,7 +2,6 @@
 title: "PHPerKaigi 2021"
 date: 2021-03-30T23:22:40+09:00
 tags: ["conference", "php", "phperkaigi"]
-aliases: ['/posts/phperkaigi-2021/']
 summary: |
     2021-03-26 から 2021-03-28 にかけて開催された、PHPerKaigi 2021 に参加した。
 changelog:

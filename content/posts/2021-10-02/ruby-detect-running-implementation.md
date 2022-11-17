@@ -2,7 +2,6 @@
 title: "[Ruby] 自身を実行している処理系の種類を判定する"
 date: 2021-10-02T09:37:50+09:00
 tags: ["ruby"]
-aliases: ['/posts/ruby-detect-running-implementation/']
 summary: |
   Ruby には複数の実装があるが、自身を実行している処理系の種類をスクリプト上からどのように判定すればよいだろうか。
 changelog:
