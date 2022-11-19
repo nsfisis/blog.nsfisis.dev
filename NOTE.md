@@ -45,6 +45,7 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
 * [ ] Sitemap
     * https://www.sitemaps.org/protocol.html
     * https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap?hl=ja
+* [ ] Admonitions
 
 
 ## Structure

@@ -27,7 +27,7 @@ gen:
 .PHONY: local_up
 local_up:
 	docker-compose -f docker-compose.local.yml up -d
-	@echo http://localhost:8080
+	@echo http://localhost
 
 .PHONY: local_down
 local_down:

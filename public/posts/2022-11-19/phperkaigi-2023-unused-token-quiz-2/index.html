@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、 ボツになった問題を公開する (その 2)。">
+    <meta name="keywords" content="PHP,PHPerKaigi">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>PHPerKaigi 2023: ボツになったトークン問題 その 2 | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">PHPerKaigi 2023: ボツになったトークン問題 その 2</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/php/">PHP</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/phperkaigi/">PHPerKaigi</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2022-11-19">2022-11-19</time>: 公開
+                </li>
+              
+            </ol>
+          </section>
+          
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      はじめに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>2023 年 3 月 23 日から 25 日にかけて開催予定 (記事執筆時点) の <a href="https://phperkaigi.jp/2023/">PHPerKaigi 2023</a> において、
+昨年と同様に、弊社 <a href="https://www.dgcircus.com/">デジタルサーカス株式会社</a> からトークン問題を出題予定である。</p>
+</div>
+<div class="paragraph">
+<p>昨年のトークン問題の記事はこちら: <a href="/posts/2022-04-09/phperkaigi-2022-tokens/">PHPerKaigi 2022 トークン問題の解説</a></p>
+</div>
+<div class="paragraph">
+<p>すでに 2023 年用の問題は作成済みであるが、その制作過程の中でいくつかボツ問ができた。せっかくなので、PHPerKaigi 開催を待つ間に紹介しようと思う。</p>
+</div>
+<div class="paragraph">
+<p>10 月から 2 月まで、毎月 1 記事ずつ公開していく予定 (忘れていなければ)。</p>
+</div>
+<div class="paragraph">
+<p>その 1 はこちら: <a href="/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/">PHPerKaigi 2023: ボツになったトークン問題 その 1</a></p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      問題
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>注意: これはボツ問なので、得られたトークンを PHPerKaigi で入力してもポイントにはならない。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>"And Then There Were None" (そして誰もいなくなった) と名付けた作品。変則 quine (自分自身と同じソースコードを出力するプログラム) になっている。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      トークン入手方法
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>実行してみると、次のような出力が得られる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="c1">#</span>
+<span class="o">&lt;?</span><span class="n">php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>1 行目を除き、先ほどのコードとほぼ同じものが出てきた。もう一度実行してみる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="c1">#</span>
+<span class="nc">W</span>
+<span class="o">&lt;?</span><span class="n">php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span>
+<span class="cp">&lt;?php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"​"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>今度は 2 行目が書き換えられた。すべての行が変化するまで繰り返すと次のようになる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="c1">#</span>
+<span class="nc">W</span>
+<span class="nc">E</span>
+<span class="nc">L</span>
+<span class="nc">O</span>
+<span class="nc">V</span>
+<span class="nc">E</span>
+<span class="nc">P</span>
+<span class="nc">H</span>
+<span class="nc">P</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>トークン「#WELOVEPHP」が手に入った。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      解説
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>一見すると同じ行が 10 行並んでいるだけなのにも関わらず、なぜそれぞれの行で出力が変わるのか。ソースコードをコピーして、適当なエディタに貼り付けるとわかりやすい。</p>
+</div>
+<div class="paragraph">
+<p>Vim で開くと次のようになる (1 行目を抜粋)。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span> <span class="nb">printf</span><span class="p">((</span><span class="k">isset</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">?</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">trim</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span><span class="s2">"&lt;200b&gt;"</span><span class="p">)</span><span class="o">:</span><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))(</span><span class="nv">$s</span><span class="o">=</span><span class="s1">'&lt;200b&gt;&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"&lt;200b&gt;"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span><span class="p">)</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span><span class="s2">"</span><span class="se">\x27</span><span class="nv">$s</span><span class="se">\x27</span><span class="s2">"</span><span class="p">);</span><span class="cp">?&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>&lt;200b&gt;</code> と表示されているのは、Unicode の U+200b で、ゼロ幅スペースである。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+エディタによっては、ゼロ幅スペースが見えないことがある。VSCode ではブラウザと同様に不可視だった。
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>文字列リテラルの中にゼロ幅スペースを仕込むことで、見た目を変えずに情報をエンコードすることが可能となる。</p>
+</div>
+<div class="paragraph">
+<p>続いて、トークンへの変換ロジックを解析する。注目すべきはこの部分だ。以下、ゼロ幅スペースは Vim での表示に合わせて <code>&lt;200b&gt;</code> と記載する。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="k">fn</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">=&gt;</span><span class="nb">chr</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>PHP の <code>strlen()</code> は文字列のバイト数を返す。1 行目の <code>$s</code> は以下の内容となっており、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$s</span><span class="o">=</span><span class="s1">'&lt;200b&gt;&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"&lt;200b&gt;"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このソースコードは UTF-8 で書かれているので、105 バイトになる。それを 3 で割ると 35 となり、これは <code>#</code> の ASCII コードと一致する。他の行も、同様にしてゼロ幅スペースを詰めることで文字列長を調整し、トークンをエンコードしている。</p>
+</div>
+<div class="paragraph">
+<p>デコード部以外の部分は、quine のための記述である。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      おわりに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p><a href="https://blog.rust-lang.org/2021/11/01/cve-2021-42574.html">CVE-2021-42574</a> に着想を得た作品。この脆弱性は、Unicode の制御文字である left-to-right mark と right-to-left mark を利用し、ソースコードの実際の内容を欺く、というもの。簡単のためゼロ幅スペースを用いることとし、ついでに quine にもするとこうなった。</p>
+</div>
+<div class="paragraph">
+<p>ボツになった理由は、ゼロ幅スペースを表示してくるエディタが想像以上に多かったため。「同じ行が並んでいるだけなのに出力が異なる」というアイデアの根幹を崩されてしまうので、この問題は不採用となった。</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>
