@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="PHP カンファレンス沖縄の懇親会 LT で出題されたコードゴルフの問題を解いてみた。">
+    <meta name="keywords" content="カンファレンス,PHP,PHP カンファレンス">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>PHP カンファレンス沖縄で出題されたコードゴルフの問題を解いてみた | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">PHP カンファレンス沖縄で出題されたコードゴルフの問題を解いてみた</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/conference/">カンファレンス</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/php/">PHP</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/phpcon/">PHP カンファレンス</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2022-08-27">2022-08-27</time>: 公開
+                </li>
+              
+            </ol>
+          </section>
+          
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      はじめに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>本日 <a href="https://phpcon.okinawa.jp/">PHP カンファレンス沖縄 2022</a>
+が開催された (らしい)。</p>
+</div>
+<div class="paragraph">
+<p>カンファレンスには参加できなかったものの、懇親会の LT
+で出題されたコードゴルフの問題が Twitter に流れてきたので、解いてみた。</p>
+</div>
+<div class="paragraph">
+<p>ツイート: <a href="https://twitter.com/m3m0r7/status/1563397620231712772" class="bare">https://twitter.com/m3m0r7/status/1563397620231712772</a><br>
+スライド:
+<a href="https://speakerdeck.com/memory1994/php-conference-okinawa-2022-extra?slide=3" class="bare">https://speakerdeck.com/memory1994/php-conference-okinawa-2022-extra?slide=3</a></p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      解
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>細かいレギュレーションは不明だったので、勝手に定めた。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>コマンドライン引数の第1引数で受けとる</p>
+</li>
+<li>
+<p>結果は標準出力に出す</p>
+</li>
+<li>
+<p>コンマの直後にはスペースを1つ置く</p>
+</li>
+<li>
+<p>末尾コンマは禁止</p>
+</li>
+<li>
+<p>数字でないものは入ってこないものとする</p>
+</li>
+<li>
+<p>負数は入ってこないものとする</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>書いたものがこちら:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="p">[</span><span class="o">&lt;?</span><span class="n">php</span> <span class="nv">$n</span><span class="o">=</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="k">foreach</span><span class="p">([</span><span class="mi">1</span><span class="n">e4</span><span class="p">,</span><span class="mi">5</span><span class="n">e3</span><span class="p">,</span><span class="mi">2</span><span class="n">e3</span><span class="p">,</span><span class="mi">1</span><span class="n">e3</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="k">as</span><span class="nv">$x</span><span class="p">)</span><span class="k">for</span><span class="p">(;</span><span class="nv">$n</span><span class="o">&gt;=</span><span class="nv">$x</span><span class="p">;</span><span class="nv">$n</span><span class="o">-=</span><span class="nv">$x</span><span class="p">)</span><span class="nv">$r</span><span class="p">[]</span><span class="o">=</span><span class="nv">$x</span><span class="p">;</span><span class="k">echo</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">', '</span><span class="p">,</span><span class="nv">$r</span><span class="o">??</span><span class="p">[]);</span><span class="cp">?&gt;</span>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>しめて 123 バイトとなった (末尾改行を含めずにカウント)。</p>
+</div>
+<div class="paragraph">
+<p>こちらは改行とスペースを追加したバージョン:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="p">[</span><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$n</span> <span class="o">=</span> <span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="k">foreach</span> <span class="p">([</span><span class="mi">1</span><span class="n">e4</span><span class="p">,</span> <span class="mi">5</span><span class="n">e3</span><span class="p">,</span> <span class="mi">2</span><span class="n">e3</span><span class="p">,</span> <span class="mi">1</span><span class="n">e3</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">as</span> <span class="nv">$x</span><span class="p">)</span>
+  <span class="k">for</span> <span class="p">(;</span> <span class="nv">$n</span> <span class="o">&gt;=</span> <span class="nv">$x</span><span class="p">;</span> <span class="nv">$n</span> <span class="o">-=</span> <span class="nv">$x</span><span class="p">)</span>
+    <span class="nv">$r</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$x</span><span class="p">;</span>
+<span class="k">echo</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">', '</span><span class="p">,</span> <span class="nv">$r</span> <span class="o">??</span> <span class="p">[]);</span>
+
+<span class="cp">?&gt;</span>]</code></pre>
+</div>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      使用したテクニック
+    
+  </h2>
+  <div class="section-body">
+    
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      指数表記
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>割と多くの言語のゴルフで使えるテクニック。<code>e</code>
+を用いた指数表記で、大きな数を短く表す。このコードでは
+<code>10000</code>、<code>5000</code>、<code>2000</code>、<code>1000</code> を指数表記している。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      foreach や for の中身を1つの文に
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>foreach</code>、<code>for</code>、<code>if</code> などの後ろには、通常 <code>{</code>
+を続けて複数の文を連ねるが、中身の文を1つにしてしまえば、<code>{</code> と <code>}</code>
+を省略できる。C言語などでも使える。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      $r に初期値を入れない
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>PHP では、<code>$r[] = &#8230;&#8203;</code>
+のような配列の末尾に追加する式を実行したとき、<code>$r</code> が未定義だった場合は
+<code>$r</code>
+を勝手に定義して空の配列で初期化してくれる。これを利用すると、<code>$r = [];</code>
+のような初期化が不要になる。</p>
+</div>
+<div class="paragraph">
+<p>ただし、プログラムに 0 が渡されるとループを一度も回らないので、<code>$r</code>
+が未定義になってしまい、<code>implode()</code>
+に渡すところでエラーになる。それを防ぐために <code>$r ?? []</code> を使っている。</p>
+</div>
+<div class="paragraph">
+<p>もし 0 が渡されたケースを無視するなら、これが不要になるので 4
+バイト縮む。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      PHP タグの外に文字列を置く
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>PHP では、<code>&lt;?php</code> <code>?&gt;</code>
+で囲われた部分の外側にある文字列は、そのまま出力される。今回のケースでは、先頭と末尾に必ず
+<code>[</code> と <code>]</code> を出力するので、そのまま書いてやればよい。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      おわりに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>最後になりましたが、https://twitter.com/m3m0r7[めもりー]
+さん、楽しい問題をありがとうございました。</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

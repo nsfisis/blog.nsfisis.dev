@@ -1,0 +1,19 @@
+<% _level = level %>
+<% _role = role %>
+<% _id = id %>
+<% _title = caption ? captioned_title : title %>
+<% _content = content %>
+<section class="section-<%= _level %><%= _role ? " #{role}" : '' %>">
+  <h<%= _level + 1 %> id="<%= _id %>" class="section-header">
+    <% if _id %>
+      <a href="#<%= _id %>">
+        <%= _title %>
+      </a>
+    <% else %>
+      <%= _title %>
+    <% end %>
+  </h<%= _level + 1 %>>
+  <div class="section-body">
+    <%= _content %>
+  </div>
+</section>

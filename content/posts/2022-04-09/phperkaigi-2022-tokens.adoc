@@ -1,0 +1,469 @@
+= PHPerKaigi 2022 トークン問題の解説
+:tags: conference, php, phperkaigi
+:description: PHPerKaigi 2022 で私が作成した PHPer チャレンジ問題を解説する。
+:revision-1: 2022-04-09 公開
+:revision-2: 2022-04-16 2問目、3問目の解説を追加、1問目に加筆
+
+== はじめに
+
+本日開始された https://phperkaigi.jp/2022/[PHPerKaigi 2022] の PHPer
+チャレンジにおいて、弊社
+https://www.dgcircus.com/[デジタルサーカス株式会社] の問題を
+3問作成した。この記事では、これらの問題の解説をおこなう。
+
+リポジトリはこちら: https://github.com/nsfisis/PHPerKaigi2022-tokens
+
+== 第1問 brainf_ck.php
+
+ソースコードはこちら。実行には PHP 8.1 以上が必要なので注意。
+
+[source,php]
+----
+<?php
+
+declare(strict_types=0O1);
+
+namespace Dgcircus\PHPerKaigi\Y2022;
+
+/**
+ * @todo
+ * Run this program to acquire a PHPer token.
+ */
+
+https://creativecommons.org/publicdomain/zero/1.0/
+
+\error_reporting(~+!'We are hiring!');
+
+$z = fn($f) => (fn($x) => $f(fn(...$xs) => $x($x)(...$xs)))(fn($x) => $f(fn(...$xs) => $x($x)(...$xs)));
+$id = \spl_object_id(...);
+$put = fn($c) => \printf('%c', $c);
+$mm = fn($p, $n) => new \ArrayObject(\array_fill(+!![], $n, $p));
+
+$👉 = fn($m, $p, $b, $e, $mp, $pc) => [++$mp, ++$pc];
+$👈 = fn($m, $p, $b, $e, $mp, $pc) => [--$mp, ++$pc];
+$👍 = fn($m, $p, $b, $e, $mp, $pc) => [$mp, ++$pc, ++$m[$mp]];
+$👎 = fn($m, $p, $b, $e, $mp, $pc) => [$mp, ++$pc, --$m[$mp]];
+$📝 = fn($m, $p, $b, $e, $mp, $pc) => [$mp, ++$pc, $put($m[$mp])];
+$🤡 = fn($m, $p, $b, $e, $mp, $pc) => match ($m[$mp]) {
+    +!![] => [$mp, $z(fn($loop) => fn($pc, $n) => match ($id($p[$pc])) {
+      $b => $loop(++$pc, ++$n),
+      $e => $n === +!![] ? ++$pc : $loop(++$pc, --$n),
+      default => $loop(++$pc, $n),
+    })($pc, -![])],
+    default => [$mp, ++$pc],
+};
+$🎪 = fn($m, $p, $b, $e, $mp, $pc) => match ($m[$mp]) {
+    +!![] => [$mp, ++$pc],
+    default => [$mp, $z(fn($loop) => fn($pc, $n) => match ($id($p[$pc])) {
+      $e => $loop(--$pc, ++$n),
+      $b => $n === +!![] ? $pc+![] : $loop(--$pc, --$n),
+      default => $loop(--$pc, $n),
+    })($pc, -![])],
+};
+$🐘 = fn($p) => $z(fn($loop) => fn($m, $p, $b, $e, $mp, $pc) =>
+  isset($p[$pc]) && $loop($m, $p, $b, $e, ...($p[$pc]($m, $p, $b, $e, $mp, $pc)))
+)($mm(+!![], +(![].![])), $p, $id($🤡), $id($🎪), +!![], +!![]);
+
+$🐘([
+  $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+  $🤡,
+    $👉, $👍, $👍, $👍,
+    $👉, $👍, $👍, $👍, $👍, $👍,
+    $👉, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+    $👉, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+    $👈, $👈, $👈, $👈, $👎,
+  $🎪,
+  $👉, $👍, $👍, $👍, $👍, $👍, $📝,
+  $👎, $👎, $📝,
+  $👉, $👎, $👎, $👎, $📝,
+  $👉, $👎, $👎, $👎, $📝,
+  $👎, $👎, $📝,
+  $👎, $📝,
+  $👈, $📝,
+  $👉, $👉, $👎, $👎, $📝,
+  $👍, $👍, $👍, $👍, $👍, $👍, $👍, $📝,
+  $👈, $👎, $👎, $👎, $👎, $📝,
+  $👈, $📝,
+  $👉, $👍, $👍, $📝,
+  $👉, $👎, $📝,
+  $👈, $📝,
+]);
+----
+
+この問題は、単に適切なバージョンの PHP で動かせばトークンが得られる。
+
+=== 解説
+
+==== 絵文字
+
+まず目につくのは大量の絵文字だろう。 PHP
+は識別子に使用できる文字の範囲が広く、絵文字も使うことができる。
+
+==== プログラム全体
+
+Brainf*ck のインタプリタとプログラムになっている。 Brainf*ck
+とは、難解プログラミング言語のひとつであり、ここで説明するよりも
+Wikipedia の該当ページを読んだ方がよい。
+
+https://ja.wikipedia.org/wiki/Brainfuck
+
+なお、brainf*ck プログラムを普通の書き方で書くと、次のようになる。
+
+....
++ + + + + + + + + +
+[
+  > + + +
+  > + + + + +
+  > + + + + + + + + + + + +
+  > + + + + + + + + + +
+  < < < < -
+]
+> + + + + + .
+- - .
+> - - - .
+> - - - .
+- - .
+- .
+< .
+> > - - .
++ + + + + + + .
+< - - - - .
+< .
+> + + .
+> - .
+< .
+....
+
+実行結果はこちら: https://ideone.com/22VWmb
+
+それぞれの絵文字で表された関数が、各命令に対応している。
+
+* `$👉`: `>`
+* `$👈`: `<`
+* `$👍`: `+`
+* `$👎`: `-`
+* `$📝`: `.`
+* `$🤡`: `[`
+* `$🎪`: `]`
+
+`,` (入力) に対応する関数はない
+(このプログラムでは使わないので用意していない)。
+
+なお、`$🐘` はいわゆる main 関数であり、プログラムの実行部分である。
+
+==== 絵文字の選択
+
+おおよそ意味に合致するよう選んでいるが、`$🤡` と `$🎪`
+は弊社デジタルサーカスにちなんでいる。 また、`$🐘` は PHP
+のマスコットの象に由来する。
+
+==== strict_types
+
+`declare` 文の `strict_types` に指定できるのは、`0` か `1`
+の数値リテラルだが、 `0x0` や `0b1` のような値も受け付ける。 今回は、PHP
+8.1 から追加された、`0O` または `0o` から始まる八進数リテラルを使った。
+
+==== URL
+
+ソースコードのライセンスを示したこの部分だが、
+
+[source,php]
+----
+https://creativecommons.org/publicdomain/zero/1.0/
+----
+
+完全に合法な PHP のコードである。 `https:` 部分はラベル、`//`
+以降は行コメントになっている。
+
+==== リテラルなしで数値を生成する
+
+ソースコード中に、ほとんど数値リテラルが書かれていないことにお気づきだろうか。
+PHP では、型変換を利用することで任意の整数を作り出すことができる。
+
+[source,php]
+----
+assert(0 === +!![]);
+assert(1 === +![]);
+assert(2 === ![]+![]);
+assert(3 === ![]+![]+![]);
+assert(10 === +(![].+!![]));
+----
+
+`[]` に `!` を適用すると `true` が返ってくる。それに `+`
+を適用すると、`bool` から `int` ヘの型変換が走り、`1` が生成される。`10`
+はさらにトリッキーだ。まず `1` と `0` を作り、`.` で文字列として結合する
+(`'10'`)。これに `+` を適用すると、`string` から `int`
+への型変換が走り、`10` が生まれる (コード量に頓着しないなら、`1` を 10
+個足し合わせてももちろん 10 が作れる)。
+
+また、`error_reporting` に指定しているのは `-1` である。 これは、`!`
+によって文字列を `false` にし、`+` によって `false` を `0`
+にし、さらにビット反転して `-1` にしている。
+
+==== `if` 文なしで条件分岐
+
+三項演算子ないし `match` 式を使うことで、`if`
+を一切書かずに条件分岐ができる。 また、`&&` / `||` も使えることがある。
+遅延評価が不要なケースでは、`[$t, $f][$cond]`
+のような形で分岐することもできる。
+
+==== `while`、`for` 文なしでループ
+
+不動点コンビネータを使って無名再帰する
+(詳しい説明は省略する。これらの単語で検索してほしい)。 ここでは、一般に
+Z コンビネータとして知られるものを使った (`$z`)。
+
+実際のところ、`$🤡` や `$🎪`、`$🐘` は、一度 Scheme (Lisp の一種)
+で書いてから PHP に翻訳する形で記述した。
+
+なお、PHP は末尾再帰の最適化をおこなわない (少なくとも今のところは)
+ので、 あまりに長い brainf*ck
+プログラムを書くとスタックオーバーフローする。
+
+== 第2問 riddle.php
+
+ソースコードはこちら。実行には PHP 8.0 以上が必要なので注意。
+
+[source,php]
+----
+<?php
+
+/*********************************************************
+ * This program displays a PHPer token.                  *
+ * Guess 'N'.                                            *
+ *                                                       *
+ * Hints:                                                *
+ * - N itself has no special meaning, e.g., 42, 8128,    *
+ *   it is selected at random.                           *
+ * - Each element of $token represents a single letter.  *
+ * - One letter consists of 5x5 cells.                   *
+ * - Remember, the output is a complete PHPer token.     *
+ *                                                       *
+ * License:                                              *
+ *   https://creativecommons.org/publicdomain/zero/1.0/  *
+ *********************************************************/
+const N = 0 /* Change it to your answer. */;
+assert(0 <= N && N <= 0b11111_11111_11111_11111_11111);
+
+$token = [
+  0x14B499C,
+  0x0BE34CC, 0x01C9C69,
+  0x0ECA069, 0x01C2449, 0x0FDB166, 0x01C9C69,
+  0x01C1C66, 0x0FC1C47, 0x01C1C66,
+  0x10C5858, 0x1E4E3B8, 0x1A2F2F8,
+];
+foreach ($token as $x) {
+  $x = $x ^ N;
+
+  $x = sprintf('%025b', $x);
+  $x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);
+  $x = implode("\n", str_split($x, length: 5));
+  echo "{$x}\n\n";
+}
+----
+
+さて、この問題はさきほどのように単純に実行しただけでは、謎のブロックが表示されるだけでトークンは得られない。
+トークンを得るためには、ソースコードを読み、定数 `N`
+を特定する必要がある。
+
+ここでは、私の想定解を解説する。
+
+=== 読解
+
+まずはソースコードを読んでいく。
+
+[source,php]
+----
+$token = [
+  // 略
+];
+----
+
+数値からなる `$token` があり、各要素をループしている。
+
+[source,php]
+----
+  $x = $x ^ N;
+----
+
+まずは排他的論理和 (xor) を取り、
+
+[source,php]
+----
+  $x = sprintf('%025b', $x);
+----
+
+二進数に変換して、
+
+[source,php]
+----
+  $x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);
+----
+
+0 を空白に、1 を `#` にし、
+
+[source,php]
+----
+  $x = implode("\n", str_split($x, length: 5));
+----
+
+5文字ごとに区切ったあと、改行で結合している。
+
+=== ヒント
+
+次に、ソースコードに書いてあるヒントを読んでいく。
+
+* `N` それ自体は、42 や 8128
+といったような特別な意味を持たず、ランダムに決められている
+* `$token` の各要素は、1文字を表す
+* 1文字は 5x5 のセルからなる
+* 出力されるのは、完全な PHPer トークンである
+
+ここで、PHPer トークンは必ず `#` 記号から始まることを思いだすと、
+`$token` の最初の数字 `0x14B499C` は、変換の結果 `#`
+になるのではないかと予想される (なお、このことは、リポジトリの README
+ファイルに追加ヒントとして書かれている)。
+
+=== 解く
+
+ここまでわかれば、あと一歩で解ける。すなわち、`0x14B499C` が `#`
+に変換されるような `N` を見つければよい。
+
+`N` は高々
+
+[source,php]
+----
+assert(0 <= N && N <= 0b11111_11111_11111_11111_11111);
+----
+
+なのでブルートフォースしてもよいが、ここではブルートフォースしない方法を紹介する。
+
+[source,php]
+----
+<?php
+
+$x = 0x14B499C;
+
+$x = $x ^ N;
+
+$x = sprintf('%025b', $x);
+$x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);
+$x = implode("\n", str_split($x, length: 5));
+
+assert($x ===
+  " # # \n" .
+  "#####\n" .
+  " # # \n" .
+  "#####\n" .
+  " # # ");
+----
+
+この一連の変換に対する逆変換を考えると、次のようになる。
+
+[source,php]
+----
+<?php
+
+$x =
+  " # # \n" .
+  "#####\n" .
+  " # # \n" .
+  "#####\n" .
+  " # # ";
+
+$x = implode('', explode("\n", $x));
+$x = str_replace(search: [' ', '#'], replace: ['0', '1'], subject: $x);
+$x = bindec($x);
+
+$n = $x ^ 0x14B499C;
+
+echo "N = $n\n";
+----
+
+これを実行すると、`N` が得られる。
+
+== 第3問 toquine.php
+
+ソースコードはこちら。
+
+[source,php]
+----
+<?php
+
+// License: https://creativecommons.org/publicdomain/zero/1.0/
+// This is a quine-like program to generate a PHPer token.
+// Execute it like this: php toquine.php | php | php | php | ...
+
+$s = <<<'Q'
+<?cuc
+// Yvprafr: uggcf://perngvirpbzzbaf.bet/choyvpqbznva/mreb/1.0/
+// Guvf vf n dhvar-yvxr cebtenz gb trarengr n CUCre gbxra.
+// Rkrphgr vg yvxr guvf: cuc gbdhvar.cuc | cuc | cuc | cuc | ...
+%f$f = %f;
+$f = fge_ebg13($f); $kf = [
+%f,
+];
+$g = ahyy.snyfr; sbe ($v = 0; $v <= vagqvi(__YVAR__-035,6); ++$v) vs (!vffrg($kf[$v])) oernx; ryfr
+$g .= vzcybqr("\a", fge_fcyvg(fge_ercynpr(['0','1'], ['  ','##'], fcevags(pue(37) . '025o', $kf[$v])), 012)) . "\a\a";
+$jf = neenl_znc(sa($j) => vzcybqr(', ', $j), neenl_puhax(neenl_znc(sa($k) => fcevags('0k' . pue(37) . '07K', $k), $kf), 10));
+cevags($f, $g, fge_ebg13("<<<'Q'\a{$f}\aQ"), vzcybqr(",\a", $jf));
+Q;
+$s = str_rot13($s); $xs = [
+0x0AFABEA, 0x1F294A7, 0x1F2109F, 0x1F294A7, 0x0002800, 0x1F2109F, 0x0117041, 0x1F294A7, 0x1FAD6B5, 0x1F295B7,
+0x010FC21, 0x1FAD6B5, 0x1151151, 0x010FC21, 0x1F294A7, 0x1F295B7, 0x1FAD6B5, 0x1F294A7, 0x1F295B7, 0x1F8C63F,
+0x1F8C631, 0x1FAD6B5, 0x17AD6BD, 0x17AD6BD, 0x1F8C63F, 0x1F295B7,
+];
+$t = null.false; for ($i = 0; $i <= intdiv(__LINE__-035,6); ++$i) if (!isset($xs[$i])) break; else
+$t .= implode("\n", str_split(str_replace(['0','1'], ['  ','##'], sprintf(chr(37) . '025b', $xs[$i])), 012)) . "\n\n";
+$ws = array_map(fn($w) => implode(', ', $w), array_chunk(array_map(fn($x) => sprintf('0x' . chr(37) . '07X', $x), $xs), 10));
+printf($s, $t, str_rot13("<<<'D'\n{$s}\nD"), implode(",\n", $ws));
+----
+
+コメントにもあるとおり、次のようにして実行すれば答えがでてくる。
+
+[source,shell-session]
+----
+$ php toquine.php | php | php | php | ...
+----
+
+実際にはもう少しパイプで繋げなければならない。
+
+=== 解説
+
+==== プログラム全体
+
+コメントにもあるとおり、これは quine (風) のプログラムになっている。
+Quine
+とは、自分のソースコードをそっくりそのまま出力するようなプログラムのことである。
+
+このプログラムは、実行すると自身とほとんど同じプログラムを出力する。
+異なるのはトークンになっている部分のみである。
+
+==== トークン
+
+`$xs` がトークンに対応している。変換のロジックは `riddle.php`
+とほぼ同じなので省略する。
+
+==== 状態保持
+
+トークンの何文字目まで出力したかを、ソースコードを変えずに (quine
+なので) 覚えておく必要がある。
+このプログラムでは、トークンが出力されるとソースコードがだんだんと長くなっていくのを利用して、`__LINE__`
+から情報を取得している。
+
+==== ROT 13
+
+Quine は、素朴に書くとプログラムの一部が 2回記述されてしまう。
+これがあまり美しくないので、`toquine.php` では、ROT 13
+変換を使って難読化した。
+
+それにしてもなぜこんなものが標準ライブラリに……。
+
+== おわりに
+
+解いていただいたみなさん、また、難易度調整につきあっていただいた社内のみなさん、ありがとうございました。
+
+今回は直前に作りはじめたのもあり、3問だけかつ使い古されたネタばかりになってしまいましたが、
+来年は 5問、より面白い問題を持っていきます。
+
+実はもう作りはじめているので、どうか来年もありますように……。

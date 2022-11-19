@@ -1,0 +1,69 @@
+<% _main_stylesheet = '/style.css' %>
+<% _author = attr 'author' %>
+<% _description = attr 'description' %>
+<% _lang = attr 'lang' %>
+<% _site_copyright_year = attr 'site-copyright-year' %>
+<% _copyright_year = attr 'copyright-year' %>
+<% _revisions = attr 'revision-history' %>
+<% _site_name = attr 'site-name' %>
+<% _tags = attr 'tags' %>
+<% _doctitle = doctitle %>
+<% _header_title = header.title %>
+<% _content = content %>
+<!DOCTYPE html>
+<html lang="<%= _lang %>">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="<%= _author %>">
+    <meta name="copyright" content="&copy; <%= _copyright_year %> <%= _author %>">
+    <meta name="description" content="<%= _description %>">
+    <meta name="keywords" content="<%= _tags.map(&:label).join(',') %>">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title><%= _doctitle %> | <%= _site_name %></title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="<%= _main_stylesheet %>">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/"><%= _site_name %></a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title"><%= _header_title %></h1>
+          <% if not _tags.empty? %>
+            <ul class="post-tags">
+              <% for tag in _tags %>
+                <li class="tag">
+                  <a href="/tags/<%= tag.slug %>/"><%= tag.label %></a>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              <% for revision in _revisions %>
+                <li class="revision">
+                  <time datetime="<%= revision.date %>"><%= revision.date %></time>: <%= revision.remark %>
+                </li>
+              <% end %>
+            </ol>
+          </section>
+          <%= _content %>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; <%= _site_copyright_year %> <%= _author %>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="ターミナルに任意の文字のバナーを表示するためのツールを Go で書いた。">
+    <meta name="keywords" content="">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>term-banner: ターミナルにバナーを表示するツールを書いた | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">term-banner: ターミナルにバナーを表示するツールを書いた</h1>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2022-04-24">2022-04-24</time>: 公開
+                </li>
+              
+                <li class="revision">
+                  <time datetime="2022-04-27">2022-04-27</time>: -f オプションについて追記
+                </li>
+              
+            </ol>
+          </section>
+          
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      はじめに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>こんなものを作った。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ term-banner 'Hello, World!' 'こんにちは、' '世界！'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>image::https://raw.githubusercontent.com/nsfisis/term-banner/main/screenshot.png[term-banner
+のスクリーンショット]</p>
+</div>
+<div class="paragraph">
+<p>コマンドライン引数として渡した文字列をターミナルに大きく表示する。</p>
+</div>
+<div class="paragraph">
+<p>リポジトリはこちら: <a href="https://github.com/nsfisis/term-banner" class="bare">https://github.com/nsfisis/term-banner</a></p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      Motivation
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>以前、https://github.com/nsfisis/big-clock-mode[big-clock-mode]
+という似たようなプログラムを書いた。 これは tmux の <code>:clock-mode</code>
+コマンドに着想を得たもので、<code>:clock-mode</code>
+よりも大きく現在時刻を表示する。</p>
+</div>
+<div class="paragraph">
+<p><code>big-clock-mode</code>
+を開発したのは、次のようなシチュエーションで使うためである。
+弊社では現在リモートワークが基本だが、web
+会議などで画面共有しているときに、休憩を挟んで特定の時刻から再開する、ということがある。
+こういったケースで、画面上に現在の時刻を大きめに表示しておくと、モニタから離れても遠くから時刻がわかるので便利である。</p>
+</div>
+<div class="paragraph">
+<p>それこそタイマアプリか何かを使えばいいのだが、ターミナルに棲むいきものとしては、住処から離れたくないわけだ。</p>
+</div>
+<div class="paragraph">
+<p>しばらく便利に使っていたのだが、ひとつ不満点が出てきた。それは、再開する時刻がいつだったかを覚えておかなければならないということだ。
+どこかにメモしておいてもいいが、せっかくなら現在時刻とともに表示させておきたい。</p>
+</div>
+<div class="paragraph">
+<p>そんなわけで、「任意の文字列をターミナルに表示する」プログラムを書く運びとなった。
+まあ、作らなくても探せばあると思うが、作りたいものは作りたいので知ったことではない。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      プログラム
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>全体の流れは次のようになっている。</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>フォントファイルを読み込む</p>
+</li>
+<li>
+<p>コマンドライン引数を Shift-JIS に変換する (フォントが Shift-JIS
+基準で並んでいるため)</p>
+</li>
+<li>
+<p>1文字ずつレンダリングしていく</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><code>big-clock-mode</code> が Go 製なので、今回も Go で書いた。 PNG
+が標準ライブラリにあったり、Shift-JIS
+のエンコーディングが準標準ライブラリにあったりしたのは助かった。</p>
+</div>
+<div class="paragraph">
+<p>フォントファイルは <code>go:embed</code>
+で実行ファイルに埋め込んでいるので、ビルド後はワンバイナリで動く。
+仕事ではスクリプト言語ばかり書いているが、やはりコンパイル言語はいい。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      フォント
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>フリーの 8x8
+ビットマップフォントである、https://littlelimit.net/misaki.htm[美咲フォント
+2021-05-05a 版] を使わせていただいた。</p>
+</div>
+<div class="paragraph">
+<p>はじめは自分でポチポチ打っていたのだが、「き」くらいまでやって挫折した。
+同じく 8x8
+で作っていたのだが、平仮名でさえも、この小さなキャンバスにはとても収められない。</p>
+</div>
+<div class="paragraph">
+<p>美咲フォントは、平仮名・片仮名に留まらず、JIS
+第一・第二水準の漢字までサポートしている。
+第二水準ともなると一生お目にかかることのない字の方が多いくらいだが、これをこの大きさで書くというのは、もはや芸術の域である。</p>
+</div>
+<div class="paragraph">
+<p>さらに言うと、実のところ美咲フォントは実サイズ 7x7
+で作られており、余白が設けられている。
+これは、単純にそのまま並べても字間・行間を確保できるようにという配慮である。
+おかげでコーディングまで楽になった。</p>
+</div>
+<div class="paragraph">
+<p>ゴシック体と明朝体があったが、私の好みで明朝体の方にした。
+ただ、ゴシック体の方が見やすい気がするので、フォントを選べるように後ほど拡張するかもしれない。</p>
+</div>
+<div class="paragraph">
+<p>2022-04-27 追記: <code>-f</code> オプションで選べるようにした。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      おわりに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>あなたもターミナルに住んでみませんか？</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

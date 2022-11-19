@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="C++ の属性構文の属性名には、キーワードが使える。ネタ記事。">
+    <meta name="keywords" content="C++,C++ 17">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>【C++】属性構文の属性名にはキーワードが使える | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">【C++】属性構文の属性名にはキーワードが使える</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/cpp/">C++</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/cpp17/">C++ 17</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2021-10-02">2021-10-02</time>: Qiita から移植
+                </li>
+              
+            </ol>
+          </section>
+          <div class="paragraph">
+<p>この記事は Qiita から移植してきたものです。 元 URL:
+<a href="https://qiita.com/nsfisis/items/94090937bcf860cfa93b" class="bare">https://qiita.com/nsfisis/items/94090937bcf860cfa93b</a></p>
+</div>
+<hr>
+<div class="paragraph">
+<p>タイトル落ち。まずはこのコードを見て欲しい。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="p">[[</span><span class="k">alignas</span><span class="p">]]</span> <span class="p">[[</span><span class="k">alignof</span><span class="p">]]</span> <span class="p">[[</span><span class="n">and</span><span class="p">]]</span> <span class="p">[[</span><span class="n">and_eq</span><span class="p">]]</span> <span class="p">[[</span><span class="k">asm</span><span class="p">]]</span> <span class="p">[[</span><span class="k">auto</span><span class="p">]]</span> <span class="p">[[</span><span class="n">bitand</span><span class="p">]]</span>
+<span class="p">[[</span><span class="n">bitor</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">bool</span><span class="p">]]</span> <span class="p">[[</span><span class="k">break</span><span class="p">]]</span> <span class="p">[[</span><span class="k">case</span><span class="p">]]</span> <span class="p">[[</span><span class="k">catch</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">char</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">char16_t</span><span class="p">]]</span>
+<span class="p">[[</span><span class="kt">char32_t</span><span class="p">]]</span> <span class="p">[[</span><span class="k">class</span><span class="p">]]</span> <span class="p">[[</span><span class="n">compl</span><span class="p">]]</span> <span class="p">[[</span><span class="k">const</span><span class="p">]]</span> <span class="p">[[</span><span class="k">const_cast</span><span class="p">]]</span> <span class="p">[[</span><span class="k">constexpr</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">continue</span><span class="p">]]</span> <span class="p">[[</span><span class="k">decltype</span><span class="p">]]</span> <span class="p">[[</span><span class="k">default</span><span class="p">]]</span> <span class="p">[[</span><span class="k">delete</span><span class="p">]]</span> <span class="p">[[</span><span class="k">do</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">double</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">dynamic_cast</span><span class="p">]]</span> <span class="p">[[</span><span class="k">else</span><span class="p">]]</span> <span class="p">[[</span><span class="k">enum</span><span class="p">]]</span> <span class="p">[[</span><span class="k">explicit</span><span class="p">]]</span> <span class="p">[[</span><span class="k">export</span><span class="p">]]</span> <span class="p">[[</span><span class="k">extern</span><span class="p">]]</span> <span class="p">[[</span><span class="nb">false</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">final</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">float</span><span class="p">]]</span> <span class="p">[[</span><span class="k">for</span><span class="p">]]</span> <span class="p">[[</span><span class="k">friend</span><span class="p">]]</span> <span class="p">[[</span><span class="k">goto</span><span class="p">]]</span> <span class="p">[[</span><span class="k">if</span><span class="p">]]</span> <span class="p">[[</span><span class="kr">inline</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">int</span><span class="p">]]</span>
+<span class="p">[[</span><span class="kt">long</span><span class="p">]]</span> <span class="p">[[</span><span class="k">mutable</span><span class="p">]]</span> <span class="p">[[</span><span class="k">namespace</span><span class="p">]]</span> <span class="p">[[</span><span class="k">new</span><span class="p">]]</span> <span class="p">[[</span><span class="k">noexcept</span><span class="p">]]</span> <span class="p">[[</span><span class="n">not</span><span class="p">]]</span> <span class="p">[[</span><span class="n">not_eq</span><span class="p">]]</span>
+<span class="p">[[</span><span class="nb">nullptr</span><span class="p">]]</span> <span class="p">[[</span><span class="k">operator</span><span class="p">]]</span> <span class="p">[[</span><span class="n">or</span><span class="p">]]</span> <span class="p">[[</span><span class="n">or_eq</span><span class="p">]]</span> <span class="p">[[</span><span class="k">override</span><span class="p">]]</span> <span class="p">[[</span><span class="k">private</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">protected</span><span class="p">]]</span> <span class="p">[[</span><span class="k">public</span><span class="p">]]</span> <span class="p">[[</span><span class="k">register</span><span class="p">]]</span> <span class="p">[[</span><span class="k">reinterpret_cast</span><span class="p">]]</span> <span class="p">[[</span><span class="k">return</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">short</span><span class="p">]]</span>
+<span class="p">[[</span><span class="kt">signed</span><span class="p">]]</span> <span class="p">[[</span><span class="k">sizeof</span><span class="p">]]</span> <span class="p">[[</span><span class="k">static</span><span class="p">]]</span> <span class="p">[[</span><span class="k">static_assert</span><span class="p">]]</span> <span class="p">[[</span><span class="k">static_cast</span><span class="p">]]</span> <span class="p">[[</span><span class="k">struct</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">switch</span><span class="p">]]</span> <span class="p">[[</span><span class="k">template</span><span class="p">]]</span> <span class="p">[[</span><span class="k">this</span><span class="p">]]</span> <span class="p">[[</span><span class="k">thread_local</span><span class="p">]]</span> <span class="p">[[</span><span class="k">throw</span><span class="p">]]</span> <span class="p">[[</span><span class="nb">true</span><span class="p">]]</span> <span class="p">[[</span><span class="k">try</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">typedef</span><span class="p">]]</span> <span class="p">[[</span><span class="k">typeid</span><span class="p">]]</span> <span class="p">[[</span><span class="k">typename</span><span class="p">]]</span> <span class="p">[[</span><span class="k">union</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">unsigned</span><span class="p">]]</span>
+<span class="p">[[</span><span class="k">virtual</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">void</span><span class="p">]]</span> <span class="p">[[</span><span class="k">volatile</span><span class="p">]]</span> <span class="p">[[</span><span class="kt">wchar_t</span><span class="p">]]</span> <span class="p">[[</span><span class="k">while</span><span class="p">]]</span> <span class="p">[[</span><span class="n">xor</span><span class="p">]]</span> <span class="p">[[</span><span class="n">xor_eq</span><span class="p">]]</span>
+<span class="c1">// [[using]]</span>
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Hello, World!"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>コンパイラのバージョン $ clang++ –version Apple clang version 11.0.0
+(clang-1100.0.33.8) Target: x86_64-apple-darwin19.6.0 Thread model:
+posix InstalledDir:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin</p>
+</div>
+<div class="paragraph">
+<p>コンパイルコマンド (C17指定) $ clang –std=c++17 hoge.cpp</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>この記事から得られるものはこれ以上ないので以下は蛇足になる。</p>
+</div>
+<div class="paragraph">
+<p>別件で cppreference.com の
+<a href="https://en.cppreference.com/w/cpp/language/identifiers">identifier
+のページ</a> を読んでいた時、次の文が目に止まった。</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>the identifiers that are keywords cannot be used for other purposes;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The only place they can be used as non-keywords is in an
+attribute-token. (e.g. <a id="private"></a> is a valid attribute) (since C++11)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>キーワードでも属性として指定する場合は非キーワードとして使えるらしい。
+実際にやってみる。</p>
+</div>
+<div class="paragraph">
+<p>同サイトの <a href="https://en.cppreference.com/w/cpp/keyword">keywords のページ</a>
+から一覧を拝借し、上のコードが出来上がった (C++17
+においてキーワードでないものなど、一部省いている)。 大量の警告 (unknown
+attribute `〇〇' ignored)
+がコンパイラから出力されるが、コンパイルできる。</p>
+</div>
+<div class="paragraph">
+<p>上のコードでは <code><a id="using"></a></code> をコメントアウトしているが、これは <code>using</code>
+キーワードのみ属性構文の中で意味を持つからであり、このコメントアウトを外すとコンパイルに失敗する。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="cpp"><span class="c1">// using の例</span>
+<span class="p">[[</span><span class="k">using</span> <span class="n">foo</span><span class="o">:</span> <span class="n">attr1</span><span class="p">,</span> <span class="n">attr2</span><span class="p">]]</span> <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// [[foo::attr1, foo::attr2]] の糖衣構文</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>C++17 の仕様も見てみる (正確には標準化前のドラフト)。</p>
+</div>
+<div class="paragraph">
+<p>引用元: <a href="https://timsong-cpp.github.io/cppwp/n4659/dcl.attr#grammar-4" class="bare">https://timsong-cpp.github.io/cppwp/n4659/dcl.attr#grammar-4</a></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>If a keyword or an alternative token that satisfies the syntactic
+requirements of an identifier is contained in an attribute-token, it is
+considered an identifier.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>「<code>identifier</code> の構文上の要件を満たすキーワードまたは代替トークンが
+<code>attribute-token</code> に含まれている場合、<code>identifier</code>
+とみなされる」とある。どうやら間違いないようだ。</p>
+</div>
+<div class="paragraph">
+<p>ところで、代替トークン (alternative token) とは <code>and</code> (<code>&amp;</code>) や <code>bitor</code>
+(<code>|</code>) などのことだが、<code>identifier</code>
+の構文上の要件を満たさないような代替トークンなどあるのか？
+疑問に思って調べたところ、代替トークンという語にはダイグラフも含まれるらしい
+(参考:
+<a href="https://timsong-cpp.github.io/cppwp/n4659/lex.digraph">同ドラフト</a>)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;%</code> → <code>{</code></p>
+</li>
+<li>
+<p><code>%&gt;</code> → <code>}</code></p>
+</li>
+<li>
+<p><code>&lt;:</code> → <code>[</code></p>
+</li>
+<li>
+<p><code>:&gt;</code> → <code>]</code></p>
+</li>
+<li>
+<p><code>%:</code> → <code>#</code></p>
+</li>
+<li>
+<p><code>%:%:</code> → <code>##</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>「<code>identifier</code>
+の構文上の要件を満たさないような代替トークン」はこれらが当てはまると思われる。</p>
+</div>
+<div class="paragraph">
+<p>調べた感想: 字句解析器か構文解析器が辛そう</p>
+</div>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

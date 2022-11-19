@@ -1,0 +1,11 @@
+<% _base_url = base_url %>
+<% _pages = pages %>
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
+  <% for page in _pages %>
+    <url>
+      <loc><%= _base_url %><%= page.href %></loc>
+      <lastmod><%= page.updated_on %></lastmod>
+    </url>
+  <% end %>
+</urlset>

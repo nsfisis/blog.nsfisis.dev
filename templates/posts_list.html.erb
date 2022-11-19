@@ -1,0 +1,59 @@
+<% _main_stylesheet = '/style.css' %>
+<% _author = author %>
+<% _description = description %>
+<% _lang = lang %>
+<% _site_copyright_year = site_copyright_year %>
+<% _copyright_year = copyright_year %>
+<% _site_name = site_name %>
+<% _doctitle = doctitle %>
+<% _header_title = header_title %>
+<% _posts = posts %>
+<!DOCTYPE html>
+<html lang="<%= _lang %>">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="<%= _author %>">
+    <meta name="copyright" content="&copy; <%= _copyright_year %> <%= _author %>">
+    <meta name="description" content="<%= _description %>">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title><%= _doctitle %> | <%= _site_name %></title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="<%= _main_stylesheet %>">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="list">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <header class="page-header">
+        <h1><%= _header_title %></h1>
+      </header>
+      <% for post in _posts %>
+        <article class="post-entry">
+          <a href="<%= post.attributes['href'] %>">
+            <header class="entry-header">
+              <h2><%= post.doctitle %></h2>
+            </header>
+            <section class="entry-content">
+              <p>
+                <%= post.attributes['description'] %>
+              </p>
+            </section>
+            <footer class="entry-footer">
+              Posted on <time datetime="<%= post.attributes['revision-history'].first.date %>"><%= post.attributes['revision-history'].first.date %></time><% if post.attributes['revision-history'].length > 1 %>, updated on <time datetime="<%= post.attributes['revision-history'].last.date %>"><%= post.attributes['revision-history'].last.date %></time><% end %>
+            </footer>
+          </a>
+        </article>
+      <% end %>
+    </main>
+    <footer class="footer">
+      &copy; <%= _site_copyright_year %> <%= _author %>
+    </footer>
+  </body>
+</html>

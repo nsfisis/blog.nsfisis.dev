@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="Rust のプリミティブ型は予約語ではなく普通の識別子である。 どのようにこれが名前解決されるのかを調べた。">
+    <meta name="keywords" content="Rust">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Rust のプリミティブ型はどこからやって来るか | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">Rust のプリミティブ型はどこからやって来るか</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/rust/">Rust</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2021-10-02">2021-10-02</time>: Qiita から移植
+                </li>
+              
+            </ol>
+          </section>
+          <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>この記事は Qiita から移植してきたものです。 元 URL:
+<a href="https://qiita.com/nsfisis/items/9a429432258bbcd6c565" class="bare">https://qiita.com/nsfisis/items/9a429432258bbcd6c565</a></p>
+</div>
+<hr>
+</div>
+</div>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      前置き
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>Rust
+において、プリミティブ型の名前は予約語でない。したがって、次のコードは合法である。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="rust"><span class="nd">#![allow(non_camel_case_types)]</span>
+<span class="nd">#![allow(dead_code)]</span>
+
+<span class="k">struct</span> <span class="nb">bool</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">char</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">i8</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">i16</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">i32</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">i64</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">i128</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">isize</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">u8</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">u16</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">u32</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">u64</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">u128</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">usize</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">f32</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">f64</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nb">str</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>では、普段単に <code>bool</code> と書いたとき、この <code>bool</code>
+は一体どこから来ているのか。rustc のソースを追ってみた。</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>前提知識: 一般的なコンパイラの構造、用語。<code>rustc</code> そのものの知識は不要
+(というよりも筆者自身がよく知らない)</p>
+</div>
+</blockquote>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      調査
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>調査に使用したソース (調査時点での最新 master)</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/rust-lang/rust/tree/511ed9f2356af365ad8affe046b3dd33f7ac3c98" class="bare">https://github.com/rust-lang/rust/tree/511ed9f2356af365ad8affe046b3dd33f7ac3c98</a></p>
+</div>
+<div class="paragraph">
+<p>どのようにして調べるか。rustc
+の構造には詳しくないため、すぐに当たりをつけるのは難しい。</p>
+</div>
+<div class="paragraph">
+<p>大雑把な構造としては、<code>compiler</code> フォルダ以下に <code>rustc_*</code>
+という名前のクレートが数十個入っている。これがどうやら <code>rustc</code>
+コマンドの実装部のようだ。</p>
+</div>
+<div class="paragraph">
+<p><code>rustc</code> はセルフホストされている (= <code>rustc</code> 自身が Rust で書かれている)
+ので、<code>bool</code> や <code>char</code>
+などで適当に検索をかけてもノイズが多すぎて話にならない。
+しかし、お誂え向きなことに <code>i128</code>/<code>u128</code>
+というコンパイラ自身が使うことがなさそうな型が存在するのでこれを使って
+<code>git grep</code> してみる。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ git grep "\bi128\b" | wc      # i128
+     165    1069   15790
+
+$ git grep "\bu128\b" | wc      # u128
+     293    2127   26667
+
+$ git grep "\bbool\b" | wc      # cf. bool の結果
+    3563   23577  294659</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>165
+程度であれば探すことができそうだ。今回は、クレート名を見ておおよその当たりをつけた。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ git grep "\bi128\b"
+...
+rustc_resolve/src/lib.rs:        table.insert(sym::i128, Int(IntTy::I128));
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>rustc_resolve</code>
+というのはいかにも名前解決を担いそうなクレート名である。該当箇所を見てみる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="rust"><span class="cd">/// Interns the names of the primitive types.</span>
+<span class="cd">///</span>
+<span class="cd">/// All other types are defined somewhere and possibly imported, but the primitive ones need</span>
+<span class="cd">/// special handling, since they have no place of origin.</span>
+<span class="k">struct</span> <span class="n">PrimitiveTypeTable</span> <span class="p">{</span>
+    <span class="n">primitive_types</span><span class="p">:</span> <span class="n">FxHashMap</span><span class="o">&lt;</span><span class="n">Symbol</span><span class="p">,</span> <span class="n">PrimTy</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">PrimitiveTypeTable</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">new</span><span class="p">()</span> <span class="k">-&gt;</span> <span class="n">PrimitiveTypeTable</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="k">mut</span> <span class="n">table</span> <span class="o">=</span> <span class="nn">FxHashMap</span><span class="p">::</span><span class="nf">default</span><span class="p">();</span>
+
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Bool</span><span class="p">);</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">char</span><span class="p">,</span> <span class="n">Char</span><span class="p">);</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">f32</span><span class="p">,</span> <span class="nf">Float</span><span class="p">(</span><span class="nn">FloatTy</span><span class="p">::</span><span class="n">F32</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">f64</span><span class="p">,</span> <span class="nf">Float</span><span class="p">(</span><span class="nn">FloatTy</span><span class="p">::</span><span class="n">F64</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">isize</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">Isize</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">i8</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">I8</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">i16</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">I16</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">i32</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">I32</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">i64</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">I64</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">i128</span><span class="p">,</span> <span class="nf">Int</span><span class="p">(</span><span class="nn">IntTy</span><span class="p">::</span><span class="n">I128</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">str</span><span class="p">,</span> <span class="n">Str</span><span class="p">);</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">usize</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">Usize</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">u8</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">U8</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">u16</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">U16</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">u32</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">U32</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">u64</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">U64</span><span class="p">));</span>
+        <span class="n">table</span><span class="nf">.insert</span><span class="p">(</span><span class="nn">sym</span><span class="p">::</span><span class="nb">u128</span><span class="p">,</span> <span class="nf">Uint</span><span class="p">(</span><span class="nn">UintTy</span><span class="p">::</span><span class="n">U128</span><span class="p">));</span>
+        <span class="k">Self</span> <span class="p">{</span> <span class="n">primitive_types</span><span class="p">:</span> <span class="n">table</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これは初めに列挙したプリミティブ型の一覧と一致している。doc comment
+にも、</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>All other types are defined somewhere and possibly imported, but the
+primitive ones need special handling, since they have no place of
+origin.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>とある。次はこの struct
+の使用箇所を追う。追うと言っても使われている箇所は次の一箇所しかない。なお説明に不要な箇所は大きく削っている。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="rust">    <span class="cd">/// This resolves the identifier `ident` in the namespace `ns` in the current lexical scope.</span>
+    <span class="cd">/// (略)</span>
+    <span class="k">fn</span> <span class="nf">resolve_ident_in_lexical_scope</span><span class="p">(</span>
+        <span class="o">&amp;</span><span class="k">mut</span> <span class="k">self</span><span class="p">,</span>
+        <span class="k">mut</span> <span class="n">ident</span><span class="p">:</span> <span class="n">Ident</span><span class="p">,</span>
+        <span class="n">ns</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span>
+        <span class="c1">// (略)</span>
+    <span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="n">LexicalScopeBinding</span><span class="o">&lt;</span><span class="nv">'a</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+        <span class="c1">// (略)</span>
+
+        <span class="k">if</span> <span class="n">ns</span> <span class="o">==</span> <span class="n">TypeNS</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="k">let</span> <span class="nf">Some</span><span class="p">(</span><span class="n">prim_ty</span><span class="p">)</span> <span class="o">=</span> <span class="k">self</span><span class="py">.primitive_type_table.primitive_types</span><span class="nf">.get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ident</span><span class="py">.name</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">let</span> <span class="n">binding</span> <span class="o">=</span>
+                    <span class="p">(</span><span class="nn">Res</span><span class="p">::</span><span class="nf">PrimTy</span><span class="p">(</span><span class="o">*</span><span class="n">prim_ty</span><span class="p">),</span> <span class="nn">ty</span><span class="p">::</span><span class="nn">Visibility</span><span class="p">::</span><span class="n">Public</span><span class="p">,</span> <span class="n">DUMMY_SP</span><span class="p">,</span> <span class="nn">ExpnId</span><span class="p">::</span><span class="nf">root</span><span class="p">())</span>
+                        <span class="nf">.to_name_binding</span><span class="p">(</span><span class="k">self</span><span class="py">.arenas</span><span class="p">);</span>
+                <span class="k">return</span> <span class="nf">Some</span><span class="p">(</span><span class="nn">LexicalScopeBinding</span><span class="p">::</span><span class="nf">Item</span><span class="p">(</span><span class="n">binding</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="nb">None</span>
+    <span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>関数名や doc comment が示している通り、この関数は識別子 (identifier,
+ident) を現在のレキシカルスコープ内で解決 (resolve) する。
+<code>if ns == TypeNS</code> のブロック内では、<code>primitive_type_table</code> (上記の
+<code>PrimitiveTypeTable::new()</code> で作られた変数) に含まれている識別子
+(<code>bool</code>、<code>i32</code> など)
+かどうか判定し、そうであればそれに紐づけられたプリミティブ型を返している。</p>
+</div>
+<div class="paragraph">
+<p>なお、<code>ns</code> は「名前空間」を示す変数である。Rust
+における名前空間はC言語におけるそれとほとんど同じで、今探している名前が関数名/変数名なのか型なのかマクロなのかを区別している。この
+<code>if</code>
+は、プリミティブ型に解決されるのは型を探しているときだけだ、と言っている。</p>
+</div>
+<div class="paragraph">
+<p>重要なのは、これが <code>resolve_ident_in_lexical_scope()</code>
+の最後に書かれている点である。つまり、最初に挙げたプリミティブ型の識別子は、「名前解決の最終段階で」、「他に同名の型が見つかっていなければ」プリミティブ型として解決される。</p>
+</div>
+<div class="paragraph">
+<p>動作がわかったところで、例として次のコードを考える。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="rust"><span class="nd">#![allow(non_camel_case_types)]</span>
+
+<span class="k">struct</span> <span class="nb">bool</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">_</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ここで <code>main()</code> の <code>bool</code> は <code>struct bool</code>
+として解決される。なぜなら、プリミティブ型の判定をする前に <code>bool</code>
+という名前の別の型が見つかるからだ。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      まとめ
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>Rust
+のプリミティブ型は予約語ではない。名前解決の最終段階で特別扱いされ、他に同名の型が見つかっていなければ対応するプリミティブ型に解決される。</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="Python における UnboundLocalError の理由と対処法。">
+    <meta name="keywords" content="Python,Python 3">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>【Python】クロージャとUnboundLocalError: local variable 'x' referenced before assignment | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">【Python】クロージャとUnboundLocalError: local variable 'x' referenced before assignment</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/python/">Python</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/python3/">Python 3</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2021-10-02">2021-10-02</time>: Qiita から移植
+                </li>
+              
+            </ol>
+          </section>
+          <div class="paragraph">
+<p>この記事は Qiita から移植してきたものです。 元 URL:
+<a href="https://qiita.com/nsfisis/items/5d733703afcb35bbf399" class="bare">https://qiita.com/nsfisis/items/5d733703afcb35bbf399</a></p>
+</div>
+<hr>
+<div class="paragraph">
+<p>本記事は Python 3.7.6 の動作結果を元にして書かれている。</p>
+</div>
+<div class="paragraph">
+<p>Python でクロージャを作ろうと、次のようなコードを書いた。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">g</span><span class="p">()</span>
+
+<span class="n">f</span><span class="p">()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>関数 <code>g</code> から 関数 <code>f</code> のスコープ内で定義された変数 <code>x</code> を参照し、それに
+1 を足そうとしている。 これを実行すると <code>x += 1</code>
+の箇所でエラーが発生する。</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>UnboundLocalError: local variable `x' referenced before assignment</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>local変数 <code>x</code> が代入前に参照された、とある。これは、<code>f</code> の <code>x</code>
+を参照するのではなく、新しく別の変数を <code>g</code> 内に作ってしまっているため。
+前述のコードを宣言と代入を便宜上分けて書き直すと次のようになる。<code>var</code>
+を変数宣言のための構文として擬似的に利用している。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="c1"># 注: var は正しい Python の文法ではない。上記参照のこと
+</span><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="n">var</span> <span class="n">x</span>           <span class="c1">#  f の local変数 'x' を宣言
+</span>    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>           <span class="c1">#  x に 0 を代入
+</span>    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>        <span class="c1">#  f の内部関数 g を定義
+</span>        <span class="n">var</span> <span class="n">x</span>       <span class="c1">#  g の local変数 'x' を宣言
+</span>                    <span class="c1">#  たまたま f にも同じ名前の変数があるが、それとは別の変数
+</span>        <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>      <span class="c1">#  x に 1 を加算 (x = x + 1 の糖衣構文)
+</span>                    <span class="c1">#  加算する前の値を参照しようとするが、まだ代入されていないためエラー
+</span>    <span class="n">g</span><span class="p">()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>当初の意図を表現するには、次のように書けばよい。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>
+        <span class="k">nonlocal</span> <span class="n">x</span>   <span class="c1">## (*)
+</span>        <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">g</span><span class="p">()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>(*)</code> のように、<code>nonlocal</code> を追加する。これにより一つ外側のスコープ (<code>g</code>
+の一つ外側 = <code>f</code>) で定義されている <code>x</code> を探しに行くようになる。</p>
+</div>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

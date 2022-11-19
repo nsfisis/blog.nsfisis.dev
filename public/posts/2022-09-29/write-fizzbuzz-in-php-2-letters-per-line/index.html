@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="PHP で、fizzbuzz を書いた。ただし、1行あたりに使える文字数は2文字まで。">
+    <meta name="keywords" content="PHP">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>【PHP】fizzbuzz を書く。1行あたり2文字で。 | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">【PHP】fizzbuzz を書く。1行あたり2文字で。</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/php/">PHP</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2022-09-28">2022-09-28</time>: 公開
+                </li>
+              
+                <li class="revision">
+                  <time datetime="2022-09-29">2022-09-29</time>: 小さな文言の修正・変更
+                </li>
+              
+            </ol>
+          </section>
+          
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      記事の構成について
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>この記事は、普通の fizzbuzz
+を徐々に変形して最終形にしていく、という構成で書かれている。最終形を見てどのような仕組みで動いているのか解読してから解説を読みたい、というかたがいれば、
+<a href="https://gist.github.com/nsfisis/04c227d5a419867472a0b23a83ad2919#file-fizzbuzz-php-2-letters-per-line-and-supports-php-8-x-without-warnings">このページ</a>
+にソースコードがあるので、そちらを先に見てほしい。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      レギュレーション
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>PHP で、次のような制約の下に fizzbuzz を書いた。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>1行あたりの文字数は2文字までに収めること (ただし <code>&lt;?php</code> タグは除く)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>厳密な定義: <code>&lt;?php</code> タグ以降のソースコードが、2 byte ごとに
+ラインフィード (LF) で区切られること</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>スペースやタブを使用しないこと</p>
+</li>
+<li>
+<p>ループのアンロールをしないこと</p>
+<div class="ulist">
+<ul>
+<li>
+<p>100 回ループの代わりに 100 回コードをコピペ、というのは禁止</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>PHP 7.4〜8.1 で動作すること</p>
+</li>
+<li>
+<p>実行時に Notice や Warning が出ないこと</p>
+</li>
+<li>
+<p>標準的なインストール構成の PHP で実現できること
+(デフォルトで有効になっていない拡張等を使わないこと)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>備考: PHP には <code>short_open_tag</code>
+というオプションがあり、これを有効にするとファイル冒頭の <code>&lt;?php</code>
+の代わりに <code>&lt;?</code>
+を使うことができ、文字どおり1行2文字で書ける。ただ、このオプションはデフォルト
+off になっている環境が多いようなので、今回は使わないことにした。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      主な障害
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>1行あたりの文字数など、適当に改行を挟めばいいだけではないのか？</p>
+</div>
+<div class="paragraph">
+<p>特に、C言語でこのような試みをおこなったことがあるかたならそう思うだろう。事実、Cでのこの制約はほとんど無意味に等しい。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c"><span class="cp">#\
+i\
+n\
+c\
+l\
+u\
+d\
+e\
+&lt;\
+s\
+t\
+d\
+i\
+o\
+.\
+h\
+&gt;\
+</span><span class="cm">/*
+*/</span><span class="cp">
+</span><span class="n">i</span>\
+<span class="n">n</span>\
+<span class="n">t</span>\
+<span class="cm">/*
+*/</span>
+<span class="n">m</span>\
+<span class="n">a</span>\
+<span class="n">i</span>\
+<span class="n">n</span><span class="p">(</span>
+<span class="p">){</span>
+<span class="n">f</span>\
+<span class="n">o</span>\
+<span class="n">r</span><span class="p">(</span>
+<span class="n">i</span>\
+<span class="n">n</span>\
+<span class="n">t</span>\
+<span class="cm">/*
+*/</span>
+<span class="n">i</span><span class="o">=</span>
+<span class="mi">1</span><span class="p">;</span>
+<span class="n">i</span><span class="o">&lt;</span>
+<span class="mi">1</span>\
+<span class="mi">0</span>\
+<span class="mi">0</span><span class="p">;</span>
+<span class="n">i</span>\
+<span class="o">+</span>\
+<span class="o">+</span><span class="p">)</span>
+<span class="k">if</span>
+<span class="p">(</span><span class="n">i</span>
+<span class="o">%</span>\
+<span class="mi">15</span>
+<span class="o">==</span>
+<span class="mi">0</span><span class="p">)</span>
+<span class="n">p</span>\
+<span class="n">r</span>\
+<span class="n">i</span>\
+<span class="n">n</span>\
+<span class="n">t</span>\
+<span class="n">f</span><span class="p">(</span>
+<span class="s">"\
+F\
+i\
+z\
+z\
+B\
+u\
+z\
+z\
+%\
+c\
+"</span><span class="p">,</span>
+<span class="mi">10</span>
+<span class="p">);</span>
+
+<span class="cm">/* あとは同じように普通のプログラムを変形するだけなので省略 */</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>バックスラッシュを使った行継続がトークンを区切らない、というのがポイントだ。</p>
+</div>
+<div class="paragraph">
+<p>さて、PHP
+ではそもそもバックスラッシュを行継続に使うことができない。これにより、「3文字以上からなるトークンが一切使えない」という制約が課される。例えば、<code>echo</code>
+で出力することや、<code>for</code> でループすること、<code>new</code>
+でインスタンスを生成することができない。特に、出力は fizzbuzz
+をどんなアルゴリズムで実装しようとおこなわなければならないので、できないのは致命的である。</p>
+</div>
+<div class="paragraph">
+<p>当然、名前が3文字以上ある関数も使えない。なお、標準 PHP
+の範囲内において、名前が 2文字以下の関数は以下のとおりである:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>_</code>: <code>gettext</code> のエイリアス</p>
+</li>
+<li>
+<p><code>dl</code>: 拡張モジュールをロードする</p>
+</li>
+<li>
+<p><code>pi</code>: 円周率を返す</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(環境によって多少は変わるかも)</p>
+</div>
+<div class="paragraph">
+<p>2文字の関数を定義しまくった拡張モジュールを用意しておいて <code>dl()</code>
+で読み込む行為は、レギュレーションで定めた</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>標準的なインストール構成の PHP で実現できること
+(デフォルトで有効になっていない拡張等を使わないこと)</p>
+</li>
+</ul>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>に反する
+(というより、「それだとおもしろくもなんともないので、このルールを足した」というのが正しい)。</p>
+</div>
+<div class="paragraph">
+<p>また、2文字だと文字列がまともに書けないのも辛い。<code>''</code> だけで
+2文字使うので、「1文字の文字列リテラル」というものを書くことができない。PHP
+では文字列リテラル中に生の改行が書けるので</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$a</span>
+<span class="o">=</span><span class="s1">'
+a'</span>
+<span class="p">;;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>とすると <code>$a</code> は <code>"\na"</code> になるのだが、余計な改行が入ってしまう。</p>
+</div>
+<div class="paragraph">
+<p>これらの障害をどのように乗り越えるのか、次節から見ていく。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      解説
+    
+  </h2>
+  <div class="section-body">
+    
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      普通の (?) fizzbuzz
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>まずは普通に書くとしよう。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;?php
+
+for ($i = 1; $i &lt; 100; $i++) {
+  echo (($i % 3 ? '' : 'Fizz') . ($i % 5 ? '' : 'Buzz') ?: $i) . "\n";
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>素直に書いた fizzbuzz
+とは言い難いが、このくらいは普通だということにしておかないと、この先がやっていられないので許してほしい。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      <code>for</code> の排除
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>for</code>
+は、3文字もある長いキーワードである。こんなものは使えない。<code>array_</code>
+系の関数を使って、適当に置き換えるとしよう。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$s</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="nb">array_walk</span><span class="p">(</span>
+  <span class="nv">$s</span><span class="p">,</span>
+  <span class="k">fn</span><span class="p">(</span><span class="nv">$i</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nb">printf</span><span class="p">(((</span><span class="nv">$i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">?</span> <span class="s1">''</span> <span class="o">:</span> <span class="s1">'Fizz'</span><span class="p">)</span> <span class="mf">.</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">?</span> <span class="s1">''</span> <span class="o">:</span> <span class="s1">'Buzz'</span><span class="p">)</span> <span class="o">?:</span> <span class="nv">$i</span><span class="p">)</span> <span class="mf">.</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span>
+<span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>array_walk</code> や <code>range</code>、<code>printf</code> といった <code>for</code>
+よりも長いトークンが現れてしまったが、これは次節で直すことにする。なお、<code>echo</code>
+は文 (statement) であり式 (expression) ではないので、式である <code>printf</code>
+に置き換えた。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      関数呼び出しの短縮
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>range</code>、<code>array_walk</code>、<code>printf</code>
+は長すぎるのでどうにかせねばならない。ここで、PHP
+の可変関数を使う。可変関数とは、関数名が文字列として入った変数を経由して、関数を呼び出す機能である。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$r</span> <span class="o">=</span> <span class="s1">'range'</span><span class="p">;</span>
+<span class="nv">$w</span> <span class="o">=</span> <span class="s1">'array_walk'</span><span class="p">;</span>
+<span class="nv">$p</span> <span class="o">=</span> <span class="s1">'printf'</span><span class="p">;</span>
+
+<span class="nv">$s</span> <span class="o">=</span> <span class="nv">$r</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+<span class="nv">$w</span><span class="p">(</span>
+  <span class="nv">$s</span><span class="p">,</span>
+  <span class="k">fn</span><span class="p">(</span><span class="nv">$i</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="nv">$p</span><span class="p">(((</span><span class="nv">$i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">?</span> <span class="s1">''</span> <span class="o">:</span> <span class="s1">'Fizz'</span><span class="p">)</span> <span class="mf">.</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">?</span> <span class="s1">''</span> <span class="o">:</span> <span class="s1">'Buzz'</span><span class="p">)</span> <span class="o">?:</span> <span class="nv">$i</span><span class="p">)</span> <span class="mf">.</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span>
+<span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これで関数を呼び出している所は短くなった。では、<code>$r</code> や <code>$w</code> や
+<code>$p</code>、また <code>'Fizz'</code> や <code>'Buzz'</code> はどうやって
+1行2文字に収めるのか。次のテクニックへ移ろう。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      余談: PHP 8.x で動作しなくてもいいなら
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>今回使ったテクニックを説明する前に、余談として、文字列リテラルの短縮法として今回採用しなかったものを紹介する。</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>PHP 7.4〜8.1 で動作すること</p>
+</li>
+</ul>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>というルールがない場合、「未定義の定数が評価された場合、その定数の名前が値になる」という
+PHP 7.x までの仕様が利用できる。例えば、 <code>Fizz</code>
+という文字列が欲しければ、次のようにする。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$f</span>
+<span class="o">=</span><span class="nc">F</span>
+<span class="mf">.</span><span class="n">i</span>
+<span class="mf">.</span><span class="n">z</span>
+<span class="mf">.</span><span class="n">z</span>
+<span class="p">;;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>こうして簡単に文字列を作れる。なお、この仕様は 7.x
+時点でも警告を受けるので、<code>@</code> 演算子を使って抑制してやるとよい。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$f</span>
+<span class="o">=@</span>
+<span class="nc">F</span><span class="mf">.</span>
+<span class="o">@</span><span class="n">i</span>
+<span class="mf">.</span><span class="c1">#</span>
+<span class="o">@</span><span class="n">z</span>
+<span class="mf">.</span><span class="c1">#</span>
+<span class="o">@</span><span class="n">z</span>
+<span class="p">;;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>むしろ、このことがわかっていたからこそ PHP 8.x
+での動作を要件に課したところがある。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      文字列リテラルの短縮
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>実際に使った手法の説明に移る。</p>
+</div>
+<div class="paragraph">
+<p>ずばり、文字列同士のビット演算を使う。PHP では、文字列同士でビット演算
+(<code>&amp;</code>、<code>|</code>、<code>^</code>)
+をした場合、文字列の各バイトごとに指定したビット演算がなされ、それを結合したものが演算結果となる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$a</span> <span class="o">=</span> <span class="s2">"12345"</span><span class="p">;</span>
+<span class="nv">$b</span> <span class="o">=</span> <span class="s2">"world"</span><span class="p">;</span>
+
+<span class="c1">// $a ^ $b は次のコードと同じ</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$a</span><span class="p">),</span> <span class="nb">strlen</span><span class="p">(</span><span class="nv">$b</span><span class="p">));</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$result</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$a</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span> <span class="o">^</span> <span class="nv">$b</span><span class="p">[</span><span class="nv">$i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">echo</span> <span class="nv">$result</span><span class="p">;</span>
+<span class="c1">// =&gt; F]AXQ</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これを踏まえ、次のコードを見てみよう。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$x</span> <span class="o">=</span> <span class="s2">"x</span><span class="se">\n</span><span class="s2">Om</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="nv">$y</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">k!</span><span class="se">\n</span><span class="s2">o"</span><span class="p">;</span>
+<span class="nv">$r</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="nv">$y</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"</span><span class="nv">$r</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>実行すると、<code>range</code> が表示される。さて、PHP
+では文字列リテラル中に生の改行を直接書いてもよいのだった
+(「主な障害」の節を参照のこと)。書きかえてみよう。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$x</span>
+<span class="o">=</span><span class="s1">'x
+Om
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+k!
+o'</span>
+<span class="p">;</span>
+
+<span class="nv">$r</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="nv">$y</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"</span><span class="nv">$r</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>さらに <code>#</code> を使って適当に調整すると、次のようになる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'x
+Om
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+k!
+o'</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$r</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+
+<span class="k">echo</span> <span class="s2">"</span><span class="nv">$r</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>1行あたり2文字で、<code>range</code>
+という文字列を生成することに成功した。他の必要な文字列にも、同様の処理をほどこす。</p>
+</div>
+<div class="paragraph">
+<p>備考: <code>Buzz</code> 中にある小文字の <code>u</code> は、このロジックだと non-printable
+な文字になってしまう。ここまでのテクニックを駆使すれば回避するのはそう難しくないので、考えてみてほしい。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      完成系
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>完成したものがこちら。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'i
+S'</span>
+<span class="p">;;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+b!
+'</span><span class="p">;</span>
+<span class="nv">$c</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'x
+Om
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+k!
+o'</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$r</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'k
+Sk
+~}
+Ma
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+x!
+s!
+k!
+'</span><span class="p">;</span>
+<span class="nv">$w</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'z
+Hd
+G'</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+x!
+~!
+'</span><span class="p">;</span>
+<span class="nv">$p</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'L
+[p
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+c!
+'</span><span class="p">;</span>
+<span class="nv">$f</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="s1">'H
+[p
+'</span><span class="p">;</span>
+<span class="nv">$y</span>
+<span class="o">=</span><span class="s1">'
+_!
+'</span><span class="p">;</span>
+<span class="nv">$b</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$x</span>
+<span class="o">^</span><span class="c1">#</span>
+<span class="nv">$y</span>
+<span class="p">;</span><span class="c1">#</span>
+<span class="nv">$b</span>
+<span class="p">[</span><span class="mi">1</span>
+<span class="p">]</span><span class="o">=</span>
+<span class="nv">$c</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="mi">13</span>
+<span class="o">*</span><span class="mi">9</span>
+<span class="p">);</span>
+<span class="nv">$s</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$r</span>
+<span class="p">(</span><span class="mi">1</span>
+<span class="p">,(</span>
+<span class="mi">10</span>
+<span class="o">**</span>
+<span class="mi">2</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="nv">$w</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="nv">$s</span>
+<span class="p">,</span><span class="c1">#</span>
+<span class="k">fn</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="nv">$i</span>
+<span class="p">)</span><span class="c1">#</span>
+<span class="o">=&gt;</span>
+<span class="nv">$p</span>
+<span class="p">((</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="nv">$i</span>
+<span class="o">%</span><span class="mi">3</span>
+<span class="o">?</span><span class="c1">#</span>
+<span class="s1">''</span>
+<span class="o">:</span><span class="c1">#</span>
+<span class="nv">$f</span>
+<span class="p">)</span><span class="mf">.</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="nv">$i</span>
+<span class="o">%</span><span class="mi">5</span>
+<span class="o">?</span><span class="c1">#</span>
+<span class="s1">''</span>
+<span class="o">:</span><span class="c1">#</span>
+<span class="nv">$b</span>
+<span class="p">)</span><span class="o">?</span>
+<span class="o">:</span><span class="c1">#</span>
+<span class="nv">$i</span>
+<span class="p">)</span><span class="c1">#</span>
+<span class="mf">.</span><span class="s1">'
+'</span><span class="p">)</span>
+<span class="p">);</span></code></pre>
+</div>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      感想など
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>PHP は、スクリプト言語の中だとシンタックスシュガーが少ない
+(体感)。この挑戦は不可能に思われたが、PHP
+マニュアルとにらめっこしていたらなんとかなった。</p>
+</div>
+<div class="paragraph">
+<p>みんなもプログラムを細長くしよう。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      余談2: 別解
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>PHP では、バッククォートを使ってシェルを呼び出せる。これは <code>shell_exec</code>
+関数と等価である。さて、PHP
+ではバックスラッシュによる行継続が使えないと書いたが、シェルでは使える
+(当然だが、呼び出されるシェルに依存する。Bash
+なら大丈夫だろう。知らんけど)。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nb">printf</span><span class="p">(</span><span class="err">`</span>
+<span class="n">e</span><span class="err">\</span>
+<span class="n">c</span><span class="err">\</span>
+<span class="n">h</span><span class="err">\</span>
+<span class="n">o</span><span class="err">\</span>
+ <span class="err">\</span>
+<span class="mi">1</span><span class="err">\</span>
+<span class="mi">2</span><span class="err">\</span>
+<span class="mi">3</span><span class="err">\</span>
+<span class="err">`</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>なお、ここでは簡単のため出力に <code>printf</code> をそのまま使っているが、実際には
+<code>printf</code> という文字列を合成して可変関数で呼び出す。</p>
+</div>
+<div class="paragraph">
+<p>ただし、これでは</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="ulist">
+<ul>
+<li>
+<p>スペースやタブを使用しないこと</p>
+</li>
+</ul>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>に違反してしまう。スペースが使えないと引数とコマンドを区切れない。これは困った。</p>
+</div>
+<div class="paragraph">
+<p>もうこれ以上は不可能だと思っていたのだが、この記事の執筆中に解決する方法を思いついたので載せておく。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$c</span> <span class="o">=</span> <span class="s1">'chr'</span><span class="p">;</span>
+
+<span class="err">$</span><span class="p">{</span>
+<span class="s1">'_
+'</span><span class="p">}</span>
+<span class="o">=</span><span class="c1">#</span>
+<span class="nv">$c</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="mi">32</span>
+<span class="p">)</span><span class="mf">.</span>
+<span class="nv">$c</span>
+<span class="p">(</span><span class="c1">#</span>
+<span class="mi">92</span>
+<span class="p">);</span>
+
+<span class="nb">printf</span><span class="p">(</span><span class="err">`</span>
+<span class="n">e</span><span class="err">\</span>
+<span class="n">c</span><span class="err">\</span>
+<span class="n">h</span><span class="err">\</span>
+<span class="n">o</span><span class="err">\</span>
+<span class="err">$</span><span class="p">{</span>
+<span class="s1">'_
+'</span><span class="p">}</span>
+<span class="mi">1</span><span class="err">\</span>
+<span class="mi">2</span><span class="err">\</span>
+<span class="mi">3</span><span class="err">\</span>
+<span class="err">`</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>先程と同じく、<code>chr</code> や <code>printf</code> を生成する部分は長くなるので省いた。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>${
+'_
+'}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>は変数で、中にはスペースとエスケープが入っている
+(<code>chr(32) . chr(92)</code>)。シェルに渡されている文字列は次のようになる。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>e\
+c\
+h\
+o\
+ \
+1\
+2\
+3\</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これは、前掲したコマンドと同じだ。かくして、スペースを陽に書かずにシェルをおおよそ自由に扱えるようになった。Fizzbuzz
+のワンライナーくらいすぐ書けるだろうから、あとはなんとかなるだろう
+(試してないけど)。</p>
+</div>
+<div class="paragraph">
+<p>ということでこれは別解ということにしておく。</p>
+</div>
+<div class="paragraph">
+<p>ちなみに、PHP 8.2 からは、この記法で Warning が出るようになるようだ。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>${
+'_
+'}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>最新版で警告が出るというのも美しくないので、私としては本編の解法を推す。</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

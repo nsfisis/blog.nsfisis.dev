@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="PHPerKaigi 2022 で私が作成した PHPer チャレンジ問題を解説する。">
+    <meta name="keywords" content="カンファレンス,PHP,PHPerKaigi">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>PHPerKaigi 2022 トークン問題の解説 | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">PHPerKaigi 2022 トークン問題の解説</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/conference/">カンファレンス</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/php/">PHP</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/phperkaigi/">PHPerKaigi</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2022-04-09">2022-04-09</time>: 公開
+                </li>
+              
+                <li class="revision">
+                  <time datetime="2022-04-16">2022-04-16</time>: 2問目、3問目の解説を追加、1問目に加筆
+                </li>
+              
+            </ol>
+          </section>
+          
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      はじめに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>本日開始された <a href="https://phperkaigi.jp/2022/">PHPerKaigi 2022</a> の PHPer
+チャレンジにおいて、弊社
+<a href="https://www.dgcircus.com/">デジタルサーカス株式会社</a> の問題を
+3問作成した。この記事では、これらの問題の解説をおこなう。</p>
+</div>
+<div class="paragraph">
+<p>リポジトリはこちら: <a href="https://github.com/nsfisis/PHPerKaigi2022-tokens" class="bare">https://github.com/nsfisis/PHPerKaigi2022-tokens</a></p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      第1問 brainf_ck.php
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ソースコードはこちら。実行には PHP 8.1 以上が必要なので注意。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">0</span><span class="no">O1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">Dgcircus\PHPerKaigi\Y2022</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @todo
+ * Run this program to acquire a PHPer token.
+ */</span>
+
+<span class="n">https</span><span class="o">://</span><span class="n">creativecommons</span><span class="mf">.</span><span class="n">org</span><span class="o">/</span><span class="n">publicdomain</span><span class="o">/</span><span class="n">zero</span><span class="o">/</span><span class="mf">1.0</span><span class="o">/</span>
+
+<span class="err">\</span><span class="nb">error_reporting</span><span class="p">(</span><span class="o">~+!</span><span class="s1">'We are hiring!'</span><span class="p">);</span>
+
+<span class="nv">$z</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$f</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nv">$f</span><span class="p">(</span><span class="k">fn</span><span class="p">(...</span><span class="nv">$xs</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nv">$x</span><span class="p">(</span><span class="nv">$x</span><span class="p">)(</span><span class="mf">...</span><span class="nv">$xs</span><span class="p">)))(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nv">$f</span><span class="p">(</span><span class="k">fn</span><span class="p">(...</span><span class="nv">$xs</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nv">$x</span><span class="p">(</span><span class="nv">$x</span><span class="p">)(</span><span class="mf">...</span><span class="nv">$xs</span><span class="p">)));</span>
+<span class="nv">$id</span> <span class="o">=</span> <span class="err">\</span><span class="nb">spl_object_id</span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+<span class="nv">$put</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$c</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="err">\</span><span class="nb">printf</span><span class="p">(</span><span class="s1">'%c'</span><span class="p">,</span> <span class="nv">$c</span><span class="p">);</span>
+<span class="nv">$mm</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$p</span><span class="p">,</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="err">\</span><span class="nf">ArrayObject</span><span class="p">(</span><span class="err">\</span><span class="nb">array_fill</span><span class="p">(</span><span class="o">+!!</span><span class="p">[],</span> <span class="nv">$n</span><span class="p">,</span> <span class="nv">$p</span><span class="p">));</span>
+
+<span class="err">$👉</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="o">++</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">];</span>
+<span class="err">$👈</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="o">--</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">];</span>
+<span class="err">$👍</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">++</span><span class="nv">$m</span><span class="p">[</span><span class="nv">$mp</span><span class="p">]];</span>
+<span class="err">$👎</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">--</span><span class="nv">$m</span><span class="p">[</span><span class="nv">$mp</span><span class="p">]];</span>
+<span class="err">$📝</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="nv">$put</span><span class="p">(</span><span class="nv">$m</span><span class="p">[</span><span class="nv">$mp</span><span class="p">])];</span>
+<span class="err">$🤡</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">match</span> <span class="p">(</span><span class="nv">$m</span><span class="p">[</span><span class="nv">$mp</span><span class="p">])</span> <span class="p">{</span>
+    <span class="o">+!!</span><span class="p">[]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="nv">$z</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$loop</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$pc</span><span class="p">,</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">match</span> <span class="p">(</span><span class="nv">$id</span><span class="p">(</span><span class="nv">$p</span><span class="p">[</span><span class="nv">$pc</span><span class="p">]))</span> <span class="p">{</span>
+      <span class="nv">$b</span> <span class="o">=&gt;</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">++</span><span class="nv">$n</span><span class="p">),</span>
+      <span class="nv">$e</span> <span class="o">=&gt;</span> <span class="nv">$n</span> <span class="o">===</span> <span class="o">+!!</span><span class="p">[]</span> <span class="o">?</span> <span class="o">++</span><span class="nv">$pc</span> <span class="o">:</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">--</span><span class="nv">$n</span><span class="p">),</span>
+      <span class="k">default</span> <span class="o">=&gt;</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">++</span><span class="nv">$pc</span><span class="p">,</span> <span class="nv">$n</span><span class="p">),</span>
+    <span class="p">})(</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">-!</span><span class="p">[])],</span>
+    <span class="k">default</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">],</span>
+<span class="p">};</span>
+<span class="err">$🎪</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">match</span> <span class="p">(</span><span class="nv">$m</span><span class="p">[</span><span class="nv">$mp</span><span class="p">])</span> <span class="p">{</span>
+    <span class="o">+!!</span><span class="p">[]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="o">++</span><span class="nv">$pc</span><span class="p">],</span>
+    <span class="k">default</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nv">$mp</span><span class="p">,</span> <span class="nv">$z</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$loop</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$pc</span><span class="p">,</span> <span class="nv">$n</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">match</span> <span class="p">(</span><span class="nv">$id</span><span class="p">(</span><span class="nv">$p</span><span class="p">[</span><span class="nv">$pc</span><span class="p">]))</span> <span class="p">{</span>
+      <span class="nv">$e</span> <span class="o">=&gt;</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">--</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">++</span><span class="nv">$n</span><span class="p">),</span>
+      <span class="nv">$b</span> <span class="o">=&gt;</span> <span class="nv">$n</span> <span class="o">===</span> <span class="o">+!!</span><span class="p">[]</span> <span class="o">?</span> <span class="nv">$pc</span><span class="o">+!</span><span class="p">[]</span> <span class="o">:</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">--</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">--</span><span class="nv">$n</span><span class="p">),</span>
+      <span class="k">default</span> <span class="o">=&gt;</span> <span class="nv">$loop</span><span class="p">(</span><span class="o">--</span><span class="nv">$pc</span><span class="p">,</span> <span class="nv">$n</span><span class="p">),</span>
+    <span class="p">})(</span><span class="nv">$pc</span><span class="p">,</span> <span class="o">-!</span><span class="p">[])],</span>
+<span class="p">};</span>
+<span class="err">$🐘</span> <span class="o">=</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$p</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nv">$z</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$loop</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">fn</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="k">isset</span><span class="p">(</span><span class="nv">$p</span><span class="p">[</span><span class="nv">$pc</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$loop</span><span class="p">(</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="mf">...</span><span class="p">(</span><span class="nv">$p</span><span class="p">[</span><span class="nv">$pc</span><span class="p">](</span><span class="nv">$m</span><span class="p">,</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$e</span><span class="p">,</span> <span class="nv">$mp</span><span class="p">,</span> <span class="nv">$pc</span><span class="p">)))</span>
+<span class="p">)(</span><span class="nv">$mm</span><span class="p">(</span><span class="o">+!!</span><span class="p">[],</span> <span class="o">+</span><span class="p">(</span><span class="o">!</span><span class="p">[]</span><span class="mf">.</span><span class="o">!</span><span class="p">[])),</span> <span class="nv">$p</span><span class="p">,</span> <span class="nv">$id</span><span class="p">(</span><span class="err">$🤡</span><span class="p">),</span> <span class="nv">$id</span><span class="p">(</span><span class="err">$🎪</span><span class="p">),</span> <span class="o">+!!</span><span class="p">[],</span> <span class="o">+!!</span><span class="p">[]);</span>
+
+<span class="err">$🐘</span><span class="p">([</span>
+  <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span>
+  <span class="err">$🤡</span><span class="p">,</span>
+    <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span>
+    <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span>
+    <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span>
+    <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span>
+    <span class="err">$👈</span><span class="p">,</span> <span class="err">$👈</span><span class="p">,</span> <span class="err">$👈</span><span class="p">,</span> <span class="err">$👈</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span>
+  <span class="err">$🎪</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👈</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👉</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👈</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👈</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$👍</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👉</span><span class="p">,</span> <span class="err">$👎</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+  <span class="err">$👈</span><span class="p">,</span> <span class="err">$📝</span><span class="p">,</span>
+<span class="p">]);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この問題は、単に適切なバージョンの PHP で動かせばトークンが得られる。</p>
+</div>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      解説
+    
+  </h3>
+  <div class="section-body">
+    
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      絵文字
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>まず目につくのは大量の絵文字だろう。 PHP
+は識別子に使用できる文字の範囲が広く、絵文字も使うことができる。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      プログラム全体
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>Brainf*ck のインタプリタとプログラムになっている。 Brainf*ck
+とは、難解プログラミング言語のひとつであり、ここで説明するよりも
+Wikipedia の該当ページを読んだ方がよい。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://ja.wikipedia.org/wiki/Brainfuck" class="bare">https://ja.wikipedia.org/wiki/Brainfuck</a></p>
+</div>
+<div class="paragraph">
+<p>なお、brainf*ck プログラムを普通の書き方で書くと、次のようになる。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>+ + + + + + + + + +
+[
+  &gt; + + +
+  &gt; + + + + +
+  &gt; + + + + + + + + + + + +
+  &gt; + + + + + + + + + +
+  &lt; &lt; &lt; &lt; -
+]
+&gt; + + + + + .
+- - .
+&gt; - - - .
+&gt; - - - .
+- - .
+- .
+&lt; .
+&gt; &gt; - - .
++ + + + + + + .
+&lt; - - - - .
+&lt; .
+&gt; + + .
+&gt; - .
+&lt; .</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>実行結果はこちら: <a href="https://ideone.com/22VWmb" class="bare">https://ideone.com/22VWmb</a></p>
+</div>
+<div class="paragraph">
+<p>それぞれの絵文字で表された関数が、各命令に対応している。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>$👉</code>: <code>&gt;</code></p>
+</li>
+<li>
+<p><code>$👈</code>: <code>&lt;</code></p>
+</li>
+<li>
+<p><code>$👍</code>: <code>+</code></p>
+</li>
+<li>
+<p><code>$👎</code>: <code>-</code></p>
+</li>
+<li>
+<p><code>$📝</code>: <code>.</code></p>
+</li>
+<li>
+<p><code>$🤡</code>: <code>[</code></p>
+</li>
+<li>
+<p><code>$🎪</code>: <code>]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>,</code> (入力) に対応する関数はない
+(このプログラムでは使わないので用意していない)。</p>
+</div>
+<div class="paragraph">
+<p>なお、<code>$🐘</code> はいわゆる main 関数であり、プログラムの実行部分である。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      絵文字の選択
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>おおよそ意味に合致するよう選んでいるが、<code>$🤡</code> と <code>$🎪</code>
+は弊社デジタルサーカスにちなんでいる。 また、<code>$🐘</code> は PHP
+のマスコットの象に由来する。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      strict_types
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>declare</code> 文の <code>strict_types</code> に指定できるのは、<code>0</code> か <code>1</code>
+の数値リテラルだが、 <code>0x0</code> や <code>0b1</code> のような値も受け付ける。 今回は、PHP
+8.1 から追加された、<code>0O</code> または <code>0o</code> から始まる八進数リテラルを使った。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      URL
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ソースコードのライセンスを示したこの部分だが、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="n">https</span><span class="o">://</span><span class="n">creativecommons</span><span class="mf">.</span><span class="n">org</span><span class="o">/</span><span class="n">publicdomain</span><span class="o">/</span><span class="n">zero</span><span class="o">/</span><span class="mf">1.0</span><span class="o">/</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>完全に合法な PHP のコードである。 <code>https:</code> 部分はラベル、<code>//</code>
+以降は行コメントになっている。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      リテラルなしで数値を生成する
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ソースコード中に、ほとんど数値リテラルが書かれていないことにお気づきだろうか。
+PHP では、型変換を利用することで任意の整数を作り出すことができる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nb">assert</span><span class="p">(</span><span class="mi">0</span> <span class="o">===</span> <span class="o">+!!</span><span class="p">[]);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="mi">1</span> <span class="o">===</span> <span class="o">+!</span><span class="p">[]);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="mi">2</span> <span class="o">===</span> <span class="o">!</span><span class="p">[]</span><span class="o">+!</span><span class="p">[]);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="mi">3</span> <span class="o">===</span> <span class="o">!</span><span class="p">[]</span><span class="o">+!</span><span class="p">[]</span><span class="o">+!</span><span class="p">[]);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="mi">10</span> <span class="o">===</span> <span class="o">+</span><span class="p">(</span><span class="o">!</span><span class="p">[]</span><span class="mf">.</span><span class="o">+!!</span><span class="p">[]));</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>[]</code> に <code>!</code> を適用すると <code>true</code> が返ってくる。それに <code>+</code>
+を適用すると、<code>bool</code> から <code>int</code> ヘの型変換が走り、<code>1</code> が生成される。<code>10</code>
+はさらにトリッキーだ。まず <code>1</code> と <code>0</code> を作り、<code>.</code> で文字列として結合する
+(<code>'10'</code>)。これに <code>+</code> を適用すると、<code>string</code> から <code>int</code>
+への型変換が走り、<code>10</code> が生まれる (コード量に頓着しないなら、<code>1</code> を 10
+個足し合わせてももちろん 10 が作れる)。</p>
+</div>
+<div class="paragraph">
+<p>また、<code>error_reporting</code> に指定しているのは <code>-1</code> である。 これは、<code>!</code>
+によって文字列を <code>false</code> にし、<code>+</code> によって <code>false</code> を <code>0</code>
+にし、さらにビット反転して <code>-1</code> にしている。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      <code>if</code> 文なしで条件分岐
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>三項演算子ないし <code>match</code> 式を使うことで、<code>if</code>
+を一切書かずに条件分岐ができる。 また、<code>&amp;&amp;</code> / <code>||</code> も使えることがある。
+遅延評価が不要なケースでは、<code>[$t, $f][$cond]</code>
+のような形で分岐することもできる。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      <code>while</code>、<code>for</code> 文なしでループ
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>不動点コンビネータを使って無名再帰する
+(詳しい説明は省略する。これらの単語で検索してほしい)。 ここでは、一般に
+Z コンビネータとして知られるものを使った (<code>$z</code>)。</p>
+</div>
+<div class="paragraph">
+<p>実際のところ、<code>$🤡</code> や <code>$🎪</code>、<code>$🐘</code> は、一度 Scheme (Lisp の一種)
+で書いてから PHP に翻訳する形で記述した。</p>
+</div>
+<div class="paragraph">
+<p>なお、PHP は末尾再帰の最適化をおこなわない (少なくとも今のところは)
+ので、 あまりに長い brainf*ck
+プログラムを書くとスタックオーバーフローする。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      第2問 riddle.php
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ソースコードはこちら。実行には PHP 8.0 以上が必要なので注意。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="cd">/*********************************************************
+ * This program displays a PHPer token.                  *
+ * Guess 'N'.                                            *
+ *                                                       *
+ * Hints:                                                *
+ * - N itself has no special meaning, e.g., 42, 8128,    *
+ *   it is selected at random.                           *
+ * - Each element of $token represents a single letter.  *
+ * - One letter consists of 5x5 cells.                   *
+ * - Remember, the output is a complete PHPer token.     *
+ *                                                       *
+ * License:                                              *
+ *   https://creativecommons.org/publicdomain/zero/1.0/  *
+ *********************************************************/</span>
+<span class="k">const</span> <span class="no">N</span> <span class="o">=</span> <span class="mi">0</span> <span class="cm">/* Change it to your answer. */</span><span class="p">;</span>
+<span class="nb">assert</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nc">N</span> <span class="o">&amp;&amp;</span> <span class="nc">N</span> <span class="o">&lt;=</span> <span class="mb">0b11111_11111_11111_11111_11111</span><span class="p">);</span>
+
+<span class="nv">$token</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="mh">0x14B499C</span><span class="p">,</span>
+  <span class="mh">0x0BE34CC</span><span class="p">,</span> <span class="mh">0x01C9C69</span><span class="p">,</span>
+  <span class="mh">0x0ECA069</span><span class="p">,</span> <span class="mh">0x01C2449</span><span class="p">,</span> <span class="mh">0x0FDB166</span><span class="p">,</span> <span class="mh">0x01C9C69</span><span class="p">,</span>
+  <span class="mh">0x01C1C66</span><span class="p">,</span> <span class="mh">0x0FC1C47</span><span class="p">,</span> <span class="mh">0x01C1C66</span><span class="p">,</span>
+  <span class="mh">0x10C5858</span><span class="p">,</span> <span class="mh">0x1E4E3B8</span><span class="p">,</span> <span class="mh">0x1A2F2F8</span><span class="p">,</span>
+<span class="p">];</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$token</span> <span class="k">as</span> <span class="nv">$x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$x</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="nc">N</span><span class="p">;</span>
+
+  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'%025b'</span><span class="p">,</span> <span class="nv">$x</span><span class="p">);</span>
+  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="n">search</span><span class="o">:</span> <span class="p">[</span><span class="s1">'0'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">],</span> <span class="n">replace</span><span class="o">:</span> <span class="p">[</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">],</span> <span class="n">subject</span><span class="o">:</span> <span class="nv">$x</span><span class="p">);</span>
+  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nb">str_split</span><span class="p">(</span><span class="nv">$x</span><span class="p">,</span> <span class="n">length</span><span class="o">:</span> <span class="mi">5</span><span class="p">));</span>
+  <span class="k">echo</span> <span class="s2">"</span><span class="si">{</span><span class="nv">$x</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>さて、この問題はさきほどのように単純に実行しただけでは、謎のブロックが表示されるだけでトークンは得られない。
+トークンを得るためには、ソースコードを読み、定数 <code>N</code>
+を特定する必要がある。</p>
+</div>
+<div class="paragraph">
+<p>ここでは、私の想定解を解説する。</p>
+</div>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      読解
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>まずはソースコードを読んでいく。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nv">$token</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="c1">// 略</span>
+<span class="p">];</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>数値からなる <code>$token</code> があり、各要素をループしている。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php">  <span class="nv">$x</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="nc">N</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>まずは排他的論理和 (xor) を取り、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php">  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'%025b'</span><span class="p">,</span> <span class="nv">$x</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>二進数に変換して、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php">  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="n">search</span><span class="o">:</span> <span class="p">[</span><span class="s1">'0'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">],</span> <span class="n">replace</span><span class="o">:</span> <span class="p">[</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">],</span> <span class="n">subject</span><span class="o">:</span> <span class="nv">$x</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>0 を空白に、1 を <code>#</code> にし、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php">  <span class="nv">$x</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nb">str_split</span><span class="p">(</span><span class="nv">$x</span><span class="p">,</span> <span class="n">length</span><span class="o">:</span> <span class="mi">5</span><span class="p">));</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>5文字ごとに区切ったあと、改行で結合している。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      ヒント
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>次に、ソースコードに書いてあるヒントを読んでいく。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>N</code> それ自体は、42 や 8128
+といったような特別な意味を持たず、ランダムに決められている</p>
+</li>
+<li>
+<p><code>$token</code> の各要素は、1文字を表す</p>
+</li>
+<li>
+<p>1文字は 5x5 のセルからなる</p>
+</li>
+<li>
+<p>出力されるのは、完全な PHPer トークンである</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ここで、PHPer トークンは必ず <code><mark></code> 記号から始まることを思いだすと、
+<code>$token</code> の最初の数字 <code>0x14B499C</code> は、変換の結果 <code></mark></code>
+になるのではないかと予想される (なお、このことは、リポジトリの README
+ファイルに追加ヒントとして書かれている)。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      解く
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ここまでわかれば、あと一歩で解ける。すなわち、<code>0x14B499C</code> が <code>#</code>
+に変換されるような <code>N</code> を見つければよい。</p>
+</div>
+<div class="paragraph">
+<p><code>N</code> は高々</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="nb">assert</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nc">N</span> <span class="o">&amp;&amp;</span> <span class="nc">N</span> <span class="o">&lt;=</span> <span class="mb">0b11111_11111_11111_11111_11111</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>なのでブルートフォースしてもよいが、ここではブルートフォースしない方法を紹介する。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$x</span> <span class="o">=</span> <span class="mh">0x14B499C</span><span class="p">;</span>
+
+<span class="nv">$x</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="nc">N</span><span class="p">;</span>
+
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'%025b'</span><span class="p">,</span> <span class="nv">$x</span><span class="p">);</span>
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="n">search</span><span class="o">:</span> <span class="p">[</span><span class="s1">'0'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">],</span> <span class="n">replace</span><span class="o">:</span> <span class="p">[</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">],</span> <span class="n">subject</span><span class="o">:</span> <span class="nv">$x</span><span class="p">);</span>
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nb">str_split</span><span class="p">(</span><span class="nv">$x</span><span class="p">,</span> <span class="n">length</span><span class="o">:</span> <span class="mi">5</span><span class="p">));</span>
+
+<span class="nb">assert</span><span class="p">(</span><span class="nv">$x</span> <span class="o">===</span>
+  <span class="s2">" # # </span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">"#####</span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">" # # </span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">"#####</span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">" # # "</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この一連の変換に対する逆変換を考えると、次のようになる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="nv">$x</span> <span class="o">=</span>
+  <span class="s2">" # # </span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">"#####</span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">" # # </span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">"#####</span><span class="se">\n</span><span class="s2">"</span> <span class="mf">.</span>
+  <span class="s2">" # # "</span><span class="p">;</span>
+
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="nb">explode</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nv">$x</span><span class="p">));</span>
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="n">search</span><span class="o">:</span> <span class="p">[</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">],</span> <span class="n">replace</span><span class="o">:</span> <span class="p">[</span><span class="s1">'0'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">],</span> <span class="n">subject</span><span class="o">:</span> <span class="nv">$x</span><span class="p">);</span>
+<span class="nv">$x</span> <span class="o">=</span> <span class="nb">bindec</span><span class="p">(</span><span class="nv">$x</span><span class="p">);</span>
+
+<span class="nv">$n</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">^</span> <span class="mh">0x14B499C</span><span class="p">;</span>
+
+<span class="k">echo</span> <span class="s2">"N = </span><span class="nv">$n</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>これを実行すると、<code>N</code> が得られる。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      第3問 toquine.php
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ソースコードはこちら。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="c1">// License: https://creativecommons.org/publicdomain/zero/1.0/</span>
+<span class="c1">// This is a quine-like program to generate a PHPer token.</span>
+<span class="c1">// Execute it like this: php toquine.php | php | php | php | ...</span>
+
+<span class="nv">$s</span> <span class="o">=</span> <span class="sh">&lt;&lt;&lt;'Q'
+&lt;?cuc
+// Yvprafr: uggcf://perngvirpbzzbaf.bet/choyvpqbznva/mreb/1.0/
+// Guvf vf n dhvar-yvxr cebtenz gb trarengr n CUCre gbxra.
+// Rkrphgr vg yvxr guvf: cuc gbdhvar.cuc | cuc | cuc | cuc | ...
+%f$f = %f;
+$f = fge_ebg13($f); $kf = [
+%f,
+];
+$g = ahyy.snyfr; sbe ($v = 0; $v &lt;= vagqvi(__YVAR__-035,6); ++$v) vs (!vffrg($kf[$v])) oernx; ryfr
+$g .= vzcybqr("\a", fge_fcyvg(fge_ercynpr(['0','1'], ['  ','##'], fcevags(pue(37) . '025o', $kf[$v])), 012)) . "\a\a";
+$jf = neenl_znc(sa($j) =&gt; vzcybqr(', ', $j), neenl_puhax(neenl_znc(sa($k) =&gt; fcevags('0k' . pue(37) . '07K', $k), $kf), 10));
+cevags($f, $g, fge_ebg13("&lt;&lt;&lt;'Q'\a{$f}\aQ"), vzcybqr(",\a", $jf));
+Q;</span>
+<span class="nv">$s</span> <span class="o">=</span> <span class="nb">str_rot13</span><span class="p">(</span><span class="nv">$s</span><span class="p">);</span> <span class="nv">$xs</span> <span class="o">=</span> <span class="p">[</span>
+<span class="mh">0x0AFABEA</span><span class="p">,</span> <span class="mh">0x1F294A7</span><span class="p">,</span> <span class="mh">0x1F2109F</span><span class="p">,</span> <span class="mh">0x1F294A7</span><span class="p">,</span> <span class="mh">0x0002800</span><span class="p">,</span> <span class="mh">0x1F2109F</span><span class="p">,</span> <span class="mh">0x0117041</span><span class="p">,</span> <span class="mh">0x1F294A7</span><span class="p">,</span> <span class="mh">0x1FAD6B5</span><span class="p">,</span> <span class="mh">0x1F295B7</span><span class="p">,</span>
+<span class="mh">0x010FC21</span><span class="p">,</span> <span class="mh">0x1FAD6B5</span><span class="p">,</span> <span class="mh">0x1151151</span><span class="p">,</span> <span class="mh">0x010FC21</span><span class="p">,</span> <span class="mh">0x1F294A7</span><span class="p">,</span> <span class="mh">0x1F295B7</span><span class="p">,</span> <span class="mh">0x1FAD6B5</span><span class="p">,</span> <span class="mh">0x1F294A7</span><span class="p">,</span> <span class="mh">0x1F295B7</span><span class="p">,</span> <span class="mh">0x1F8C63F</span><span class="p">,</span>
+<span class="mh">0x1F8C631</span><span class="p">,</span> <span class="mh">0x1FAD6B5</span><span class="p">,</span> <span class="mh">0x17AD6BD</span><span class="p">,</span> <span class="mh">0x17AD6BD</span><span class="p">,</span> <span class="mh">0x1F8C63F</span><span class="p">,</span> <span class="mh">0x1F295B7</span><span class="p">,</span>
+<span class="p">];</span>
+<span class="nv">$t</span> <span class="o">=</span> <span class="kc">null</span><span class="mf">.</span><span class="kc">false</span><span class="p">;</span> <span class="k">for</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;=</span> <span class="nb">intdiv</span><span class="p">(</span><span class="k">__LINE__</span><span class="o">-</span><span class="mo">035</span><span class="p">,</span><span class="mi">6</span><span class="p">);</span> <span class="o">++</span><span class="nv">$i</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">isset</span><span class="p">(</span><span class="nv">$xs</span><span class="p">[</span><span class="nv">$i</span><span class="p">]))</span> <span class="k">break</span><span class="p">;</span> <span class="k">else</span>
+<span class="nv">$t</span> <span class="mf">.</span><span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nb">str_split</span><span class="p">(</span><span class="nb">str_replace</span><span class="p">([</span><span class="s1">'0'</span><span class="p">,</span><span class="s1">'1'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'  '</span><span class="p">,</span><span class="s1">'##'</span><span class="p">],</span> <span class="nb">sprintf</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'025b'</span><span class="p">,</span> <span class="nv">$xs</span><span class="p">[</span><span class="nv">$i</span><span class="p">])),</span> <span class="mo">012</span><span class="p">))</span> <span class="mf">.</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="nv">$ws</span> <span class="o">=</span> <span class="nb">array_map</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$w</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">', '</span><span class="p">,</span> <span class="nv">$w</span><span class="p">),</span> <span class="nb">array_chunk</span><span class="p">(</span><span class="nb">array_map</span><span class="p">(</span><span class="k">fn</span><span class="p">(</span><span class="nv">$x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'0x'</span> <span class="mf">.</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'07X'</span><span class="p">,</span> <span class="nv">$x</span><span class="p">),</span> <span class="nv">$xs</span><span class="p">),</span> <span class="mi">10</span><span class="p">));</span>
+<span class="nb">printf</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span> <span class="nv">$t</span><span class="p">,</span> <span class="nb">str_rot13</span><span class="p">(</span><span class="s2">"&lt;&lt;&lt;'D'</span><span class="se">\n</span><span class="si">{</span><span class="nv">$s</span><span class="si">}</span><span class="se">\n</span><span class="s2">D"</span><span class="p">),</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">",</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="nv">$ws</span><span class="p">));</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>コメントにもあるとおり、次のようにして実行すれば答えがでてくる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="shell-session"><span class="gp">$</span><span class="w"> </span>php toquine.php | php | php | php | ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>実際にはもう少しパイプで繋げなければならない。</p>
+</div>
+
+
+
+
+
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      解説
+    
+  </h3>
+  <div class="section-body">
+    
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      プログラム全体
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>コメントにもあるとおり、これは quine (風) のプログラムになっている。
+Quine
+とは、自分のソースコードをそっくりそのまま出力するようなプログラムのことである。</p>
+</div>
+<div class="paragraph">
+<p>このプログラムは、実行すると自身とほとんど同じプログラムを出力する。
+異なるのはトークンになっている部分のみである。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      トークン
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>$xs</code> がトークンに対応している。変換のロジックは <code>riddle.php</code>
+とほぼ同じなので省略する。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      状態保持
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>トークンの何文字目まで出力したかを、ソースコードを変えずに (quine
+なので) 覚えておく必要がある。
+このプログラムでは、トークンが出力されるとソースコードがだんだんと長くなっていくのを利用して、<code><em>LINE</em></code>
+から情報を取得している。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-3">
+  <h4 id="" class="section-header">
+    
+      ROT 13
+    
+  </h4>
+  <div class="section-body">
+    <div class="paragraph">
+<p>Quine は、素朴に書くとプログラムの一部が 2回記述されてしまう。
+これがあまり美しくないので、<code>toquine.php</code> では、ROT 13
+変換を使って難読化した。</p>
+</div>
+<div class="paragraph">
+<p>それにしてもなぜこんなものが標準ライブラリに……。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      おわりに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>解いていただいたみなさん、また、難易度調整につきあっていただいた社内のみなさん、ありがとうございました。</p>
+</div>
+<div class="paragraph">
+<p>今回は直前に作りはじめたのもあり、3問だけかつ使い古されたネタばかりになってしまいましたが、
+来年は 5問、より面白い問題を持っていきます。</p>
+</div>
+<div class="paragraph">
+<p>実はもう作りはじめているので、どうか来年もありますように……。</p>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

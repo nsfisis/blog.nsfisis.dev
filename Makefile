@@ -20,10 +20,14 @@ serve:
 clean:
 	docker-compose down
 
+.PHONY: gen
+gen:
+	@ruby nuldoc.rb
+
 .PHONY: local_up
 local_up:
 	docker-compose -f docker-compose.local.yml up -d
-	echo http://localhost:8080
+	@echo http://localhost:8080
 
 .PHONY: local_down
 local_down:

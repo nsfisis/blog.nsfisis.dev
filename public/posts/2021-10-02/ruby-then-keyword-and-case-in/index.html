@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="Ruby 3.0 で追加される case in 構文と、then キーワードについて。">
+    <meta name="keywords" content="Ruby,Ruby 3">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>【Ruby】then キーワードと case in | REPL: Rest-Eat-Program Loop</title>
+    <link rel="stylesheet" href="/hl.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/custom.css">
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">【Ruby】then キーワードと case in</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/ruby/">Ruby</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/ruby3/">Ruby 3</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2021-10-02">2021-10-02</time>: Qiita から移植
+                </li>
+              
+            </ol>
+          </section>
+          <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>この記事は Qiita から移植してきたものです。 元 URL:
+<a href="https://qiita.com/nsfisis/items/787a8cf888a304497223" class="bare">https://qiita.com/nsfisis/items/787a8cf888a304497223</a></p>
+</div>
+<hr>
+</div>
+</div>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      TL; DR
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>case</code> - <code>in</code> によるパターンマッチング構文でも、<code>case</code> - <code>when</code>
+と同じように <code>then</code> が使える (場合によっては使う必要がある)。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      <code>then</code> とは
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>使われることは稀だが、Ruby では <code>then</code>
+がキーワードになっている。次のように使う:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">if</span> <span class="n">cond</span> <span class="k">then</span>
+  <span class="nb">puts</span> <span class="s2">"Y"</span>
+<span class="k">else</span>
+  <span class="nb">puts</span> <span class="s2">"N"</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このキーワードが現れうる場所はいくつかあり、<code>if</code>、<code>unless</code>、<code>rescue</code>、<code>case</code>
+構文がそれに当たる。 上記のように、何か条件を書いた後 <code>then</code>
+を置き、式がそこで終了していることを示すマーカーとして機能する。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="c1"># Example:</span>
+
+<span class="k">if</span> <span class="n">x</span> <span class="k">then</span>
+  <span class="n">a</span>
+<span class="k">end</span>
+
+<span class="k">unless</span> <span class="n">x</span> <span class="k">then</span>
+  <span class="n">a</span>
+<span class="k">end</span>
+
+<span class="k">begin</span>
+  <span class="n">a</span>
+<span class="k">rescue</span> <span class="k">then</span>
+  <span class="n">b</span>
+<span class="k">end</span>
+
+<span class="k">case</span> <span class="n">x</span>
+<span class="k">when</span> <span class="nb">p</span> <span class="k">then</span>
+  <span class="n">a</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      なぜ普段は書かなくてもよいのか
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>普通 Ruby のコードで <code>then</code>
+を書くことはない。なぜか。次のコードを実行してみるとわかる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">if</span> <span class="kp">true</span> <span class="nb">puts</span> <span class="s1">'Hello, World!'</span> <span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>次のような構文エラーが出力される。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>20:1: syntax error, unexpected local variable or method, expecting `then' or ';' or '\n'
+if true puts 'Hello, World!' end
+        ^~~~
+20:1: syntax error, unexpected `end', expecting end-of-input
+...f true puts 'Hello, World!' end</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>二つ目のメッセージは無視して一つ目を読むと、<code>then</code> か <code>;</code>
+か改行が来るはずのところ変数だかメソッドだかが現れたことによりエラーとなっているようだ。</p>
+</div>
+<div class="paragraph">
+<p>ポイントは改行が <code>then</code> (や <code>;</code>) の代わりとなることである。<code>true</code>
+の後に改行を入れてみる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">if</span> <span class="kp">true</span>
+<span class="nb">puts</span> <span class="s1">'Hello, World!'</span> <span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>無事 Hello, World! と出力されるようになった。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      なぜ <code>then</code> や <code>;</code> や改行が必要か
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>なぜ <code>then</code> や <code>;</code> や改行 (以下 「<code>then</code> 等」)
+が必要なのだろうか。次の例を見てほしい:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">if</span> <span class="n">a</span> <span class="n">b</span> <span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>then</code> も <code>;</code>
+も改行もないのでエラーになるが、これは条件式がどこまで続いているのかわからないためだ。
+この例は二通りに解釈できる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="c1"># a という変数かメソッドの評価結果が truthy なら b という変数かメソッドを評価</span>
+<span class="k">if</span> <span class="n">a</span> <span class="k">then</span>
+  <span class="n">b</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="c1"># a というメソッドに b という変数かメソッドの評価結果を渡して呼び出し、</span>
+<span class="c1"># その結果が truthy なら何もしない</span>
+<span class="k">if</span> <span class="n">a</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">then</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>then</code> 等はこの曖昧性を排除するためにあり、条件式は <code>if</code> から <code>then</code>
+等までの間にある、ということを明確にする。 C系の <code>if</code> 後に来る <code>(</code>/<code>)</code>
+や、Python の <code>:</code>、Rust/Go/Swift などの <code>{</code> も同じ役割を持つ。</p>
+</div>
+<div class="paragraph">
+<p>Ruby の場合、プログラマーが書きやすいよう改行でもって <code>then</code>
+が代用できるので、ほとんどの場合 <code>then</code> は必要ない。</p>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      <code>case</code> - <code>in</code> における <code>then</code>
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>ようやく本題にたどり着いた。来る Ruby 3.0 では <code>case</code> と <code>in</code>
+キーワードを使ったパターンマッチングの構文が入る予定である。この構文でもパターン部との区切りとして
+<code>then</code> 等が必要になる。 (現在の) Ruby には formal
+な形式での文法仕様は存在しないので、yacc の定義ファイルを参照した (yacc
+の説明は省略)。</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/ruby/ruby/blob/221ca0f8281d39f0dfdfe13b2448875384bbf735/parse.y#L3961-L3986" class="bare">https://github.com/ruby/ruby/blob/221ca0f8281d39f0dfdfe13b2448875384bbf735/parse.y#L3961-L3986</a></p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yacc">p_case_body : keyword_in
+            {
+            SET_LEX_STATE(EXPR_BEG|EXPR_LABEL);
+            p-&gt;command_start = FALSE;
+            $&lt;ctxt&gt;1 = p-&gt;ctxt;
+            p-&gt;ctxt.in_kwarg = 1;
+            $&lt;tbl&gt;$ = push_pvtbl(p);
+            }
+            {
+            $&lt;tbl&gt;$ = push_pktbl(p);
+            }
+          p_top_expr then
+            {
+            pop_pktbl(p, $&lt;tbl&gt;3);
+            pop_pvtbl(p, $&lt;tbl&gt;2);
+            p-&gt;ctxt.in_kwarg = $&lt;ctxt&gt;1.in_kwarg;
+            }
+          compstmt
+          p_cases
+            {
+            /*%%%*/
+            $$ = NEW_IN($4, $7, $8, &amp;@$);
+            /*% %*/
+            /*% ripper: in!($4, $7, escape_Qundef($8)) %*/
+            }
+        ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>簡略版:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yacc">p_case_body : keyword_in p_top_expr then compstmt p_cases
+        ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ここで、<code>keyword_in</code> は文字通り <code>in</code>、<code>p_top_expr</code>
+はいわゆるパターン、<code>then</code> は <code>then</code>
+キーワードのことではなく、この記事で <code>then</code> 等と呼んでいるもの、つまり
+<code>then</code> キーワード、<code>;</code>、改行のいずれかである。</p>
+</div>
+<div class="paragraph">
+<p>これにより、<code>case</code> - <code>when</code> による従来の構文と同じように、<code>then</code>
+等をパターンの後ろに挿入すればよいことがわかった。つまり次の3通りのいずれかになる:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">case</span> <span class="n">x</span>
+<span class="k">in</span> <span class="mi">1</span> <span class="k">then</span> <span class="n">a</span>
+<span class="k">in</span> <span class="mi">2</span> <span class="k">then</span> <span class="n">b</span>
+<span class="k">in</span> <span class="mi">3</span> <span class="k">then</span> <span class="n">c</span>
+<span class="k">end</span>
+
+<span class="k">case</span> <span class="n">x</span>
+<span class="k">in</span> <span class="mi">1</span>
+  <span class="n">a</span>
+<span class="k">in</span> <span class="mi">2</span>
+  <span class="n">b</span>
+<span class="k">in</span> <span class="mi">3</span>
+  <span class="n">c</span>
+<span class="k">end</span>
+
+<span class="k">case</span> <span class="n">x</span>
+<span class="k">in</span> <span class="mi">1</span><span class="p">;</span> <span class="n">a</span>
+<span class="k">in</span> <span class="mi">2</span><span class="p">;</span> <span class="n">b</span>
+<span class="k">in</span> <span class="mi">3</span><span class="p">;</span> <span class="n">c</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ところで、<code>p_top_expr</code> には <code>if</code> による guard clause
+が書けるので、その場合は <code>if</code> - <code>then</code> と似たような見た目になる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="ruby"><span class="k">case</span> <span class="n">x</span>
+<span class="k">in</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">a</span>
+<span class="k">in</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">b</span>
+<span class="k">in</span> <span class="n">n</span> <span class="k">then</span> <span class="n">c</span>
+<span class="k">end</span></code></pre>
+</div>
+</div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      まとめ
+    
+  </h2>
+  <div class="section-body">
+    <div class="ulist">
+<ul>
+<li>
+<p><code>if</code> や <code>case</code> の条件の後ろには <code>then</code>、<code>;</code>、改行のいずれかが必要</p>
+<div class="ulist">
+<ul>
+<li>
+<p>通常は改行しておけばよい</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>3.0 で入る予定の <code>case</code> - <code>in</code> でも <code>then</code> 等が必要になる</p>
+</li>
+<li>
+<p>Ruby の構文を正確に知るには (現状) <code>parse.y</code> を直接読めばよい</p>
+</li>
+</ul>
+</div>
+  </div>
+</section>
+        </div>
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

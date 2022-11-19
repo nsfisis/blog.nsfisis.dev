@@ -1,0 +1,27 @@
+<% _feed_title = feed_title %>
+<% _link = link %>
+<% _description = description %>
+<% _lang = lang %>
+<% _last_build_date = last_build_date %>
+<% _feed_link = feed_link %>
+<% _posts = posts %>
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title><%= _feed_title %></title>
+    <link><%= _link %></link>
+    <description><%= _description %></description>
+    <language><%= _lang %></language>
+    <lastBuildDate><%= _last_build_date %></lastBuildDate>
+    <atom:link href="<%= _feed_link %>" rel="self" type="application/rss+xml" />
+    <% for post in _posts %>
+      <item>
+        <title><%= post.title %></title>
+        <link><%= post.href %></link>
+        <pubDate><%= post.updated_on %></pubDate>
+        <guid><%= post.href %></guid>
+        <description><![CDATA[<%= post %>]]></description>
+      </item>
+    <% end %>
+  </channel>
+</rss>
