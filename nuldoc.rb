@@ -1,8 +1,11 @@
 require 'date'
+require 'digest/md5'
 require 'fileutils'
+
 require 'asciidoctor'
 
 require_relative 'lib/command'
+require_relative 'lib/html_converter'
 require_relative 'lib/parser'
 require_relative 'lib/extensions/document_title_processor'
 require_relative 'lib/extensions/lang_attribute_processor'
@@ -20,5 +23,6 @@ NulDoc::Command.new({
   site_copyright_year: 2021,
   content_dir: __dir__ + '/content',
   dest_dir: __dir__ + '/public',
+  static_dir: __dir__ + '/static',
   template_dir: __dir__ + '/templates',
 }).run

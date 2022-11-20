@@ -4,9 +4,11 @@ module NulDoc
       @config = config
       @content_dir = @config[:content_dir]
       @dest_dir = @config[:dest_dir]
+      @static_dir = @config[:static_dir]
       @template_dir = @config[:template_dir]
       @parser = NulDoc::Parser.new(
         {
+          'stylesheets' => stylesheets,
           'author' => @config[:author],
           'site-copyright-year' => @config[:site_copyright_year],
           'site-name' => @config[:site_name],
@@ -43,7 +45,7 @@ module NulDoc
     end
 
     def parse_posts(post_file_paths)
-      post_file_paths.map { @parser.parse_file(_1) }
+      post_file_paths.map { @parser.parse_file(_1, 'post') }
     end
 
     def output_posts(posts)
@@ -92,8 +94,9 @@ module NulDoc
     end
 
     def build_tag_doc(tag, posts)
-      erb = ERB.new(File.read(@template_dir + '/tag.html.erb'))
+      erb = ERB.new(File.read(@template_dir + '/tag.html.erb'), trim_mode: '<>')
       erb.result_with_hash({
+        stylesheets: stylesheets,
         tag: tag,
         posts: posts,
         author: @config[:author],
@@ -124,8 +127,9 @@ module NulDoc
     end
 
     def build_posts_list_doc(posts)
-      erb = ERB.new(File.read(@template_dir + '/posts_list.html.erb'))
+      erb = ERB.new(File.read(@template_dir + '/posts_list.html.erb'), trim_mode: '<>')
       erb.result_with_hash({
+        stylesheets: stylesheets,
         posts: posts.reverse,
         author: @config[:author],
         site_copyright_year: @config[:site_copyright_year],
@@ -147,6 +151,15 @@ module NulDoc
       open(destination_file_path, 'w') do |f|
         f.puts(html)
       end
+    end
+
+    def stylesheets
+      stylesheet_file_names = %w[hl.css style.css custom.css]
+      stylesheet_file_names.map {|ss_file_name|
+        ss_file_path = "#{@static_dir}/#{ss_file_name}"
+        hash = Digest::MD5.file(ss_file_path).hexdigest
+        "/#{ss_file_name}?#{hash}"
+      }
     end
   end
 end

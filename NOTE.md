@@ -20,6 +20,7 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
 * [x] Add /posts/ page
 * [x] Stylesheets
 * [x] Syntax highlight
+* [ ] Add /tags/ page
 * [ ] Add / page
 * [ ] Add /about/ page
 * [ ] Add navigation bar
@@ -46,6 +47,10 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
     * https://www.sitemaps.org/protocol.html
     * https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap?hl=ja
 * [ ] Admonitions
+* [x] Stylesheet cache busting
+* [ ] templates
+    * Define custom converter using ERB
+
 
 
 ## Structure

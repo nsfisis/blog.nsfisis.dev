@@ -1,4 +1,4 @@
-<% _main_stylesheet = '/style.css' %>
+<% _stylesheets = attr 'stylesheets' %>
 <% _author = attr 'author' %>
 <% _description = attr 'description' %>
 <% _lang = attr 'lang' %>
@@ -21,9 +21,9 @@
     <meta name="keywords" content="<%= _tags.map(&:label).join(',') %>">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <title><%= _doctitle %> | <%= _site_name %></title>
-    <link rel="stylesheet" href="/hl.css">
-    <link rel="stylesheet" href="<%= _main_stylesheet %>">
-    <link rel="stylesheet" href="/custom.css">
+    <% for stylesheet in _stylesheets %>
+      <link rel="stylesheet" href="<%= stylesheet %>">
+    <% end %>
   </head>
   <body class="single">
     <header class="header">

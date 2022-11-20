@@ -6,7 +6,7 @@ module NulDoc
       @template_dir = template_dir
     end
 
-    def parse_file(file_path)
+    def parse_file(file_path, document_type)
       Asciidoctor.load_file(
         file_path,
         backend: :html5,
@@ -15,9 +15,11 @@ module NulDoc
         safe: :unsafe,
         template_dirs: [@template_dir],
         template_engine: 'erb',
+        template_engine_options: { erb: { trim: '<>' } },
         attributes: @common_attributes.merge({
           'source-file-path' => file_path,
           'href' => file_path.sub(@content_dir, '').sub('.adoc', '/'),
+          'document-type' => document_type,
         }),
         extension_registry: Asciidoctor::Extensions.create do
           tree_processor Nuldoc::Extensions::RevisionHistoryProcessor

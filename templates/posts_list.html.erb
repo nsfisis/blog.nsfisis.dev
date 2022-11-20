@@ -1,4 +1,4 @@
-<% _main_stylesheet = '/style.css' %>
+<% _stylesheets = stylesheets %>
 <% _author = author %>
 <% _description = description %>
 <% _lang = lang %>
@@ -18,9 +18,9 @@
     <meta name="description" content="<%= _description %>">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <title><%= _doctitle %> | <%= _site_name %></title>
-    <link rel="stylesheet" href="/hl.css">
-    <link rel="stylesheet" href="<%= _main_stylesheet %>">
-    <link rel="stylesheet" href="/custom.css">
+    <% for stylesheet in _stylesheets %>
+      <link rel="stylesheet" href="<%= stylesheet %>">
+    <% end %>
   </head>
   <body class="list">
     <header class="header">
