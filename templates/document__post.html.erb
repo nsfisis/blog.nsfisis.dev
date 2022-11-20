@@ -4,11 +4,10 @@
 <% _lang = attr 'lang' %>
 <% _site_copyright_year = attr 'site-copyright-year' %>
 <% _copyright_year = attr 'copyright-year' %>
-<% _revisions = attr 'revision-history' %>
 <% _site_name = attr 'site-name' %>
+<% _title = title %>
+<% _revisions = attr 'revision-history' %>
 <% _tags = attr 'tags' %>
-<% _doctitle = doctitle %>
-<% _header_title = header.title %>
 <% _content = content %>
 <!DOCTYPE html>
 <html lang="<%= _lang %>">
@@ -20,7 +19,7 @@
     <meta name="description" content="<%= _description %>">
     <meta name="keywords" content="<%= _tags.map(&:label).join(',') %>">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <title><%= _doctitle %> | <%= _site_name %></title>
+    <title><%= _title %> | <%= _site_name %></title>
     <% for stylesheet in _stylesheets %>
       <link rel="stylesheet" href="<%= stylesheet %>">
     <% end %>
@@ -36,7 +35,7 @@
     <main class="main">
       <article class="post-single">
         <header class="post-header">
-          <h1 class="post-title"><%= _header_title %></h1>
+          <h1 class="post-title"><%= _title %></h1>
           <% if not _tags.empty? %>
             <ul class="post-tags">
               <% for tag in _tags %>

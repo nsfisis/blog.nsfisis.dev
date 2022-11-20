@@ -1,12 +1,11 @@
-<% _stylesheets = stylesheets %>
-<% _author = author %>
-<% _description = description %>
-<% _lang = lang %>
-<% _site_copyright_year = site_copyright_year %>
-<% _copyright_year = copyright_year %>
-<% _site_name = site_name %>
-<% _doctitle = tag.label %>
-<% _header_title = tag.label %>
+<% _stylesheets = attr 'stylesheets' %>
+<% _author = attr 'author' %>
+<% _description = attr 'description' %>
+<% _lang = attr 'lang' %>
+<% _site_copyright_year = attr 'site-copyright-year' %>
+<% _copyright_year = attr 'copyright-year' %>
+<% _site_name = attr 'site-name' %>
+<% _title = title %>
 <% _posts = posts %>
 <!DOCTYPE html>
 <html lang="<%= _lang %>">
@@ -17,7 +16,7 @@
     <meta name="copyright" content="&copy; <%= _copyright_year %> <%= _author %>">
     <meta name="description" content="<%= _description %>">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <title><%= _doctitle %> | <%= _site_name %></title>
+    <title><%= _title %> | <%= _site_name %></title>
     <% for stylesheet in _stylesheets %>
       <link rel="stylesheet" href="<%= stylesheet %>">
     <% end %>
@@ -26,13 +25,13 @@
     <header class="header">
       <nav class="nav">
         <p class="logo">
-          <a href="/">REPL: Rest-Eat-Program Loop</a>
+          <a href="/"><%= _site_name %></a>
         </p>
       </nav>
     </header>
     <main class="main">
       <header class="page-header">
-        <h1><%= _header_title %></h1>
+        <h1><%= _title %></h1>
       </header>
       <% for post in _posts %>
         <article class="post-entry">

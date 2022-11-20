@@ -48,7 +48,7 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
     * https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap?hl=ja
 * [ ] Admonitions
 * [x] Stylesheet cache busting
-* [ ] templates
+* [x] templates
     * Define custom converter using ERB
 
 

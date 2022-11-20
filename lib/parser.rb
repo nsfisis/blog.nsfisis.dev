@@ -17,9 +17,12 @@ module NulDoc
         template_engine: 'erb',
         template_engine_options: { erb: { trim: '<>' } },
         attributes: @common_attributes.merge({
+          'document-type' => document_type,
           'source-file-path' => file_path,
           'href' => file_path.sub(@content_dir, '').sub('.adoc', '/'),
-          'document-type' => document_type,
+          'source-highlighter' => 'rouge',
+          'reproducible' => true,
+          'sectids' => false,
         }),
         extension_registry: Asciidoctor::Extensions.create do
           tree_processor Nuldoc::Extensions::RevisionHistoryProcessor

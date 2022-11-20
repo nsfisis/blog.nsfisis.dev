@@ -12,9 +12,6 @@ module NulDoc
           'author' => @config[:author],
           'site-copyright-year' => @config[:site_copyright_year],
           'site-name' => @config[:site_name],
-          'source-highlighter' => 'rouge',
-          'reproducible' => true,
-          'sectids' => false,
         },
         @content_dir,
         @template_dir,
@@ -24,7 +21,7 @@ module NulDoc
     def run
       posts = generate_posts(@content_dir + '/posts')
       generate_tags(posts)
-      generate_posts_list(posts)
+      generate_post_list(posts)
     end
 
     private
@@ -94,18 +91,32 @@ module NulDoc
     end
 
     def build_tag_doc(tag, posts)
-      erb = ERB.new(File.read(@template_dir + '/tag.html.erb'), trim_mode: '<>')
-      erb.result_with_hash({
-        stylesheets: stylesheets,
-        tag: tag,
-        posts: posts,
-        author: @config[:author],
-        site_copyright_year: @config[:site_copyright_year],
-        site_name: @config[:site_name],
-        lang: 'ja-JP', # TODO
-        copyright_year: posts.last.attributes['revision-history'].first.date.year,
-        description: "タグ「#{tag.label}」のついた記事一覧",
-      })
+      converter = NulDoc::HTMLConverter.new(nil, { template_dirs: [@template_dir] })
+      converter.convert_document(
+        (Class.new do
+          def initialize(config, tag, posts, stylesheets)
+            @config = config
+            @tag = tag
+            @posts = posts
+            @stylesheets = stylesheets
+          end
+          def attr(name)
+            case name
+            when 'document-type'; 'tag'
+            when 'stylesheets'; @stylesheets
+            when 'author'; @config[:author]
+            when 'site-copyright-year'; @config[:site_copyright_year]
+            when 'site-name'; @config[:site_name]
+            when 'lang'; 'ja-JP' # TODO
+            when 'copyright-year'; @posts.last.attributes['revision-history'].first.date.year
+            when 'description'; "タグ「#{@tag.label}」のついた記事一覧"
+            else raise "Unknown attr: #{name}"
+            end
+          end
+          def title; @tag.label; end
+          def posts; @posts; end
+        end).new(@config, tag, posts, stylesheets)
+      )
     end
 
     def output_tags(tag_docs)
@@ -121,28 +132,40 @@ module NulDoc
       end
     end
 
-    def generate_posts_list(posts)
-      html = build_posts_list_doc(posts)
-      output_posts_list(html)
+    def generate_post_list(posts)
+      html = build_post_list_doc(posts)
+      output_post_list(html)
     end
 
-    def build_posts_list_doc(posts)
-      erb = ERB.new(File.read(@template_dir + '/posts_list.html.erb'), trim_mode: '<>')
-      erb.result_with_hash({
-        stylesheets: stylesheets,
-        posts: posts.reverse,
-        author: @config[:author],
-        site_copyright_year: @config[:site_copyright_year],
-        site_name: @config[:site_name],
-        lang: 'ja-JP', # TODO
-        copyright_year: @config[:site_copyright_year],
-        description: "記事一覧",
-        doctitle: "Posts",
-        header_title: "Posts",
-      })
+    def build_post_list_doc(posts)
+      converter = NulDoc::HTMLConverter.new(nil, { template_dirs: [@template_dir] })
+      converter.convert_document(
+        (Class.new do
+          def initialize(config, posts, stylesheets)
+            @config = config
+            @posts = posts
+            @stylesheets = stylesheets
+          end
+          def attr(name)
+            case name
+            when 'document-type'; 'post_list'
+            when 'stylesheets'; @stylesheets
+            when 'author'; @config[:author]
+            when 'site-copyright-year'; @config[:site_copyright_year]
+            when 'site-name'; @config[:site_name]
+            when 'lang'; 'ja-JP' # TODO
+            when 'copyright-year'; @config[:site_copyright_year]
+            when 'description'; '記事一覧'
+            else raise "Unknown attr: #{name}"
+            end
+          end
+          def title; 'Posts'; end
+          def posts; @posts; end
+        end).new(@config, posts.reverse, stylesheets)
+      )
     end
 
-    def output_posts_list(html)
+    def output_post_list(html)
       destination_file_path = "#{@dest_dir}/posts/index.html"
       destination_dir = File.dirname(destination_file_path)
       unless Dir.exist?(destination_dir)
