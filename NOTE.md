@@ -23,6 +23,8 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
 * [ ] Add /tags/ page
 * [ ] Add / page
 * [ ] Add /about/ page
+* [ ] Add slide page
+* [ ] Add /slides/ page
 * [ ] Add navigation bar
     * Site name
     * Posts
@@ -50,6 +52,8 @@ $ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
 * [x] Stylesheet cache busting
 * [x] templates
     * Define custom converter using ERB
+* [ ] Allow users to access old revisions
+    * [ ] Redirect from /posts/foo/ to /posts/foo/?v=1
 
 
 
