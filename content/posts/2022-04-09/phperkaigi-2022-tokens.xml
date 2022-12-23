@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>PHPerKaigi 2022 トークン問題の解説</title>
+    <abstract>
+      PHPerKaigi 2022 で私が作成した PHPer チャレンジ問題を解説する。
+    </abstract>
+    <keywordset>
+      <keyword>conference</keyword>
+      <keyword>php</keyword>
+      <keyword>phperkaigi</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-04-09</date>
+        <revremark>公開</revremark>
+      </revision>
+      <revision>
+        <date>2022-04-16</date>
+        <revremark>2問目、3問目の解説を追加、1問目に加筆</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>本日開始された <link xl:href="https://phperkaigi.jp/2022/">PHPerKaigi 2022</link> の PHPer
+    チャレンジにおいて、弊社
+    <link xl:href="https://www.dgcircus.com/">デジタルサーカス株式会社</link> の問題を
+    3問作成した。この記事では、これらの問題の解説をおこなう。</simpara>
+  <simpara>リポジトリはこちら: <link xl:href="https://github.com/nsfisis/PHPerKaigi2022-tokens">https://github.com/nsfisis/PHPerKaigi2022-tokens</link></simpara>
+</section>
+<section xml:id="_第1問_brainf_ck_php">
+  <title>第1問 brainf_ck.php</title>
+  <simpara>ソースコードはこちら。実行には PHP 8.1 以上が必要なので注意。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  declare(strict_types=0O1);
+
+  namespace Dgcircus\PHPerKaigi\Y2022;
+
+  /**
+  * @todo
+  * Run this program to acquire a PHPer token.
+  */
+
+  https://creativecommons.org/publicdomain/zero/1.0/
+
+  \error_reporting(~+!'We are hiring!');
+
+  $z = fn($f) =&gt; (fn($x) =&gt; $f(fn(...$xs) =&gt; $x($x)(...$xs)))(fn($x) =&gt; $f(fn(...$xs) =&gt; $x($x)(...$xs)));
+  $id = \spl_object_id(...);
+  $put = fn($c) =&gt; \printf('%c', $c);
+  $mm = fn($p, $n) =&gt; new \ArrayObject(\array_fill(+!![], $n, $p));
+
+  $👉 = fn($m, $p, $b, $e, $mp, $pc) =&gt; [++$mp, ++$pc];
+  $👈 = fn($m, $p, $b, $e, $mp, $pc) =&gt; [--$mp, ++$pc];
+  $👍 = fn($m, $p, $b, $e, $mp, $pc) =&gt; [$mp, ++$pc, ++$m[$mp]];
+  $👎 = fn($m, $p, $b, $e, $mp, $pc) =&gt; [$mp, ++$pc, --$m[$mp]];
+  $📝 = fn($m, $p, $b, $e, $mp, $pc) =&gt; [$mp, ++$pc, $put($m[$mp])];
+  $🤡 = fn($m, $p, $b, $e, $mp, $pc) =&gt; match ($m[$mp]) {
+  +!![] =&gt; [$mp, $z(fn($loop) =&gt; fn($pc, $n) =&gt; match ($id($p[$pc])) {
+  $b =&gt; $loop(++$pc, ++$n),
+  $e =&gt; $n === +!![] ? ++$pc : $loop(++$pc, --$n),
+  default =&gt; $loop(++$pc, $n),
+  })($pc, -![])],
+  default =&gt; [$mp, ++$pc],
+  };
+  $🎪 = fn($m, $p, $b, $e, $mp, $pc) =&gt; match ($m[$mp]) {
+  +!![] =&gt; [$mp, ++$pc],
+  default =&gt; [$mp, $z(fn($loop) =&gt; fn($pc, $n) =&gt; match ($id($p[$pc])) {
+  $e =&gt; $loop(--$pc, ++$n),
+  $b =&gt; $n === +!![] ? $pc+![] : $loop(--$pc, --$n),
+  default =&gt; $loop(--$pc, $n),
+  })($pc, -![])],
+  };
+  $🐘 = fn($p) =&gt; $z(fn($loop) =&gt; fn($m, $p, $b, $e, $mp, $pc) =&gt;
+  isset($p[$pc]) &amp;&amp; $loop($m, $p, $b, $e, ...($p[$pc]($m, $p, $b, $e, $mp, $pc)))
+  )($mm(+!![], +(![].![])), $p, $id($🤡), $id($🎪), +!![], +!![]);
+
+  $🐘([
+  $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+  $🤡,
+  $👉, $👍, $👍, $👍,
+  $👉, $👍, $👍, $👍, $👍, $👍,
+  $👉, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+  $👉, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍, $👍,
+  $👈, $👈, $👈, $👈, $👎,
+  $🎪,
+  $👉, $👍, $👍, $👍, $👍, $👍, $📝,
+  $👎, $👎, $📝,
+  $👉, $👎, $👎, $👎, $📝,
+  $👉, $👎, $👎, $👎, $📝,
+  $👎, $👎, $📝,
+  $👎, $📝,
+  $👈, $📝,
+  $👉, $👉, $👎, $👎, $📝,
+  $👍, $👍, $👍, $👍, $👍, $👍, $👍, $📝,
+  $👈, $👎, $👎, $👎, $👎, $📝,
+  $👈, $📝,
+  $👉, $👍, $👍, $📝,
+  $👉, $👎, $📝,
+  $👈, $📝,
+  ]);</programlisting>
+<simpara>この問題は、単に適切なバージョンの PHP で動かせばトークンが得られる。</simpara>
+<section xml:id="_解説">
+  <title>解説</title>
+  <section xml:id="_絵文字">
+    <title>絵文字</title>
+    <simpara>まず目につくのは大量の絵文字だろう。 PHP
+    は識別子に使用できる文字の範囲が広く、絵文字も使うことができる。</simpara>
+</section>
+<section xml:id="_プログラム全体">
+  <title>プログラム全体</title>
+  <simpara>Brainf*ck のインタプリタとプログラムになっている。 Brainf*ck
+  とは、難解プログラミング言語のひとつであり、ここで説明するよりも
+  Wikipedia の該当ページを読んだ方がよい。</simpara>
+<simpara><link xl:href="https://ja.wikipedia.org/wiki/Brainfuck">https://ja.wikipedia.org/wiki/Brainfuck</link></simpara>
+<simpara>なお、brainf*ck プログラムを普通の書き方で書くと、次のようになる。</simpara>
+<literallayout class="monospaced">+ + + + + + + + + +
+[
+&gt; + + +
+&gt; + + + + +
+&gt; + + + + + + + + + + + +
+&gt; + + + + + + + + + +
+&lt; &lt; &lt; &lt; -
+]
+&gt; + + + + + .
+- - .
+&gt; - - - .
+&gt; - - - .
+- - .
+- .
+&lt; .
+&gt; &gt; - - .
++ + + + + + + .
+&lt; - - - - .
+&lt; .
+&gt; + + .
+&gt; - .
+&lt; .</literallayout>
+<simpara>実行結果はこちら: <link xl:href="https://ideone.com/22VWmb">https://ideone.com/22VWmb</link></simpara>
+<simpara>それぞれの絵文字で表された関数が、各命令に対応している。</simpara>
+<itemizedlist>
+  <listitem>
+    <simpara><literal>$👉</literal>: <literal>&gt;</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$👈</literal>: <literal>&lt;</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$👍</literal>: <literal>+</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$👎</literal>: <literal>-</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$📝</literal>: <literal>.</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$🤡</literal>: <literal>[</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$🎪</literal>: <literal>]</literal></simpara>
+  </listitem>
+</itemizedlist>
+<simpara><literal>,</literal> (入力) に対応する関数はない
+(このプログラムでは使わないので用意していない)。</simpara>
+<simpara>なお、<literal>$🐘</literal> はいわゆる main 関数であり、プログラムの実行部分である。</simpara>
+</section>
+<section xml:id="_絵文字の選択">
+  <title>絵文字の選択</title>
+  <simpara>おおよそ意味に合致するよう選んでいるが、<literal>$🤡</literal> と <literal>$🎪</literal>
+    は弊社デジタルサーカスにちなんでいる。 また、<literal>$🐘</literal> は PHP
+    のマスコットの象に由来する。</simpara>
+</section>
+<section xml:id="_strict_types">
+  <title>strict_types</title>
+  <simpara><literal>declare</literal> 文の <literal>strict_types</literal> に指定できるのは、<literal>0</literal> か <literal>1</literal>
+    の数値リテラルだが、 <literal>0x0</literal> や <literal>0b1</literal> のような値も受け付ける。 今回は、PHP
+    8.1 から追加された、<literal>0O</literal> または <literal>0o</literal> から始まる八進数リテラルを使った。</simpara>
+</section>
+<section xml:id="_url">
+  <title>URL</title>
+  <simpara>ソースコードのライセンスを示したこの部分だが、</simpara>
+  <programlisting language="php" linenumbering="unnumbered">https://creativecommons.org/publicdomain/zero/1.0/</programlisting>
+  <simpara>完全に合法な PHP のコードである。 <literal>https:</literal> 部分はラベル、<literal>//</literal>
+    以降は行コメントになっている。</simpara>
+</section>
+<section xml:id="_リテラルなしで数値を生成する">
+  <title>リテラルなしで数値を生成する</title>
+  <simpara>ソースコード中に、ほとんど数値リテラルが書かれていないことにお気づきだろうか。
+  PHP では、型変換を利用することで任意の整数を作り出すことができる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">assert(0 === +!![]);
+assert(1 === +![]);
+assert(2 === ![]+![]);
+assert(3 === ![]+![]+![]);
+assert(10 === +(![].+!![]));</programlisting>
+<simpara><literal>[]</literal> に <literal>!</literal> を適用すると <literal>true</literal> が返ってくる。それに <literal>+</literal>
+  を適用すると、<literal>bool</literal> から <literal>int</literal> ヘの型変換が走り、<literal>1</literal> が生成される。<literal>10</literal>
+  はさらにトリッキーだ。まず <literal>1</literal> と <literal>0</literal> を作り、<literal>.</literal> で文字列として結合する
+  (<literal>'10'</literal>)。これに <literal>+</literal> を適用すると、<literal>string</literal> から <literal>int</literal>
+  への型変換が走り、<literal>10</literal> が生まれる (コード量に頓着しないなら、<literal>1</literal> を 10
+  個足し合わせてももちろん 10 が作れる)。</simpara>
+<simpara>また、<literal>error_reporting</literal> に指定しているのは <literal>-1</literal> である。 これは、<literal>!</literal>
+  によって文字列を <literal>false</literal> にし、<literal>+</literal> によって <literal>false</literal> を <literal>0</literal>
+  にし、さらにビット反転して <literal>-1</literal> にしている。</simpara>
+</section>
+<section xml:id="_if_文なしで条件分岐">
+  <title><literal>if</literal> 文なしで条件分岐</title>
+  <simpara>三項演算子ないし <literal>match</literal> 式を使うことで、<literal>if</literal>
+    を一切書かずに条件分岐ができる。 また、<literal>&amp;&amp;</literal> / <literal>||</literal> も使えることがある。
+    遅延評価が不要なケースでは、<literal>[$t, $f][$cond]</literal>
+    のような形で分岐することもできる。</simpara>
+</section>
+<section xml:id="_whilefor_文なしでループ">
+  <title><literal>while</literal>、<literal>for</literal> 文なしでループ</title>
+  <simpara>不動点コンビネータを使って無名再帰する
+  (詳しい説明は省略する。これらの単語で検索してほしい)。 ここでは、一般に
+  Z コンビネータとして知られるものを使った (<literal>$z</literal>)。</simpara>
+<simpara>実際のところ、<literal>$🤡</literal> や <literal>$🎪</literal>、<literal>$🐘</literal> は、一度 Scheme (Lisp の一種)
+で書いてから PHP に翻訳する形で記述した。</simpara>
+<simpara>なお、PHP は末尾再帰の最適化をおこなわない (少なくとも今のところは)
+ので、 あまりに長い brainf*ck
+プログラムを書くとスタックオーバーフローする。</simpara>
+</section>
+</section>
+</section>
+<section xml:id="_第2問_riddle_php">
+  <title>第2問 riddle.php</title>
+  <simpara>ソースコードはこちら。実行には PHP 8.0 以上が必要なので注意。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  /*********************************************************
+  * This program displays a PHPer token.                  *
+  * Guess 'N'.                                            *
+  *                                                       *
+  * Hints:                                                *
+  * - N itself has no special meaning, e.g., 42, 8128,    *
+  *   it is selected at random.                           *
+  * - Each element of $token represents a single letter.  *
+  * - One letter consists of 5x5 cells.                   *
+  * - Remember, the output is a complete PHPer token.     *
+  *                                                       *
+  * License:                                              *
+  *   https://creativecommons.org/publicdomain/zero/1.0/  *
+  *********************************************************/
+  const N = 0 /* Change it to your answer. */;
+  assert(0 &lt;= N &amp;&amp; N &lt;= 0b11111_11111_11111_11111_11111);
+
+  $token = [
+  0x14B499C,
+  0x0BE34CC, 0x01C9C69,
+  0x0ECA069, 0x01C2449, 0x0FDB166, 0x01C9C69,
+  0x01C1C66, 0x0FC1C47, 0x01C1C66,
+  0x10C5858, 0x1E4E3B8, 0x1A2F2F8,
+  ];
+  foreach ($token as $x) {
+  $x = $x ^ N;
+
+  $x = sprintf('%025b', $x);
+  $x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);
+  $x = implode("\n", str_split($x, length: 5));
+  echo "{$x}\n\n";
+  }</programlisting>
+<simpara>さて、この問題はさきほどのように単純に実行しただけでは、謎のブロックが表示されるだけでトークンは得られない。
+トークンを得るためには、ソースコードを読み、定数 <literal>N</literal>
+を特定する必要がある。</simpara>
+<simpara>ここでは、私の想定解を解説する。</simpara>
+<section xml:id="_読解">
+  <title>読解</title>
+  <simpara>まずはソースコードを読んでいく。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">$token = [
+  // 略
+  ];</programlisting>
+<simpara>数値からなる <literal>$token</literal> があり、各要素をループしている。</simpara>
+<programlisting language="php" linenumbering="unnumbered">  $x = $x ^ N;</programlisting>
+<simpara>まずは排他的論理和 (xor) を取り、</simpara>
+<programlisting language="php" linenumbering="unnumbered">  $x = sprintf('%025b', $x);</programlisting>
+<simpara>二進数に変換して、</simpara>
+<programlisting language="php" linenumbering="unnumbered">  $x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);</programlisting>
+<simpara>0 を空白に、1 を <literal>#</literal> にし、</simpara>
+<programlisting language="php" linenumbering="unnumbered">  $x = implode("\n", str_split($x, length: 5));</programlisting>
+<simpara>5文字ごとに区切ったあと、改行で結合している。</simpara>
+</section>
+<section xml:id="_ヒント">
+  <title>ヒント</title>
+  <simpara>次に、ソースコードに書いてあるヒントを読んでいく。</simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara><literal>N</literal> それ自体は、42 や 8128
+      といったような特別な意味を持たず、ランダムに決められている</simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>$token</literal> の各要素は、1文字を表す</simpara>
+  </listitem>
+  <listitem>
+    <simpara>1文字は 5x5 のセルからなる</simpara>
+  </listitem>
+  <listitem>
+    <simpara>出力されるのは、完全な PHPer トークンである</simpara>
+  </listitem>
+</itemizedlist>
+<simpara>ここで、PHPer トークンは必ず <literal>#</literal> 記号から始まることを思いだすと、
+<literal>$token</literal> の最初の数字 <literal>0x14B499C</literal> は、変換の結果 <literal>#</literal>
+になるのではないかと予想される (なお、このことは、リポジトリの README
+ファイルに追加ヒントとして書かれている)。</simpara>
+</section>
+<section xml:id="_解く">
+  <title>解く</title>
+  <simpara>ここまでわかれば、あと一歩で解ける。すなわち、<literal>0x14B499C</literal> が <literal>#</literal>
+    に変換されるような <literal>N</literal> を見つければよい。</simpara>
+  <simpara><literal>N</literal> は高々</simpara>
+  <programlisting language="php" linenumbering="unnumbered">assert(0 &lt;= N &amp;&amp; N &lt;= 0b11111_11111_11111_11111_11111);</programlisting>
+  <simpara>なのでブルートフォースしてもよいが、ここではブルートフォースしない方法を紹介する。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  $x = 0x14B499C;
+
+  $x = $x ^ N;
+
+  $x = sprintf('%025b', $x);
+  $x = str_replace(search: ['0', '1'], replace: [' ', '#'], subject: $x);
+  $x = implode("\n", str_split($x, length: 5));
+
+  assert($x ===
+  " # # \n" .
+  "#####\n" .
+  " # # \n" .
+  "#####\n" .
+  " # # ");</programlisting>
+<simpara>この一連の変換に対する逆変換を考えると、次のようになる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+$x =
+" # # \n" .
+"#####\n" .
+" # # \n" .
+"#####\n" .
+" # # ";
+
+$x = implode('', explode("\n", $x));
+$x = str_replace(search: [' ', '#'], replace: ['0', '1'], subject: $x);
+$x = bindec($x);
+
+$n = $x ^ 0x14B499C;
+
+echo "N = $n\n";</programlisting>
+<simpara>これを実行すると、<literal>N</literal> が得られる。</simpara>
+</section>
+</section>
+<section xml:id="_第3問_toquine_php">
+  <title>第3問 toquine.php</title>
+  <simpara>ソースコードはこちら。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  // License: https://creativecommons.org/publicdomain/zero/1.0/
+  // This is a quine-like program to generate a PHPer token.
+  // Execute it like this: php toquine.php | php | php | php | ...
+
+  $s = &lt;&lt;&lt;'Q'
+  &lt;?cuc
+  // Yvprafr: uggcf://perngvirpbzzbaf.bet/choyvpqbznva/mreb/1.0/
+  // Guvf vf n dhvar-yvxr cebtenz gb trarengr n CUCre gbxra.
+  // Rkrphgr vg yvxr guvf: cuc gbdhvar.cuc | cuc | cuc | cuc | ...
+  %f$f = %f;
+  $f = fge_ebg13($f); $kf = [
+  %f,
+  ];
+  $g = ahyy.snyfr; sbe ($v = 0; $v &lt;= vagqvi(__YVAR__-035,6); ++$v) vs (!vffrg($kf[$v])) oernx; ryfr
+  $g .= vzcybqr("\a", fge_fcyvg(fge_ercynpr(['0','1'], ['  ','##'], fcevags(pue(37) . '025o', $kf[$v])), 012)) . "\a\a";
+  $jf = neenl_znc(sa($j) =&gt; vzcybqr(', ', $j), neenl_puhax(neenl_znc(sa($k) =&gt; fcevags('0k' . pue(37) . '07K', $k), $kf), 10));
+  cevags($f, $g, fge_ebg13("&lt;&lt;&lt;'Q'\a{$f}\aQ"), vzcybqr(",\a", $jf));
+  Q;
+  $s = str_rot13($s); $xs = [
+  0x0AFABEA, 0x1F294A7, 0x1F2109F, 0x1F294A7, 0x0002800, 0x1F2109F, 0x0117041, 0x1F294A7, 0x1FAD6B5, 0x1F295B7,
+  0x010FC21, 0x1FAD6B5, 0x1151151, 0x010FC21, 0x1F294A7, 0x1F295B7, 0x1FAD6B5, 0x1F294A7, 0x1F295B7, 0x1F8C63F,
+  0x1F8C631, 0x1FAD6B5, 0x17AD6BD, 0x17AD6BD, 0x1F8C63F, 0x1F295B7,
+  ];
+  $t = null.false; for ($i = 0; $i &lt;= intdiv(__LINE__-035,6); ++$i) if (!isset($xs[$i])) break; else
+  $t .= implode("\n", str_split(str_replace(['0','1'], ['  ','##'], sprintf(chr(37) . '025b', $xs[$i])), 012)) . "\n\n";
+  $ws = array_map(fn($w) =&gt; implode(', ', $w), array_chunk(array_map(fn($x) =&gt; sprintf('0x' . chr(37) . '07X', $x), $xs), 10));
+  printf($s, $t, str_rot13("&lt;&lt;&lt;'D'\n{$s}\nD"), implode(",\n", $ws));</programlisting>
+<simpara>コメントにもあるとおり、次のようにして実行すれば答えがでてくる。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ php toquine.php | php | php | php | ...</programlisting>
+<simpara>実際にはもう少しパイプで繋げなければならない。</simpara>
+<section xml:id="_解説_2">
+  <title>解説</title>
+  <section xml:id="_プログラム全体_2">
+    <title>プログラム全体</title>
+    <simpara>コメントにもあるとおり、これは quine (風) のプログラムになっている。
+    Quine
+    とは、自分のソースコードをそっくりそのまま出力するようなプログラムのことである。</simpara>
+  <simpara>このプログラムは、実行すると自身とほとんど同じプログラムを出力する。
+  異なるのはトークンになっている部分のみである。</simpara>
+</section>
+<section xml:id="_トークン">
+  <title>トークン</title>
+  <simpara><literal>$xs</literal> がトークンに対応している。変換のロジックは <literal>riddle.php</literal>
+    とほぼ同じなので省略する。</simpara>
+</section>
+<section xml:id="_状態保持">
+  <title>状態保持</title>
+  <simpara>トークンの何文字目まで出力したかを、ソースコードを変えずに (quine
+  なので) 覚えておく必要がある。
+  このプログラムでは、トークンが出力されるとソースコードがだんだんと長くなっていくのを利用して、<literal><emphasis>LINE</emphasis></literal>
+  から情報を取得している。</simpara>
+</section>
+<section xml:id="_rot_13">
+  <title>ROT 13</title>
+  <simpara>Quine は、素朴に書くとプログラムの一部が 2回記述されてしまう。
+  これがあまり美しくないので、<literal>toquine.php</literal> では、ROT 13
+  変換を使って難読化した。</simpara>
+<simpara>それにしてもなぜこんなものが標準ライブラリに……。</simpara>
+</section>
+</section>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara>解いていただいたみなさん、また、難易度調整につきあっていただいた社内のみなさん、ありがとうございました。</simpara>
+  <simpara>今回は直前に作りはじめたのもあり、3問だけかつ使い古されたネタばかりになってしまいましたが、
+  来年は 5問、より面白い問題を持っていきます。</simpara>
+<simpara>実はもう作りはじめているので、どうか来年もありますように……。</simpara>
+</section>
+</article>

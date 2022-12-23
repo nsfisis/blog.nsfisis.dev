@@ -1,7 +1,6 @@
 = [備忘録] このサイト用の VPS をセットアップしたときのメモ
 :tags: note-to-self
-:description: GitHub Pages でホストしていたこのサイトを VPS へ移行したので、 \
-              そのときにやったことのメモ。99 % 自分用。
+:description: GitHub Pages でホストしていたこのサイトを VPS へ移行したので、そのときにやったことのメモ。99 % 自分用。
 :revision-1: 2022-10-28 公開
 
 == はじめに

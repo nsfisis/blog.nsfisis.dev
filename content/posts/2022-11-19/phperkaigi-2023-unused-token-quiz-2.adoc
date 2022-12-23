@@ -1,7 +1,6 @@
 = PHPerKaigi 2023: ボツになったトークン問題 その 2
 :tags: php, phperkaigi
-:description: 来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、 \
-              ボツになった問題を公開する (その 2)。
+:description: 来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、ボツになった問題を公開する (その 2)。
 :revision-1: 2022-11-19 公開
 
 == はじめに

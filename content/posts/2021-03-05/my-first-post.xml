@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>My First Post</title>
+    <abstract>
+      これはテスト投稿です。これはテスト投稿です。これはテスト投稿です。
+    </abstract>
+    <revhistory>
+      <revision>
+        <date>2021-03-05</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="test">
+    <title>Test</title>
+    <simpara>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+      occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+      mollit anim id est laborum.
+    </simpara>
+  </section>
+</article>

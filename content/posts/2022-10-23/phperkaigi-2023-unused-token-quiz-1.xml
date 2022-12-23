@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>PHPerKaigi 2023: ボツになったトークン問題 その 1</title>
+    <abstract>
+      来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、ボツになった問題を公開する (その 1)。
+    </abstract>
+    <keywordset>
+      <keyword>php</keyword>
+      <keyword>phperkaigi</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-10-23</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>2023 年 3 月 23 日から 25 日にかけて開催予定 (記事執筆時点)
+    の、 <link xl:href="https://phperkaigi.jp/2023/">PHPerKaigi 2023</link>
+    において、昨年と同様に、弊社 <link xl:href="https://www.dgcircus.com/">デジタルサーカス株式会社</link>
+    から、トークン問題を出題予定である。</simpara>
+  <simpara>昨年のトークン問題の記事はこちら:
+  <link xl:href="/posts/2022-04-09/phperkaigi-2022-tokens">PHPerKaigi 2022
+  トークン問題の解説</link></simpara>
+<simpara>すでに 2023
+年用の問題は作成済みであるが、その制作過程の中でいくつかボツ問ができた。せっかくなので、PHPerKaigi
+開催を待つ間に紹介しようと思う。</simpara>
+<simpara>10 月から 2 月まで、毎月 1 記事ずつ公開していく予定 (忘れていなければ)。</simpara>
+</section>
+<section xml:id="_問題">
+  <title>問題</title>
+  <simpara>注意: これはボツ問なので、得られたトークンを PHPerKaigi
+  で入力してもポイントにはならない。</simpara>
+<programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+$π = $argv[1] ?? null;
+if ($π === null) {
+exit('No input.');
+}
+$π = trim($π);
+if (!is_numeric($π)) {
+exit('Invalid input.');
+}
+
+$s = implode(array_map(chr(...), str_split($π, 2)));
+
+preg_match('/(\x23.+?) /', $s, $m);
+$t = $m[1] ?? '';
+
+if (md5($t) === '056e831a4146bf123e8ea16613303d2e') {
+echo "Token: {$t}\n";
+} else {
+echo "Failed.\n";
+}</programlisting>
+</section>
+<section xml:id="_トークン入手方法">
+  <title>トークン入手方法</title>
+  <simpara>ソースを見るとわかるとおり、<literal>$argv[1]</literal> を参照している。それを <literal>$π</literal>
+    なる変数に代入しているので、円周率を渡してみる。</simpara>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ php Q.php 3.14
+  Failed.</programlisting>
+<simpara>失敗してしまった。精度を上げてみる。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ php Q.php 3.1415
+Failed.</programlisting>
+<simpara>だめだった。これを成功するまで繰り返す。</simpara>
+<simpara>最初にトークンが得られるのは、小数点以下 16
+桁目まで入力したときで、こうなる。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ php Q.php 3.1415926535897932
+Token: #YO</programlisting>
+<simpara>めでたくトークン「#YO」が手に入った。</simpara>
+</section>
+<section xml:id="_解説">
+  <title>解説</title>
+  <simpara>短いので頭から追っていく。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">$π = $argv[1] ?? null;
+  if ($π === null) {
+  exit('No input.');
+  }
+  $π = trim($π);
+  if (!is_numeric($π)) {
+  exit('Invalid input.');
+  }</programlisting>
+<simpara>入力のバリデーション部分。数値のみ受け付ける。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$s = implode(array_map(chr(...), str_split($π, 2)));</programlisting>
+<simpara><literal>$π</literal> を 2 文字ごとに区切り (<literal>str_split</literal>)、数値を ASCII
+コードと見做して文字に変換 (<literal>chr</literal>) して結合 (<literal>implode</literal>) している。</simpara>
+<simpara>例えば、<literal>$π</literal> が <literal>'656667'</literal> だったとすると、<literal>65</literal>、<literal>66</literal>、<literal>67</literal> に対応した
+<literal>'A'</literal>、<literal>'B'</literal>、<literal>'C'</literal> へと変換され、<literal>'ABC'</literal> になる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$π = '656667';
+$s = implode(array_map(chr(...), str_split($π, 2)));
+echo $s;
+// =&gt; ABC</programlisting>
+<programlisting language="php" linenumbering="unnumbered">preg_match('/(\x23.+?) /', $s, $m);
+$t = $m[1] ?? '';</programlisting>
+<simpara>正規表現でマッチングしている。<literal>\x23</literal> は <literal>#</literal>
+  と同じであることに留意すると、この正規表現は「<literal>#</literal> から始まる 2
+  以上の長さ (含 <literal>#</literal>)
+  の文字列で、最初に現れるスペースまで」にマッチする。つまりこれは、PHPerKaigi
+  におけるトークンである。</simpara>
+<simpara>なお、<literal>#</literal> を直接書いていないのは、<literal>/#.+?) /</literal> と書くと、<literal>#.+?)</literal>
+  という意図せぬトークンが登録されてしまうからである。</simpara>
+<programlisting language="php" linenumbering="unnumbered">if (md5($t) === '056e831a4146bf123e8ea16613303d2e') {
+echo "Token: {$t}\n";
+} else {
+echo "Failed.\n";
+}</programlisting>
+<simpara>最後にトークンのハッシュ値を見て、想定解かどうかを確認する。</simpara>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara>円周率を何桁も計算して ASCII
+  コード経由で文字列化すれば、トークンっぽいものがどこかで出てくるのではないか、と考えて生まれた作品。</simpara>
+<simpara>最初は真面目に円周率の計算プログラムを組んでいたのだが、いざ動かしてみるとやけに浅いところにあったので驚いた
+(ちなみに、それでも <literal>M_PI</literal> や <literal>pi()</literal>
+では精度が足りない)。見つけたときは狂喜したものの、冷静になってみると大して面白くなかったのでボツになった。むしろ、100
+万桁目くらいに埋まっていてくれたほうがよかったかもしれない。</simpara>
+</section>
+</article>

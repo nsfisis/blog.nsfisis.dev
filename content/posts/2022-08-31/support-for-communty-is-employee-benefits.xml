@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>弊社の PHP Foundation への寄付に寄せて</title>
+    <abstract>
+      先日、私の勤めるデジタルサーカス株式会社が、PHP Foundation へ寄付をおこないました。本件を社内でしつこく推進した1人として、推進の理由等を書き残しておきます。
+    </abstract>
+    <revhistory>
+      <revision>
+        <date>2022-08-31</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara><emphasis role="strong">注:
+    これは私個人の意見であり、所属する組織を代表するものではありません。</emphasis></simpara>
+<simpara>先日、私の勤める <link xl:href="https://www.dgcircus.com/">デジタルサーカス株式会社</link> が
+<link xl:href="https://opencollective.com/phpfoundation">PHP Foundation</link> へ $2,000
+の寄付をおこないました。</simpara>
+<simpara>記事: <link xl:href="https://www.dgcircus.com/news/581">https://www.dgcircus.com/news/581</link></simpara>
+<simpara>本件を社内でしつこく推進した1人として、推進の理由等を書き残しておきます。</simpara>
+</section>
+<section xml:id="_なぜ">
+  <title>なぜ？</title>
+  <simpara>組織としての寄付理由は前掲した記事に譲るとして、ここでは、私が社内でこの件を推進した理由について書くことにします。</simpara>
+  <simpara>当時の考えを端的にまとめた社内チャットの投稿があったので、それを引用します:</simpara>
+  <blockquote>
+    <simpara>結局これを通したい (私の中での)
+    最大の理由が、「自分の勤める会社が、これをやる会社であってほしい」というのがあり、↑にしても、感情ベースの理由しか出せていないというのが説得力に欠けている理由なのだと思いますが、寄付の報告が流れてきたり、OSS
+    のフリーライドの話が流れてきたりするたびに、自尊心が毀損される、というか
+    (これは大袈裟すぎる表現で、実際にはそこまで明確に傷ついているわけではありませんが)。</simpara>
+  <simpara>追記: 「肩身が狭くなる」というのがより適切でした。</simpara>
+</blockquote>
+<simpara>※文中の「↑にしても」は、ここに載せていない別の投稿を指しています。</simpara>
+<simpara>OSS を金銭的に支援したり、技術カンファレンスへ協賛したり (あるいは
+<link xl:href="https://twitter.com/tomzoh">CTO</link> がカンファレンスを年2で主催したり:
+<link xl:href="https://iosdc.jp">iOSDC</link> <link xl:href="https://phperkaigi.jp">PHPerKaigi</link>)
+といった行為は、コミュニティへの貢献であると同時に、社員に対する精神的福利厚生でもあると言えるでしょう
+(知らんけど)。これらは、技術や技術者を大切にする組織である、ということの、対外的にも対内的にも強力なメッセージなのです。</simpara>
+<simpara>以上が、私が社内で寄付の件を進めた (かなり私的な) 理由です。</simpara>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara>最終的に社としての寄付まで漕ぎ着けられたのは、もちろん私の力ではなく役員の方々の決定によるものです。この場を借りて感謝申し上げます。</simpara>
+</section>
+</article>

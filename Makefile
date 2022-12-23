@@ -22,7 +22,7 @@ clean:
 
 .PHONY: gen
 gen:
-	@ruby nuldoc.rb
+	@./nuldoc
 
 .PHONY: local_up
 local_up:

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+base_dir="$(dirname "$BASH_SOURCE")"
+
+deno run \
+    --allow-read="$base_dir" \
+    --allow-write="$base_dir/public" \
+    "$base_dir/nuldoc-src/main.ts"

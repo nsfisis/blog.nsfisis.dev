@@ -1,0 +1,7 @@
+{
+  "importMap": "import_map.json"
+  "tasks": {
+    "check": "deno check nuldoc-src/main.ts && deno lint -- nuldoc-src/ && deno fmt --check -- nuldoc-src/",
+    "fmt": "deno fmt -- nuldoc-src",
+  }
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>term-banner: ターミナルにバナーを表示するツールを書いた</title>
+    <abstract>
+      ターミナルに任意の文字のバナーを表示するためのツールを Go で書いた。
+    </abstract>
+    <revhistory>
+      <revision>
+        <date>2022-04-24</date>
+        <revremark>公開</revremark>
+      </revision>
+      <revision>
+        <date>2022-04-27</date>
+        <revremark>-f オプションについて追記</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>こんなものを作った。</simpara>
+    <literallayout class="monospaced">$ term-banner 'Hello, World!' 'こんにちは、' '世界！'</literallayout>
+    <simpara>image::https://raw.githubusercontent.com/nsfisis/term-banner/main/screenshot.png[term-banner
+    のスクリーンショット]</simpara>
+  <simpara>コマンドライン引数として渡した文字列をターミナルに大きく表示する。</simpara>
+  <simpara>リポジトリはこちら: <link xl:href="https://github.com/nsfisis/term-banner">https://github.com/nsfisis/term-banner</link></simpara>
+</section>
+<section xml:id="_motivation">
+  <title>Motivation</title>
+  <simpara>以前、https://github.com/nsfisis/big-clock-mode[big-clock-mode]
+  という似たようなプログラムを書いた。 これは tmux の <literal>:clock-mode</literal>
+  コマンドに着想を得たもので、<literal>:clock-mode</literal>
+  よりも大きく現在時刻を表示する。</simpara>
+<simpara><literal>big-clock-mode</literal>
+  を開発したのは、次のようなシチュエーションで使うためである。
+  弊社では現在リモートワークが基本だが、web
+  会議などで画面共有しているときに、休憩を挟んで特定の時刻から再開する、ということがある。
+  こういったケースで、画面上に現在の時刻を大きめに表示しておくと、モニタから離れても遠くから時刻がわかるので便利である。</simpara>
+<simpara>それこそタイマアプリか何かを使えばいいのだが、ターミナルに棲むいきものとしては、住処から離れたくないわけだ。</simpara>
+<simpara>しばらく便利に使っていたのだが、ひとつ不満点が出てきた。それは、再開する時刻がいつだったかを覚えておかなければならないということだ。
+どこかにメモしておいてもいいが、せっかくなら現在時刻とともに表示させておきたい。</simpara>
+<simpara>そんなわけで、「任意の文字列をターミナルに表示する」プログラムを書く運びとなった。
+まあ、作らなくても探せばあると思うが、作りたいものは作りたいので知ったことではない。</simpara>
+</section>
+<section xml:id="_プログラム">
+  <title>プログラム</title>
+  <simpara>全体の流れは次のようになっている。</simpara>
+  <orderedlist numeration="arabic">
+    <listitem>
+      <simpara>フォントファイルを読み込む</simpara>
+    </listitem>
+    <listitem>
+      <simpara>コマンドライン引数を Shift-JIS に変換する (フォントが Shift-JIS
+      基準で並んでいるため)</simpara>
+  </listitem>
+  <listitem>
+    <simpara>1文字ずつレンダリングしていく</simpara>
+  </listitem>
+</orderedlist>
+<simpara><literal>big-clock-mode</literal> が Go 製なので、今回も Go で書いた。 PNG
+が標準ライブラリにあったり、Shift-JIS
+のエンコーディングが準標準ライブラリにあったりしたのは助かった。</simpara>
+<simpara>フォントファイルは <literal>go:embed</literal>
+  で実行ファイルに埋め込んでいるので、ビルド後はワンバイナリで動く。
+  仕事ではスクリプト言語ばかり書いているが、やはりコンパイル言語はいい。</simpara>
+</section>
+<section xml:id="_フォント">
+  <title>フォント</title>
+  <simpara>フリーの 8x8
+  ビットマップフォントである、https://littlelimit.net/misaki.htm[美咲フォント
+  2021-05-05a 版] を使わせていただいた。</simpara>
+<simpara>はじめは自分でポチポチ打っていたのだが、「き」くらいまでやって挫折した。
+同じく 8x8
+で作っていたのだが、平仮名でさえも、この小さなキャンバスにはとても収められない。</simpara>
+<simpara>美咲フォントは、平仮名・片仮名に留まらず、JIS
+第一・第二水準の漢字までサポートしている。
+第二水準ともなると一生お目にかかることのない字の方が多いくらいだが、これをこの大きさで書くというのは、もはや芸術の域である。</simpara>
+<simpara>さらに言うと、実のところ美咲フォントは実サイズ 7x7
+で作られており、余白が設けられている。
+これは、単純にそのまま並べても字間・行間を確保できるようにという配慮である。
+おかげでコーディングまで楽になった。</simpara>
+<simpara>ゴシック体と明朝体があったが、私の好みで明朝体の方にした。
+ただ、ゴシック体の方が見やすい気がするので、フォントを選べるように後ほど拡張するかもしれない。</simpara>
+<simpara>2022-04-27 追記: <literal>-f</literal> オプションで選べるようにした。</simpara>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara>あなたもターミナルに住んでみませんか？</simpara>
+</section>
+</article>

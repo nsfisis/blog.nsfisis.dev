@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[Python] クロージャとUnboundLocalError: local variable 'x' referenced before assignment</title>
+    <abstract>
+      Python における UnboundLocalError の理由と対処法。
+    </abstract>
+    <keywordset>
+      <keyword>python</keyword>
+      <keyword>python3</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2021-10-02</date>
+        <revremark>Qiita から移植</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <simpara>この記事は Qiita から移植してきたものです。 元 URL:
+  <link xl:href="https://qiita.com/nsfisis/items/5d733703afcb35bbf399">https://qiita.com/nsfisis/items/5d733703afcb35bbf399</link></simpara>
+<simpara><hr/></simpara>
+<simpara>本記事は Python 3.7.6 の動作結果を元にして書かれている。</simpara>
+<simpara>Python でクロージャを作ろうと、次のようなコードを書いた。</simpara>
+<programlisting language="python" linenumbering="unnumbered">def f():
+x = 0
+def g():
+x += 1
+g()
+
+f()</programlisting>
+<simpara>関数 <literal>g</literal> から 関数 <literal>f</literal> のスコープ内で定義された変数 <literal>x</literal> を参照し、それに
+1 を足そうとしている。 これを実行すると <literal>x += 1</literal>
+の箇所でエラーが発生する。</simpara>
+<blockquote>
+  <simpara>UnboundLocalError: local variable `x' referenced before assignment</simpara>
+</blockquote>
+<simpara>local変数 <literal>x</literal> が代入前に参照された、とある。これは、<literal>f</literal> の <literal>x</literal>
+  を参照するのではなく、新しく別の変数を <literal>g</literal> 内に作ってしまっているため。
+  前述のコードを宣言と代入を便宜上分けて書き直すと次のようになる。<literal>var</literal>
+  を変数宣言のための構文として擬似的に利用している。</simpara>
+<programlisting language="python" linenumbering="unnumbered"># 注: var は正しい Python の文法ではない。上記参照のこと
+def f():
+var x           #  f の local変数 'x' を宣言
+x = 0           #  x に 0 を代入
+def g():        #  f の内部関数 g を定義
+var x       #  g の local変数 'x' を宣言
+#  たまたま f にも同じ名前の変数があるが、それとは別の変数
+x += 1      #  x に 1 を加算 (x = x + 1 の糖衣構文)
+#  加算する前の値を参照しようとするが、まだ代入されていないためエラー
+g()</programlisting>
+<simpara>当初の意図を表現するには、次のように書けばよい。</simpara>
+<programlisting language="python" linenumbering="unnumbered">def f():
+x = 0
+def g():
+nonlocal x   ## (*)
+x += 1
+g()</programlisting>
+<simpara><literal>(*)</literal> のように、<literal>nonlocal</literal> を追加する。これにより一つ外側のスコープ (<literal>g</literal>
+  の一つ外側 = <literal>f</literal>) で定義されている <literal>x</literal> を探しに行くようになる。</simpara>
+</article>

@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[PHP] fizzbuzz を書く。1行あたり2文字で。</title>
+    <abstract>
+      PHP で、fizzbuzz を書いた。ただし、1行あたりに使える文字数は2文字まで。
+    </abstract>
+    <keywordset>
+      <keyword>php</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-09-28</date>
+        <revremark>公開</revremark>
+      </revision>
+      <revision>
+        <date>2022-09-29</date>
+        <revremark>小さな文言の修正・変更</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_記事の構成について">
+    <title>記事の構成について</title>
+    <simpara>この記事は、普通の fizzbuzz
+    を徐々に変形して最終形にしていく、という構成で書かれている。最終形を見てどのような仕組みで動いているのか解読してから解説を読みたい、というかたがいれば、
+    <link xl:href="https://gist.github.com/nsfisis/04c227d5a419867472a0b23a83ad2919#file-fizzbuzz-php-2-letters-per-line-and-supports-php-8-x-without-warnings">このページ</link>
+    にソースコードがあるので、そちらを先に見てほしい。</simpara>
+</section>
+<section xml:id="_レギュレーション">
+  <title>レギュレーション</title>
+  <simpara>PHP で、次のような制約の下に fizzbuzz を書いた。</simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara>1行あたりの文字数は2文字までに収めること (ただし <literal>&lt;?php</literal> タグは除く)</simpara>
+      <itemizedlist>
+        <listitem>
+          <simpara>厳密な定義: <literal>&lt;?php</literal> タグ以降のソースコードが、2 byte ごとに
+          ラインフィード (LF) で区切られること</simpara>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+  <listitem>
+    <simpara>スペースやタブを使用しないこと</simpara>
+  </listitem>
+  <listitem>
+    <simpara>ループのアンロールをしないこと</simpara>
+    <itemizedlist>
+      <listitem>
+        <simpara>100 回ループの代わりに 100 回コードをコピペ、というのは禁止</simpara>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+  <listitem>
+    <simpara>PHP 7.4〜8.1 で動作すること</simpara>
+  </listitem>
+  <listitem>
+    <simpara>実行時に Notice や Warning が出ないこと</simpara>
+  </listitem>
+  <listitem>
+    <simpara>標準的なインストール構成の PHP で実現できること
+    (デフォルトで有効になっていない拡張等を使わないこと)</simpara>
+</listitem>
+</itemizedlist>
+<simpara>備考: PHP には <literal>short_open_tag</literal>
+  というオプションがあり、これを有効にするとファイル冒頭の <literal>&lt;?php</literal>
+  の代わりに <literal>&lt;?</literal>
+  を使うことができ、文字どおり1行2文字で書ける。ただ、このオプションはデフォルト
+  off になっている環境が多いようなので、今回は使わないことにした。</simpara>
+</section>
+<section xml:id="_主な障害">
+  <title>主な障害</title>
+  <simpara>1行あたりの文字数など、適当に改行を挟めばいいだけではないのか？</simpara>
+  <simpara>特に、C言語でこのような試みをおこなったことがあるかたならそう思うだろう。事実、Cでのこの制約はほとんど無意味に等しい。</simpara>
+  <programlisting language="c" linenumbering="unnumbered">#\
+  i\
+  n\
+  c\
+  l\
+  u\
+  d\
+  e\
+  &lt;\
+  s\
+  t\
+  d\
+  i\
+  o\
+  .\
+  h\
+  &gt;\
+  /*
+  */
+  i\
+  n\
+  t\
+  /*
+  */
+  m\
+  a\
+  i\
+  n(
+  ){
+  f\
+  o\
+  r(
+  i\
+  n\
+  t\
+  /*
+  */
+  i=
+  1;
+  i&lt;
+  1\
+  0\
+  0;
+  i\
+  +\
+  +)
+  if
+  (i
+  %\
+  15
+  ==
+  0)
+  p\
+  r\
+  i\
+  n\
+  t\
+  f(
+  "\
+  F\
+  i\
+  z\
+  z\
+  B\
+  u\
+  z\
+  z\
+  %\
+  c\
+  ",
+  10
+  );
+
+  /* あとは同じように普通のプログラムを変形するだけなので省略 */</programlisting>
+<simpara>バックスラッシュを使った行継続がトークンを区切らない、というのがポイントだ。</simpara>
+<simpara>さて、PHP
+ではそもそもバックスラッシュを行継続に使うことができない。これにより、「3文字以上からなるトークンが一切使えない」という制約が課される。例えば、<literal>echo</literal>
+で出力することや、<literal>for</literal> でループすること、<literal>new</literal>
+でインスタンスを生成することができない。特に、出力は fizzbuzz
+をどんなアルゴリズムで実装しようとおこなわなければならないので、できないのは致命的である。</simpara>
+<simpara>当然、名前が3文字以上ある関数も使えない。なお、標準 PHP
+の範囲内において、名前が 2文字以下の関数は以下のとおりである:</simpara>
+<itemizedlist>
+  <listitem>
+    <simpara><literal>_</literal>: <literal>gettext</literal> のエイリアス</simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>dl</literal>: 拡張モジュールをロードする</simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>pi</literal>: 円周率を返す</simpara>
+  </listitem>
+</itemizedlist>
+<simpara>(環境によって多少は変わるかも)</simpara>
+<simpara>2文字の関数を定義しまくった拡張モジュールを用意しておいて <literal>dl()</literal>
+  で読み込む行為は、レギュレーションで定めた</simpara>
+<blockquote>
+  <itemizedlist>
+    <listitem>
+      <simpara>標準的なインストール構成の PHP で実現できること
+      (デフォルトで有効になっていない拡張等を使わないこと)</simpara>
+  </listitem>
+</itemizedlist>
+</blockquote>
+<simpara>に反する
+(というより、「それだとおもしろくもなんともないので、このルールを足した」というのが正しい)。</simpara>
+<simpara>また、2文字だと文字列がまともに書けないのも辛い。<literal>''</literal> だけで
+2文字使うので、「1文字の文字列リテラル」というものを書くことができない。PHP
+では文字列リテラル中に生の改行が書けるので</simpara>
+<programlisting language="php" linenumbering="unnumbered">$a
+='
+a'
+;;</programlisting>
+<simpara>とすると <literal>$a</literal> は <literal>"\na"</literal> になるのだが、余計な改行が入ってしまう。</simpara>
+<simpara>これらの障害をどのように乗り越えるのか、次節から見ていく。</simpara>
+</section>
+<section xml:id="_解説">
+  <title>解説</title>
+  <section xml:id="_普通の_fizzbuzz">
+    <title>普通の (?) fizzbuzz</title>
+    <simpara>まずは普通に書くとしよう。</simpara>
+    <literallayout class="monospaced">&lt;?php
+
+    for ($i = 1; $i &lt; 100; $i++) {
+    echo (($i % 3 ? '' : 'Fizz') . ($i % 5 ? '' : 'Buzz') ?: $i) . "\n";
+    }</literallayout>
+  <simpara>素直に書いた fizzbuzz
+  とは言い難いが、このくらいは普通だということにしておかないと、この先がやっていられないので許してほしい。</simpara>
+</section>
+<section xml:id="_for_の排除">
+  <title><literal>for</literal> の排除</title>
+  <simpara><literal>for</literal>
+    は、3文字もある長いキーワードである。こんなものは使えない。<literal>array_</literal>
+    系の関数を使って、適当に置き換えるとしよう。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  $s = range(1, 100);
+  array_walk(
+  $s,
+  fn($i) =&gt;
+  printf((($i % 3 ? '' : 'Fizz') . ($i % 5 ? '' : 'Buzz') ?: $i) . "\n"),
+  );</programlisting>
+<simpara><literal>array_walk</literal> や <literal>range</literal>、<literal>printf</literal> といった <literal>for</literal>
+  よりも長いトークンが現れてしまったが、これは次節で直すことにする。なお、<literal>echo</literal>
+  は文 (statement) であり式 (expression) ではないので、式である <literal>printf</literal>
+  に置き換えた。</simpara>
+</section>
+<section xml:id="_関数呼び出しの短縮">
+  <title>関数呼び出しの短縮</title>
+  <simpara><literal>range</literal>、<literal>array_walk</literal>、<literal>printf</literal>
+    は長すぎるのでどうにかせねばならない。ここで、PHP
+    の可変関数を使う。可変関数とは、関数名が文字列として入った変数を経由して、関数を呼び出す機能である。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  $r = 'range';
+  $w = 'array_walk';
+  $p = 'printf';
+
+  $s = $r(1, 100);
+  $w(
+  $s,
+  fn($i) =&gt;
+  $p((($i % 3 ? '' : 'Fizz') . ($i % 5 ? '' : 'Buzz') ?: $i) . "\n"),
+  );</programlisting>
+<simpara>これで関数を呼び出している所は短くなった。では、<literal>$r</literal> や <literal>$w</literal> や
+<literal>$p</literal>、また <literal>'Fizz'</literal> や <literal>'Buzz'</literal> はどうやって
+1行2文字に収めるのか。次のテクニックへ移ろう。</simpara>
+</section>
+<section xml:id="_余談_php_8_x_で動作しなくてもいいなら">
+  <title>余談: PHP 8.x で動作しなくてもいいなら</title>
+  <simpara>今回使ったテクニックを説明する前に、余談として、文字列リテラルの短縮法として今回採用しなかったものを紹介する。</simpara>
+  <blockquote>
+    <itemizedlist>
+      <listitem>
+        <simpara>PHP 7.4〜8.1 で動作すること</simpara>
+      </listitem>
+    </itemizedlist>
+  </blockquote>
+  <simpara>というルールがない場合、「未定義の定数が評価された場合、その定数の名前が値になる」という
+  PHP 7.x までの仕様が利用できる。例えば、 <literal>Fizz</literal>
+  という文字列が欲しければ、次のようにする。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$f
+=F
+.i
+.z
+.z
+;;</programlisting>
+<simpara>こうして簡単に文字列を作れる。なお、この仕様は 7.x
+時点でも警告を受けるので、<literal>@</literal> 演算子を使って抑制してやるとよい。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$f
+=@
+F.
+@i
+.#
+@z
+.#
+@z
+;;</programlisting>
+<simpara>むしろ、このことがわかっていたからこそ PHP 8.x
+での動作を要件に課したところがある。</simpara>
+</section>
+<section xml:id="_文字列リテラルの短縮">
+  <title>文字列リテラルの短縮</title>
+  <simpara>実際に使った手法の説明に移る。</simpara>
+  <simpara>ずばり、文字列同士のビット演算を使う。PHP では、文字列同士でビット演算
+  (<literal>&amp;</literal>、<literal>|</literal>、<literal>^</literal>)
+  をした場合、文字列の各バイトごとに指定したビット演算がなされ、それを結合したものが演算結果となる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$a = "12345";
+$b = "world";
+
+// $a ^ $b は次のコードと同じ
+$result = '';
+for ($i = 0; $i &lt; min(strlen($a), strlen($b)); $i++) {
+$result .= $a[$i] ^ $b[$i];
+}
+
+echo $result;
+// =&gt; F]AXQ</programlisting>
+<simpara>これを踏まえ、次のコードを見てみよう。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$x = "x\nOm\n";
+$y = "\nk!\no";
+$r = $x ^ $y;
+echo "$r\n";</programlisting>
+<simpara>実行すると、<literal>range</literal> が表示される。さて、PHP
+では文字列リテラル中に生の改行を直接書いてもよいのだった
+(「主な障害」の節を参照のこと)。書きかえてみよう。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$x
+='x
+Om
+';
+$y
+='
+k!
+o'
+;
+
+$r = $x ^ $y;
+echo "$r\n";</programlisting>
+<simpara>さらに <literal>#</literal> を使って適当に調整すると、次のようになる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">$x
+=#
+'x
+Om
+';
+$y
+='
+k!
+o'
+;#
+$r
+=#
+$x
+^#
+$y
+;#
+
+echo "$r\n";</programlisting>
+<simpara>1行あたり2文字で、<literal>range</literal>
+  という文字列を生成することに成功した。他の必要な文字列にも、同様の処理をほどこす。</simpara>
+<simpara>備考: <literal>Buzz</literal> 中にある小文字の <literal>u</literal> は、このロジックだと non-printable
+な文字になってしまう。ここまでのテクニックを駆使すれば回避するのはそう難しくないので、考えてみてほしい。</simpara>
+</section>
+</section>
+<section xml:id="_完成系">
+  <title>完成系</title>
+  <simpara>完成したものがこちら。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  $x
+  =#
+  'i
+  S'
+  ;;
+  $y
+  ='
+  b!
+  ';
+  $c
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $x
+  =#
+  'x
+  Om
+  ';
+  $y
+  ='
+  k!
+  o'
+  ;#
+  $r
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $x
+  =#
+  'k
+  Sk
+  ~}
+  Ma
+  ';
+  $y
+  ='
+  x!
+  s!
+  k!
+  ';
+  $w
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $x
+  =#
+  'z
+  Hd
+  G'
+  ;#
+  $y
+  ='
+  x!
+  ~!
+  ';
+  $p
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $x
+  =#
+  'L
+  [p
+  ';
+  $y
+  ='
+  c!
+  ';
+  $f
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $x
+  =#
+  'H
+  [p
+  ';
+  $y
+  ='
+  _!
+  ';
+  $b
+  =#
+  $x
+  ^#
+  $y
+  ;#
+  $b
+  [1
+  ]=
+  $c
+  (#
+  13
+  *9
+  );
+  $s
+  =#
+  $r
+  (1
+  ,(
+  10
+  **
+  2)
+  );
+  $w
+  (#
+  $s
+  ,#
+  fn
+  (#
+  $i
+  )#
+  =&gt;
+  $p
+  ((
+  (#
+  $i
+  %3
+  ?#
+  ''
+  :#
+  $f
+  ).
+  (#
+  $i
+  %5
+  ?#
+  ''
+  :#
+  $b
+  )?
+  :#
+  $i
+  )#
+  .'
+  ')
+  );</programlisting>
+</section>
+<section xml:id="_感想など">
+  <title>感想など</title>
+  <simpara>PHP は、スクリプト言語の中だとシンタックスシュガーが少ない
+  (体感)。この挑戦は不可能に思われたが、PHP
+  マニュアルとにらめっこしていたらなんとかなった。</simpara>
+<simpara>みんなもプログラムを細長くしよう。</simpara>
+</section>
+<section xml:id="_余談2_別解">
+  <title>余談2: 別解</title>
+  <simpara>PHP では、バッククォートを使ってシェルを呼び出せる。これは <literal>shell_exec</literal>
+    関数と等価である。さて、PHP
+    ではバックスラッシュによる行継続が使えないと書いたが、シェルでは使える
+    (当然だが、呼び出されるシェルに依存する。Bash
+    なら大丈夫だろう。知らんけど)。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+  printf(`
+  e\
+  c\
+  h\
+  o\
+  \
+  1\
+  2\
+  3\
+  `);</programlisting>
+<simpara>なお、ここでは簡単のため出力に <literal>printf</literal> をそのまま使っているが、実際には
+<literal>printf</literal> という文字列を合成して可変関数で呼び出す。</simpara>
+<simpara>ただし、これでは</simpara>
+<blockquote>
+  <itemizedlist>
+    <listitem>
+      <simpara>スペースやタブを使用しないこと</simpara>
+    </listitem>
+  </itemizedlist>
+</blockquote>
+<simpara>に違反してしまう。スペースが使えないと引数とコマンドを区切れない。これは困った。</simpara>
+<simpara>もうこれ以上は不可能だと思っていたのだが、この記事の執筆中に解決する方法を思いついたので載せておく。</simpara>
+<programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+$c = 'chr';
+
+${
+'_
+'}
+=#
+$c
+(#
+32
+).
+$c
+(#
+92
+);
+
+printf(`
+e\
+c\
+h\
+o\
+${
+'_
+'}
+1\
+2\
+3\
+`);</programlisting>
+<simpara>先程と同じく、<literal>chr</literal> や <literal>printf</literal> を生成する部分は長くなるので省いた。</simpara>
+<literallayout class="monospaced">${
+'_
+'}</literallayout>
+<simpara>は変数で、中にはスペースとエスケープが入っている
+(<literal>chr(32) . chr(92)</literal>)。シェルに渡されている文字列は次のようになる。</simpara>
+<literallayout class="monospaced">e\
+c\
+h\
+o\
+\
+1\
+2\
+3\</literallayout>
+<simpara>これは、前掲したコマンドと同じだ。かくして、スペースを陽に書かずにシェルをおおよそ自由に扱えるようになった。Fizzbuzz
+のワンライナーくらいすぐ書けるだろうから、あとはなんとかなるだろう
+(試してないけど)。</simpara>
+<simpara>ということでこれは別解ということにしておく。</simpara>
+<simpara>ちなみに、PHP 8.2 からは、この記法で Warning が出るようになるようだ。</simpara>
+<literallayout class="monospaced">${
+'_
+'}</literallayout>
+<simpara>最新版で警告が出るというのも美しくないので、私としては本編の解法を推す。</simpara>
+</section>
+</article>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>PHPerKaigi 2023: ボツになったトークン問題 その 2</title>
+    <abstract>
+      来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、ボツになった問題を公開する (その 2)。
+    </abstract>
+    <keywordset>
+      <keyword>php</keyword>
+      <keyword>phperkaigi</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-11-19</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>2023 年 3 月 23 日から 25 日にかけて開催予定 (記事執筆時点) の <link xl:href="https://phperkaigi.jp/2023/">PHPerKaigi 2023</link> において、
+    昨年と同様に、弊社 <link xl:href="https://www.dgcircus.com/">デジタルサーカス株式会社</link> からトークン問題を出題予定である。</simpara>
+  <simpara>昨年のトークン問題の記事はこちら: <link xl:href="/posts/2022-04-09/phperkaigi-2022-tokens/">PHPerKaigi 2022 トークン問題の解説</link></simpara>
+  <simpara>すでに 2023 年用の問題は作成済みであるが、その制作過程の中でいくつかボツ問ができた。せっかくなので、PHPerKaigi 開催を待つ間に紹介しようと思う。</simpara>
+  <simpara>10 月から 2 月まで、毎月 1 記事ずつ公開していく予定 (忘れていなければ)。</simpara>
+  <simpara>その 1 はこちら: <link xl:href="/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/">PHPerKaigi 2023: ボツになったトークン問題 その 1</link></simpara>
+</section>
+<section xml:id="_問題">
+  <title>問題</title>
+  <simpara>注意: これはボツ問なので、得られたトークンを PHPerKaigi で入力してもポイントにはならない。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;</programlisting>
+<simpara>"And Then There Were None" (そして誰もいなくなった) と名付けた作品。変則 quine (自分自身と同じソースコードを出力するプログラム) になっている。</simpara>
+</section>
+<section xml:id="_トークン入手方法">
+  <title>トークン入手方法</title>
+  <simpara>実行してみると、次のような出力が得られる。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">#
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+  &lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;</programlisting>
+<simpara>1 行目を除き、先ほどのコードとほぼ同じものが出てきた。もう一度実行してみる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">#
+W
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;
+&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s='​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"​"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;</programlisting>
+<simpara>今度は 2 行目が書き換えられた。すべての行が変化するまで繰り返すと次のようになる。</simpara>
+<programlisting language="php" linenumbering="unnumbered">#
+W
+E
+L
+O
+V
+E
+P
+H
+P</programlisting>
+<simpara>トークン「#WELOVEPHP」が手に入った。</simpara>
+</section>
+<section xml:id="_解説">
+  <title>解説</title>
+  <simpara>一見すると同じ行が 10 行並んでいるだけなのにも関わらず、なぜそれぞれの行で出力が変わるのか。ソースコードをコピーして、適当なエディタに貼り付けるとわかりやすい。</simpara>
+  <simpara>Vim で開くと次のようになる (1 行目を抜粋)。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"&lt;200b&gt;"):fn($s)=&gt;chr(strlen($s)/3))($s='&lt;200b&gt;&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"&lt;200b&gt;"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;')."\n","\x27$s\x27");?&gt;</programlisting>
+  <simpara><literal>&lt;200b&gt;</literal> と表示されているのは、Unicode の U+200b で、ゼロ幅スペースである。</simpara>
+  <note>
+    <simpara>エディタによっては、ゼロ幅スペースが見えないことがある。VSCode ではブラウザと同様に不可視だった。</simpara>
+  </note>
+  <simpara>文字列リテラルの中にゼロ幅スペースを仕込むことで、見た目を変えずに情報をエンコードすることが可能となる。</simpara>
+  <simpara>続いて、トークンへの変換ロジックを解析する。注目すべきはこの部分だ。以下、ゼロ幅スペースは Vim での表示に合わせて <literal>&lt;200b&gt;</literal> と記載する。</simpara>
+  <programlisting language="php" linenumbering="unnumbered">fn($s)=&gt;chr(strlen($s)/3)</programlisting>
+  <simpara>PHP の <literal>strlen()</literal> は文字列のバイト数を返す。1 行目の <literal>$s</literal> は以下の内容となっており、</simpara>
+  <programlisting language="php" linenumbering="unnumbered">$s='&lt;200b&gt;&lt;?php printf((isset($s)?fn($s)=&gt;trim($s,"&lt;200b&gt;"):fn($s)=&gt;chr(strlen($s)/3))($s=%s)."\n","\x27$s\x27");?&gt;'</programlisting>
+  <simpara>このソースコードは UTF-8 で書かれているので、105 バイトになる。それを 3 で割ると 35 となり、これは <literal>#</literal> の ASCII コードと一致する。他の行も、同様にしてゼロ幅スペースを詰めることで文字列長を調整し、トークンをエンコードしている。</simpara>
+  <simpara>デコード部以外の部分は、quine のための記述である。</simpara>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara><link xl:href="https://blog.rust-lang.org/2021/11/01/cve-2021-42574.html">CVE-2021-42574</link> に着想を得た作品。この脆弱性は、Unicode の制御文字である left-to-right mark と right-to-left mark を利用し、ソースコードの実際の内容を欺く、というもの。簡単のためゼロ幅スペースを用いることとし、ついでに quine にもするとこうなった。</simpara>
+  <simpara>ボツになった理由は、ゼロ幅スペースを表示してくるエディタが想像以上に多かったため。「同じ行が並んでいるだけなのに出力が異なる」というアイデアの根幹を崩されてしまうので、この問題は不採用となった。</simpara>
+</section>
+</article>

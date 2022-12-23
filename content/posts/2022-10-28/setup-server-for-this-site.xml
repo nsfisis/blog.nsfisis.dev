@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[備忘録] このサイト用の VPS をセットアップしたときのメモ</title>
+    <abstract>
+      GitHub Pages でホストしていたこのサイトを VPS へ移行したので、そのときにやったことのメモ。99 % 自分用。
+    </abstract>
+    <keywordset>
+      <keyword>note-to-self</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-10-28</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>これまでこの blog は GitHub Pages でホストしていたのだが、先日 VPS
+    に移行した。そのときにおこなったサーバのセットアップ作業を書き残しておく。99
+    % 自分用の備忘録。別のベンダに移したりしたくなったら見に来る。</simpara>
+  <simpara>未来の自分へ: 特に自動化してないので、せいぜい苦しんでくれ。</simpara>
+</section>
+<section xml:id="_vps">
+  <title>VPS</title>
+  <simpara><link xl:href="https://vps.sakura.ad.jp/">さくらの VPS</link> の 2 GB
+  プラン。そこまで真面目に選定していないので、困ったら移動するかも。</simpara>
+</section>
+<section xml:id="_事前準備">
+  <title>事前準備</title>
+  <section xml:id="_サーバのホスト名を決める">
+    <title>サーバのホスト名を決める</title>
+    <simpara>モチベーションが上がるという効能がある。今回は藤原定家から取って
+    ``teika''
+    にした。たいていいつも源氏物語の帖か小倉百人一首の歌人から選んでいる。</simpara>
+</section>
+<section xml:id="_ssh_の鍵生成">
+  <title>SSH の鍵生成</title>
+  <simpara>ローカルマシンで鍵を生成する。</simpara>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ ssh-keygen -t ed25519 -b 521 -f ~/.ssh/teika.key
+  $ ssh-keygen -t ed25519 -b 521 -f ~/.ssh/github2teika.key</programlisting>
+<simpara><literal>teika.key</literal> はローカルからサーバへの接続用、<literal>github2teika.key</literal>
+  は、GitHub Actions からサーバへのデプロイ用。</simpara>
+</section>
+<section xml:id="_ssh_の設定">
+  <title>SSH の設定</title>
+  <simpara><literal>.ssh/config</literal> に設定しておく。</simpara>
+  <programlisting language="ssh_config" linenumbering="unnumbered">Host teika
+  HostName **********
+  User **********
+  Port **********
+  IdentityFile ~/.ssh/teika.key</programlisting>
+</section>
+</section>
+<section xml:id="_基本のセットアップ">
+  <title>基本のセットアップ</title>
+  <section xml:id="_ssh_接続">
+    <title>SSH 接続</title>
+    <simpara>VPS 契約時に設定した管理者ユーザとパスワードを使ってログインする。</simpara>
+  </section>
+  <section xml:id="_ユーザを作成する">
+    <title>ユーザを作成する</title>
+    <simpara>管理者ユーザで作業すると危ないので、メインで使うユーザを作成する。<literal>sudo</literal>
+      グループに追加して <literal>sudo</literal> できるようにし、<literal>su</literal> で切り替え。</simpara>
+    <programlisting language="shell-session" linenumbering="unnumbered">$ sudo adduser **********
+    $ sudo adduser ********** sudo
+    $ su **********
+    $ cd</programlisting>
+</section>
+<section xml:id="_ホスト名を変える">
+  <title>ホスト名を変える</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ sudo hostname teika</programlisting>
+</section>
+<section xml:id="_公開鍵を置く">
+  <title>公開鍵を置く</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ mkdir ~/.ssh
+  $ chmod 700 ~/.ssh
+  $ vi ~/.ssh/authorized_keys</programlisting>
+<simpara><literal>authorized_keys</literal> には、ローカルで生成した <literal>~/.ssh/teika.key.pub</literal> と
+<literal>~/.ssh/github2teika.key.pub</literal> の内容をコピーする。</simpara>
+</section>
+<section xml:id="_ssh_の設定_2">
+  <title>SSH の設定</title>
+  <simpara>SSH の設定を変更し、少しでも安全にしておく。</simpara>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+  $ sudo vi /etc/ssh/sshd_config</programlisting>
+<itemizedlist>
+  <listitem>
+    <simpara><literal>Port</literal> を変更</simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>PermitRootLogin</literal> を <literal>no</literal> に</simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>PasswordAuthentication</literal> を <literal>no</literal> に</simpara>
+  </listitem>
+</itemizedlist>
+<simpara>そして設定を反映。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ sudo systemctl restart sshd
+$ sudo systemctl status sshd</programlisting>
+</section>
+<section xml:id="_ssh_で接続確認">
+  <title>SSH で接続確認</title>
+  <simpara>今の SSH
+  セッションは閉じずに、ターミナルを別途開いて疎通確認する。セッションを閉じてしまうと、SSH
+  の設定に不備があった場合に締め出しをくらう。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ ssh teika</programlisting>
+</section>
+<section xml:id="_ポートの遮断">
+  <title>ポートの遮断</title>
+  <simpara>デフォルトの 22 番を閉じ、設定したポートだけ空ける。</simpara>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ sudo ufw deny ssh
+  $ sudo ufw allow *******
+  $ sudo ufw enable
+  $ sudo ufw reload
+  $ sudo ufw status</programlisting>
+<simpara>ここでもう一度 SSH の接続確認を挟む。</simpara>
+</section>
+<section xml:id="_github_用の_ssh_鍵">
+  <title>GitHub 用の SSH 鍵</title>
+  <simpara>GitHub に置いてある private リポジトリをサーバから clone したいので、SSH
+  鍵を生成して置いておく。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ ssh-keygen -t ed25519 -b 521 -f ~/.ssh/github.key
+$ cat ~/.ssh/github.key.pub</programlisting>
+<simpara><link xl:href="https://github.com/settings/ssh">GitHub の設定画面</link>
+  から、この公開鍵を追加する。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">$ vi ~/.ssh/config</programlisting>
+<simpara>設定はこう。</simpara>
+<programlisting language="ssh_config" linenumbering="unnumbered">Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/github.key</programlisting>
+<simpara>最後に接続できるか確認しておく。</simpara>
+<programlisting language="shell-session" linenumbering="unnumbered">ssh -T github.com</programlisting>
+</section>
+<section xml:id="_パッケージの更新">
+  <title>パッケージの更新</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ sudo apt update
+  $ sudo apt upgrade
+  $ sudo apt update
+  $ sudo apt upgrade
+  $ sudo apt autoremove</programlisting>
+</section>
+</section>
+<section xml:id="_サイトホスティング用のセットアップ">
+  <title>サイトホスティング用のセットアップ</title>
+  <section xml:id="_dns_に_ip_アドレスを登録する">
+    <title>DNS に IP アドレスを登録する</title>
+    <simpara>このサーバは固定の IP アドレスがあるので、<literal>A</literal>
+      レコードに直接入れるだけで済んだ。</simpara>
+  </section>
+  <section xml:id="_使うソフトウェアのインストール">
+    <title>使うソフトウェアのインストール</title>
+    <programlisting language="shell-session" linenumbering="unnumbered">$ sudo apt install docker docker-compose git make</programlisting>
+  </section>
+  <section xml:id="_メインユーザが_docker_を使えるように">
+    <title>メインユーザが Docker を使えるように</title>
+    <programlisting language="shell-session" linenumbering="unnumbered">sudo adduser ********** docker</programlisting>
+  </section>
+  <section xml:id="_httphttps_を通す">
+    <title>HTTP/HTTPS を通す</title>
+    <simpara>80 番と 443 番を空ける。</simpara>
+    <programlisting language="shell-session" linenumbering="unnumbered">$ sudo ufw allow 80/tcp
+    $ sudo ufw allow 443/tcp
+    $ sudo ufw reload
+    $ sudo ufw status</programlisting>
+</section>
+<section xml:id="_リポジトリのクローン">
+  <title>リポジトリのクローン</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ cd
+  $ git clone git@github.com:nsfisis/nsfisis.dev.git
+  $ cd nsfisis.dev
+  $ git submodule update --init</programlisting>
+</section>
+<section xml:id="_certbot_で証明書取得">
+  <title>certbot で証明書取得</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ docker-compose up -d acme-challenge
+  $ make setup</programlisting>
+</section>
+<section xml:id="_サーバを稼動させる">
+  <title>サーバを稼動させる</title>
+  <programlisting language="shell-session" linenumbering="unnumbered">$ make serve</programlisting>
+</section>
+</section>
+<section xml:id="_感想">
+  <title>感想</title>
+  <simpara>(業務でなく)
+  個人だと数年ぶりのサーバセットアップで、これだけでも割と時間を食ってしまった。とはいえ式年遷宮は楽しいので、これからも定期的にやっていきたい。コンテナデプロイにしたい気持ちもあるのだが、色々実験したい関係上、本物のサーバも欲しくはある。次の式年遷宮では、手順の一部だけでも自動化したいところ。</simpara>
+</section>
+</article>

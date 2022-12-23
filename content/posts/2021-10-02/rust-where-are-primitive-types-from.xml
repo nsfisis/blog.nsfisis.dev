@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>Rust のプリミティブ型はどこからやって来るか</title>
+    <abstract>
+      Rust のプリミティブ型は予約語ではなく普通の識別子である。どのようにこれが名前解決されるのかを調べた。
+    </abstract>
+    <keywordset>
+      <keyword>rust</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2021-10-02</date>
+        <revremark>Qiita から移植</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <simpara>この記事は Qiita から移植してきたものです。 元 URL:
+  <link xl:href="https://qiita.com/nsfisis/items/9a429432258bbcd6c565">https://qiita.com/nsfisis/items/9a429432258bbcd6c565</link></simpara>
+<simpara><hr/></simpara>
+<section xml:id="_前置き">
+  <title>前置き</title>
+  <simpara>Rust
+  において、プリミティブ型の名前は予約語でない。したがって、次のコードは合法である。</simpara>
+<programlisting language="rust" linenumbering="unnumbered">#![allow(non_camel_case_types)]
+#![allow(dead_code)]
+
+struct bool;
+struct char;
+struct i8;
+struct i16;
+struct i32;
+struct i64;
+struct i128;
+struct isize;
+struct u8;
+struct u16;
+struct u32;
+struct u64;
+struct u128;
+struct usize;
+struct f32;
+struct f64;
+struct str;</programlisting>
+<simpara>では、普段単に <literal>bool</literal> と書いたとき、この <literal>bool</literal>
+  は一体どこから来ているのか。rustc のソースを追ってみた。</simpara>
+<blockquote>
+  <simpara>前提知識: 一般的なコンパイラの構造、用語。<literal>rustc</literal> そのものの知識は不要
+  (というよりも筆者自身がよく知らない)</simpara>
+</blockquote>
+</section>
+<section xml:id="_調査">
+  <title>調査</title>
+  <simpara>調査に使用したソース (調査時点での最新 master)</simpara>
+  <simpara><link xl:href="https://github.com/rust-lang/rust/tree/511ed9f2356af365ad8affe046b3dd33f7ac3c98">https://github.com/rust-lang/rust/tree/511ed9f2356af365ad8affe046b3dd33f7ac3c98</link></simpara>
+  <simpara>どのようにして調べるか。rustc
+  の構造には詳しくないため、すぐに当たりをつけるのは難しい。</simpara>
+<simpara>大雑把な構造としては、<literal>compiler</literal> フォルダ以下に <literal>rustc_*</literal>
+  という名前のクレートが数十個入っている。これがどうやら <literal>rustc</literal>
+  コマンドの実装部のようだ。</simpara>
+<simpara><literal>rustc</literal> はセルフホストされている (= <literal>rustc</literal> 自身が Rust で書かれている)
+ので、<literal>bool</literal> や <literal>char</literal>
+などで適当に検索をかけてもノイズが多すぎて話にならない。
+しかし、お誂え向きなことに <literal>i128</literal>/<literal>u128</literal>
+というコンパイラ自身が使うことがなさそうな型が存在するのでこれを使って
+<literal>git grep</literal> してみる。</simpara>
+<literallayout class="monospaced">$ git grep "\bi128\b" | wc      # i128
+165    1069   15790
+
+$ git grep "\bu128\b" | wc      # u128
+293    2127   26667
+
+$ git grep "\bbool\b" | wc      # cf. bool の結果
+3563   23577  294659</literallayout>
+<simpara>165
+程度であれば探すことができそうだ。今回は、クレート名を見ておおよその当たりをつけた。</simpara>
+<literallayout class="monospaced">$ git grep "\bi128\b"
+...
+rustc_resolve/src/lib.rs:        table.insert(sym::i128, Int(IntTy::I128));
+...</literallayout>
+<simpara><literal>rustc_resolve</literal>
+  というのはいかにも名前解決を担いそうなクレート名である。該当箇所を見てみる。</simpara>
+<programlisting language="rust" linenumbering="unnumbered">/// Interns the names of the primitive types.
+///
+/// All other types are defined somewhere and possibly imported, but the primitive ones need
+/// special handling, since they have no place of origin.
+struct PrimitiveTypeTable {
+primitive_types: FxHashMap&lt;Symbol, PrimTy&gt;,
+}
+
+impl PrimitiveTypeTable {
+fn new() -&gt; PrimitiveTypeTable {
+let mut table = FxHashMap::default();
+
+table.insert(sym::bool, Bool);
+table.insert(sym::char, Char);
+table.insert(sym::f32, Float(FloatTy::F32));
+table.insert(sym::f64, Float(FloatTy::F64));
+table.insert(sym::isize, Int(IntTy::Isize));
+table.insert(sym::i8, Int(IntTy::I8));
+table.insert(sym::i16, Int(IntTy::I16));
+table.insert(sym::i32, Int(IntTy::I32));
+table.insert(sym::i64, Int(IntTy::I64));
+table.insert(sym::i128, Int(IntTy::I128));
+table.insert(sym::str, Str);
+table.insert(sym::usize, Uint(UintTy::Usize));
+table.insert(sym::u8, Uint(UintTy::U8));
+table.insert(sym::u16, Uint(UintTy::U16));
+table.insert(sym::u32, Uint(UintTy::U32));
+table.insert(sym::u64, Uint(UintTy::U64));
+table.insert(sym::u128, Uint(UintTy::U128));
+Self { primitive_types: table }
+}
+}</programlisting>
+<simpara>これは初めに列挙したプリミティブ型の一覧と一致している。doc comment
+にも、</simpara>
+<blockquote>
+  <simpara>All other types are defined somewhere and possibly imported, but the
+  primitive ones need special handling, since they have no place of
+  origin.</simpara>
+</blockquote>
+<simpara>とある。次はこの struct
+の使用箇所を追う。追うと言っても使われている箇所は次の一箇所しかない。なお説明に不要な箇所は大きく削っている。</simpara>
+<programlisting language="rust" linenumbering="unnumbered">    /// This resolves the identifier `ident` in the namespace `ns` in the current lexical scope.
+/// (略)
+fn resolve_ident_in_lexical_scope(
+&amp;mut self,
+mut ident: Ident,
+ns: Namespace,
+// (略)
+) -&gt; Option&lt;LexicalScopeBinding&lt;'a&gt;&gt; {
+// (略)
+
+if ns == TypeNS {
+if let Some(prim_ty) = self.primitive_type_table.primitive_types.get(&amp;ident.name) {
+let binding =
+(Res::PrimTy(*prim_ty), ty::Visibility::Public, DUMMY_SP, ExpnId::root())
+.to_name_binding(self.arenas);
+return Some(LexicalScopeBinding::Item(binding));
+}
+}
+
+None
+}</programlisting>
+<simpara>関数名や doc comment が示している通り、この関数は識別子 (identifier,
+ident) を現在のレキシカルスコープ内で解決 (resolve) する。
+<literal>if ns == TypeNS</literal> のブロック内では、<literal>primitive_type_table</literal> (上記の
+<literal>PrimitiveTypeTable::new()</literal> で作られた変数) に含まれている識別子
+(<literal>bool</literal>、<literal>i32</literal> など)
+かどうか判定し、そうであればそれに紐づけられたプリミティブ型を返している。</simpara>
+<simpara>なお、<literal>ns</literal> は「名前空間」を示す変数である。Rust
+における名前空間はC言語におけるそれとほとんど同じで、今探している名前が関数名/変数名なのか型なのかマクロなのかを区別している。この
+<literal>if</literal>
+は、プリミティブ型に解決されるのは型を探しているときだけだ、と言っている。</simpara>
+<simpara>重要なのは、これが <literal>resolve_ident_in_lexical_scope()</literal>
+  の最後に書かれている点である。つまり、最初に挙げたプリミティブ型の識別子は、「名前解決の最終段階で」、「他に同名の型が見つかっていなければ」プリミティブ型として解決される。</simpara>
+<simpara>動作がわかったところで、例として次のコードを考える。</simpara>
+<programlisting language="rust" linenumbering="unnumbered">#![allow(non_camel_case_types)]
+
+struct bool;
+
+fn main() {
+let _: bool = bool;
+}</programlisting>
+<simpara>ここで <literal>main()</literal> の <literal>bool</literal> は <literal>struct bool</literal>
+  として解決される。なぜなら、プリミティブ型の判定をする前に <literal>bool</literal>
+  という名前の別の型が見つかるからだ。</simpara>
+</section>
+<section xml:id="_まとめ">
+  <title>まとめ</title>
+  <simpara>Rust
+  のプリミティブ型は予約語ではない。名前解決の最終段階で特別扱いされ、他に同名の型が見つかっていなければ対応するプリミティブ型に解決される。</simpara>
+</section>
+</article>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[Ruby] then キーワードと case in</title>
+    <abstract>
+      Ruby 3.0 で追加される case in 構文と、then キーワードについて。
+    </abstract>
+    <keywordset>
+      <keyword>ruby</keyword>
+      <keyword>ruby3</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2021-10-02</date>
+        <revremark>Qiita から移植</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <simpara>この記事は Qiita から移植してきたものです。 元 URL:
+  <link xl:href="https://qiita.com/nsfisis/items/787a8cf888a304497223">https://qiita.com/nsfisis/items/787a8cf888a304497223</link></simpara>
+<simpara><hr/></simpara>
+<section xml:id="_tl_dr">
+  <title>TL; DR</title>
+  <simpara><literal>case</literal> - <literal>in</literal> によるパターンマッチング構文でも、<literal>case</literal> - <literal>when</literal>
+    と同じように <literal>then</literal> が使える (場合によっては使う必要がある)。</simpara>
+</section>
+<section xml:id="_then_とは">
+  <title><literal>then</literal> とは</title>
+  <simpara>使われることは稀だが、Ruby では <literal>then</literal>
+    がキーワードになっている。次のように使う:</simpara>
+  <programlisting language="ruby" linenumbering="unnumbered">if cond then
+  puts "Y"
+  else
+  puts "N"
+  end</programlisting>
+<simpara>このキーワードが現れうる場所はいくつかあり、<literal>if</literal>、<literal>unless</literal>、<literal>rescue</literal>、<literal>case</literal>
+  構文がそれに当たる。 上記のように、何か条件を書いた後 <literal>then</literal>
+  を置き、式がそこで終了していることを示すマーカーとして機能する。</simpara>
+<programlisting language="ruby" linenumbering="unnumbered"># Example:
+
+if x then
+a
+end
+
+unless x then
+a
+end
+
+begin
+a
+rescue then
+b
+end
+
+case x
+when p then
+a
+end</programlisting>
+</section>
+<section xml:id="_なぜ普段は書かなくてもよいのか">
+  <title>なぜ普段は書かなくてもよいのか</title>
+  <simpara>普通 Ruby のコードで <literal>then</literal>
+    を書くことはない。なぜか。次のコードを実行してみるとわかる。</simpara>
+  <programlisting language="ruby" linenumbering="unnumbered">if true puts 'Hello, World!' end</programlisting>
+  <simpara>次のような構文エラーが出力される。</simpara>
+  <literallayout class="monospaced">20:1: syntax error, unexpected local variable or method, expecting `then' or ';' or '\n'
+  if true puts 'Hello, World!' end
+  ^~~~
+  20:1: syntax error, unexpected `end', expecting end-of-input
+  ...f true puts 'Hello, World!' end</literallayout>
+<simpara>二つ目のメッセージは無視して一つ目を読むと、<literal>then</literal> か <literal>;</literal>
+  か改行が来るはずのところ変数だかメソッドだかが現れたことによりエラーとなっているようだ。</simpara>
+<simpara>ポイントは改行が <literal>then</literal> (や <literal>;</literal>) の代わりとなることである。<literal>true</literal>
+  の後に改行を入れてみる。</simpara>
+<programlisting language="ruby" linenumbering="unnumbered">if true
+puts 'Hello, World!' end</programlisting>
+<simpara>無事 Hello, World! と出力されるようになった。</simpara>
+</section>
+<section xml:id="_なぜ_then_や_や改行が必要か">
+  <title>なぜ <literal>then</literal> や <literal>;</literal> や改行が必要か</title>
+  <simpara>なぜ <literal>then</literal> や <literal>;</literal> や改行 (以下 「<literal>then</literal> 等」)
+  が必要なのだろうか。次の例を見てほしい:</simpara>
+<programlisting language="ruby" linenumbering="unnumbered">if a b end</programlisting>
+<simpara><literal>then</literal> も <literal>;</literal>
+  も改行もないのでエラーになるが、これは条件式がどこまで続いているのかわからないためだ。
+  この例は二通りに解釈できる。</simpara>
+<programlisting language="ruby" linenumbering="unnumbered"># a という変数かメソッドの評価結果が truthy なら b という変数かメソッドを評価
+if a then
+b
+end</programlisting>
+<programlisting language="ruby" linenumbering="unnumbered"># a というメソッドに b という変数かメソッドの評価結果を渡して呼び出し、
+# その結果が truthy なら何もしない
+if a(b) then
+end</programlisting>
+<simpara><literal>then</literal> 等はこの曖昧性を排除するためにあり、条件式は <literal>if</literal> から <literal>then</literal>
+  等までの間にある、ということを明確にする。 C系の <literal>if</literal> 後に来る <literal>(</literal>/<literal>)</literal>
+  や、Python の <literal>:</literal>、Rust/Go/Swift などの <literal>{</literal> も同じ役割を持つ。</simpara>
+<simpara>Ruby の場合、プログラマーが書きやすいよう改行でもって <literal>then</literal>
+  が代用できるので、ほとんどの場合 <literal>then</literal> は必要ない。</simpara>
+</section>
+<section xml:id="_case_in_における_then">
+  <title><literal>case</literal> - <literal>in</literal> における <literal>then</literal></title>
+  <simpara>ようやく本題にたどり着いた。来る Ruby 3.0 では <literal>case</literal> と <literal>in</literal>
+    キーワードを使ったパターンマッチングの構文が入る予定である。この構文でもパターン部との区切りとして
+    <literal>then</literal> 等が必要になる。 (現在の) Ruby には formal
+    な形式での文法仕様は存在しないので、yacc の定義ファイルを参照した (yacc
+    の説明は省略)。</simpara>
+  <simpara><link xl:href="https://github.com/ruby/ruby/blob/221ca0f8281d39f0dfdfe13b2448875384bbf735/parse.y#L3961-L3986">https://github.com/ruby/ruby/blob/221ca0f8281d39f0dfdfe13b2448875384bbf735/parse.y#L3961-L3986</link></simpara>
+  <programlisting language="yacc" linenumbering="unnumbered">p_case_body : keyword_in
+  {
+  SET_LEX_STATE(EXPR_BEG|EXPR_LABEL);
+  p-&gt;command_start = FALSE;
+  $&lt;ctxt&gt;1 = p-&gt;ctxt;
+  p-&gt;ctxt.in_kwarg = 1;
+  $&lt;tbl&gt;$ = push_pvtbl(p);
+  }
+  {
+  $&lt;tbl&gt;$ = push_pktbl(p);
+  }
+  p_top_expr then
+  {
+  pop_pktbl(p, $&lt;tbl&gt;3);
+  pop_pvtbl(p, $&lt;tbl&gt;2);
+  p-&gt;ctxt.in_kwarg = $&lt;ctxt&gt;1.in_kwarg;
+  }
+  compstmt
+  p_cases
+  {
+  /*%%%*/
+  $$ = NEW_IN($4, $7, $8, &amp;@$);
+  /*% %*/
+  /*% ripper: in!($4, $7, escape_Qundef($8)) %*/
+  }
+  ;</programlisting>
+<simpara>簡略版:</simpara>
+<programlisting language="yacc" linenumbering="unnumbered">p_case_body : keyword_in p_top_expr then compstmt p_cases
+;</programlisting>
+<simpara>ここで、<literal>keyword_in</literal> は文字通り <literal>in</literal>、<literal>p_top_expr</literal>
+  はいわゆるパターン、<literal>then</literal> は <literal>then</literal>
+  キーワードのことではなく、この記事で <literal>then</literal> 等と呼んでいるもの、つまり
+  <literal>then</literal> キーワード、<literal>;</literal>、改行のいずれかである。</simpara>
+<simpara>これにより、<literal>case</literal> - <literal>when</literal> による従来の構文と同じように、<literal>then</literal>
+  等をパターンの後ろに挿入すればよいことがわかった。つまり次の3通りのいずれかになる:</simpara>
+<programlisting language="ruby" linenumbering="unnumbered">case x
+in 1 then a
+in 2 then b
+in 3 then c
+end
+
+case x
+in 1
+a
+in 2
+b
+in 3
+c
+end
+
+case x
+in 1; a
+in 2; b
+in 3; c
+end</programlisting>
+<simpara>ところで、<literal>p_top_expr</literal> には <literal>if</literal> による guard clause
+が書けるので、その場合は <literal>if</literal> - <literal>then</literal> と似たような見た目になる。</simpara>
+<programlisting language="ruby" linenumbering="unnumbered">case x
+in 0 then a
+in n if n &lt; 0 then b
+in n then c
+end</programlisting>
+</section>
+<section xml:id="_まとめ">
+  <title>まとめ</title>
+  <itemizedlist>
+    <listitem>
+      <simpara><literal>if</literal> や <literal>case</literal> の条件の後ろには <literal>then</literal>、<literal>;</literal>、改行のいずれかが必要</simpara>
+      <itemizedlist>
+        <listitem>
+          <simpara>通常は改行しておけばよい</simpara>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem>
+      <simpara>3.0 で入る予定の <literal>case</literal> - <literal>in</literal> でも <literal>then</literal> 等が必要になる</simpara>
+    </listitem>
+    <listitem>
+      <simpara>Ruby の構文を正確に知るには (現状) <literal>parse.y</literal> を直接読めばよい</simpara>
+    </listitem>
+  </itemizedlist>
+</section>
+</article>

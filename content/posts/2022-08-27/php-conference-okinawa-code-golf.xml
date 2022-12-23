@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>PHP カンファレンス沖縄で出題されたコードゴルフの問題を解いてみた</title>
+    <abstract>
+      PHP カンファレンス沖縄の懇親会 LT で出題されたコードゴルフの問題を解いてみた。
+    </abstract>
+    <keywordset>
+      <keyword>conference</keyword>
+      <keyword>php</keyword>
+      <keyword>phpcon</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2022-08-27</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>本日 <link xl:href="https://phpcon.okinawa.jp/">PHP カンファレンス沖縄 2022</link>
+      が開催された (らしい)。</simpara>
+    <simpara>カンファレンスには参加できなかったものの、懇親会の LT
+    で出題されたコードゴルフの問題が Twitter に流れてきたので、解いてみた。</simpara>
+  <simpara>ツイート: <link xl:href="https://twitter.com/m3m0r7/status/1563397620231712772">https://twitter.com/m3m0r7/status/1563397620231712772</link><br/>
+    スライド:
+    <link xl:href="https://speakerdeck.com/memory1994/php-conference-okinawa-2022-extra?slide=3">https://speakerdeck.com/memory1994/php-conference-okinawa-2022-extra?slide=3</link></simpara>
+</section>
+<section xml:id="_解">
+  <title>解</title>
+  <simpara>細かいレギュレーションは不明だったので、勝手に定めた。</simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara>コマンドライン引数の第1引数で受けとる</simpara>
+    </listitem>
+    <listitem>
+      <simpara>結果は標準出力に出す</simpara>
+    </listitem>
+    <listitem>
+      <simpara>コンマの直後にはスペースを1つ置く</simpara>
+    </listitem>
+    <listitem>
+      <simpara>末尾コンマは禁止</simpara>
+    </listitem>
+    <listitem>
+      <simpara>数字でないものは入ってこないものとする</simpara>
+    </listitem>
+    <listitem>
+      <simpara>負数は入ってこないものとする</simpara>
+    </listitem>
+  </itemizedlist>
+  <simpara>書いたものがこちら:</simpara>
+  <programlisting language="php" linenumbering="unnumbered">[&lt;?php $n=$argv[1];foreach([1e4,5e3,2e3,1e3,500,100,50,10,5,1]as$x)for(;$n&gt;=$x;$n-=$x)$r[]=$x;echo implode(', ',$r??[]);?&gt;]</programlisting>
+  <simpara>しめて 123 バイトとなった (末尾改行を含めずにカウント)。</simpara>
+  <simpara>こちらは改行とスペースを追加したバージョン:</simpara>
+  <programlisting language="php" linenumbering="unnumbered">[&lt;?php
+
+  $n = $argv[1];
+  foreach ([1e4, 5e3, 2e3, 1e3, 500, 100, 50, 10, 5, 1] as $x)
+  for (; $n &gt;= $x; $n -= $x)
+  $r[] = $x;
+  echo implode(', ', $r ?? []);
+
+  ?&gt;]</programlisting>
+</section>
+<section xml:id="_使用したテクニック">
+  <title>使用したテクニック</title>
+  <section xml:id="_指数表記">
+    <title>指数表記</title>
+    <simpara>割と多くの言語のゴルフで使えるテクニック。<literal>e</literal>
+      を用いた指数表記で、大きな数を短く表す。このコードでは
+      <literal>10000</literal>、<literal>5000</literal>、<literal>2000</literal>、<literal>1000</literal> を指数表記している。</simpara>
+  </section>
+  <section xml:id="_foreach_や_for_の中身を1つの文に">
+    <title>foreach や for の中身を1つの文に</title>
+    <simpara><literal>foreach</literal>、<literal>for</literal>、<literal>if</literal> などの後ろには、通常 <literal>{</literal>
+      を続けて複数の文を連ねるが、中身の文を1つにしてしまえば、<literal>{</literal> と <literal>}</literal>
+      を省略できる。C言語などでも使える。</simpara>
+  </section>
+  <section xml:id="_r_に初期値を入れない">
+    <title>$r に初期値を入れない</title>
+    <simpara>PHP では、<literal>$r[] = &#8230;&#8203;</literal>
+      のような配列の末尾に追加する式を実行したとき、<literal>$r</literal> が未定義だった場合は
+      <literal>$r</literal>
+      を勝手に定義して空の配列で初期化してくれる。これを利用すると、<literal>$r = [];</literal>
+      のような初期化が不要になる。</simpara>
+    <simpara>ただし、プログラムに 0 が渡されるとループを一度も回らないので、<literal>$r</literal>
+      が未定義になってしまい、<literal>implode()</literal>
+      に渡すところでエラーになる。それを防ぐために <literal>$r ?? []</literal> を使っている。</simpara>
+    <simpara>もし 0 が渡されたケースを無視するなら、これが不要になるので 4
+    バイト縮む。</simpara>
+</section>
+<section xml:id="_php_タグの外に文字列を置く">
+  <title>PHP タグの外に文字列を置く</title>
+  <simpara>PHP では、<literal>&lt;?php</literal> <literal>?&gt;</literal>
+    で囲われた部分の外側にある文字列は、そのまま出力される。今回のケースでは、先頭と末尾に必ず
+    <literal>[</literal> と <literal>]</literal> を出力するので、そのまま書いてやればよい。</simpara>
+</section>
+</section>
+<section xml:id="_おわりに">
+  <title>おわりに</title>
+  <simpara>最後になりましたが、https://twitter.com/m3m0r7[めもりー]
+  さん、楽しい問題をありがとうございました。</simpara>
+</section>
+</article>

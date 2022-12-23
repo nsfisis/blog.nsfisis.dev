@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[C++] 属性構文の属性名にはキーワードが使える</title>
+    <abstract>
+      C++ の属性構文の属性名には、キーワードが使える。ネタ記事。
+    </abstract>
+    <keywordset>
+      <keyword>cpp</keyword>
+      <keyword>cpp17</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2021-10-02</date>
+        <revremark>Qiita から移植</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <simpara>この記事は Qiita から移植してきたものです。 元 URL:
+  <link xl:href="https://qiita.com/nsfisis/items/94090937bcf860cfa93b">https://qiita.com/nsfisis/items/94090937bcf860cfa93b</link></simpara>
+<simpara><hr/></simpara>
+<simpara>タイトル落ち。まずはこのコードを見て欲しい。</simpara>
+<programlisting language="cpp" linenumbering="unnumbered">#include &lt;iostream&gt;
+
+[[alignas]] [[alignof]] [[and]] [[and_eq]] [[asm]] [[auto]] [[bitand]]
+[[bitor]] [[bool]] [[break]] [[case]] [[catch]] [[char]] [[char16_t]]
+[[char32_t]] [[class]] [[compl]] [[const]] [[const_cast]] [[constexpr]]
+[[continue]] [[decltype]] [[default]] [[delete]] [[do]] [[double]]
+[[dynamic_cast]] [[else]] [[enum]] [[explicit]] [[export]] [[extern]] [[false]]
+[[final]] [[float]] [[for]] [[friend]] [[goto]] [[if]] [[inline]] [[int]]
+[[long]] [[mutable]] [[namespace]] [[new]] [[noexcept]] [[not]] [[not_eq]]
+[[nullptr]] [[operator]] [[or]] [[or_eq]] [[override]] [[private]]
+[[protected]] [[public]] [[register]] [[reinterpret_cast]] [[return]] [[short]]
+[[signed]] [[sizeof]] [[static]] [[static_assert]] [[static_cast]] [[struct]]
+[[switch]] [[template]] [[this]] [[thread_local]] [[throw]] [[true]] [[try]]
+[[typedef]] [[typeid]] [[typename]] [[union]] [[unsigned]]
+[[virtual]] [[void]] [[volatile]] [[wchar_t]] [[while]] [[xor]] [[xor_eq]]
+// [[using]]
+int main() {
+std::cout &lt;&lt; "Hello, World!" &lt;&lt; std::endl;
+}</programlisting>
+<blockquote>
+  <simpara>コンパイラのバージョン $ clang++ –version Apple clang version 11.0.0
+  (clang-1100.0.33.8) Target: x86_64-apple-darwin19.6.0 Thread model:
+  posix InstalledDir:
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin</simpara>
+<simpara>コンパイルコマンド (C17指定) $ clang –std=c++17 hoge.cpp</simpara>
+</blockquote>
+<simpara>この記事から得られるものはこれ以上ないので以下は蛇足になる。</simpara>
+<simpara>別件で cppreference.com の
+<link xl:href="https://en.cppreference.com/w/cpp/language/identifiers">identifier
+のページ</link> を読んでいた時、次の文が目に止まった。</simpara>
+<blockquote>
+  <itemizedlist>
+    <listitem>
+      <simpara>the identifiers that are keywords cannot be used for other purposes;</simpara>
+      <itemizedlist>
+        <listitem>
+          <simpara>The only place they can be used as non-keywords is in an
+          attribute-token. (e.g. [[private]] is a valid attribute) (since C++11)</simpara>
+      </listitem>
+    </itemizedlist>
+  </listitem>
+</itemizedlist>
+</blockquote>
+<simpara>キーワードでも属性として指定する場合は非キーワードとして使えるらしい。
+実際にやってみる。</simpara>
+<simpara>同サイトの <link xl:href="https://en.cppreference.com/w/cpp/keyword">keywords のページ</link>
+  から一覧を拝借し、上のコードが出来上がった (C++17
+  においてキーワードでないものなど、一部省いている)。 大量の警告 (unknown
+  attribute `〇〇' ignored)
+  がコンパイラから出力されるが、コンパイルできる。</simpara>
+<simpara>上のコードでは <literal>[[using]]</literal> をコメントアウトしているが、これは <literal>using</literal>
+  キーワードのみ属性構文の中で意味を持つからであり、このコメントアウトを外すとコンパイルに失敗する。</simpara>
+<programlisting language="cpp" linenumbering="unnumbered">// using の例
+[[using foo: attr1, attr2]] int x; // [[foo::attr1, foo::attr2]] の糖衣構文</programlisting>
+<simpara>C++17 の仕様も見てみる (正確には標準化前のドラフト)。</simpara>
+<simpara>引用元: <link xl:href="https://timsong-cpp.github.io/cppwp/n4659/dcl.attr#grammar-4">https://timsong-cpp.github.io/cppwp/n4659/dcl.attr#grammar-4</link></simpara>
+<blockquote>
+  <simpara>If a keyword or an alternative token that satisfies the syntactic
+  requirements of an identifier is contained in an attribute-token, it is
+  considered an identifier.</simpara>
+</blockquote>
+<simpara>「<literal>identifier</literal> の構文上の要件を満たすキーワードまたは代替トークンが
+<literal>attribute-token</literal> に含まれている場合、<literal>identifier</literal>
+とみなされる」とある。どうやら間違いないようだ。</simpara>
+<simpara>ところで、代替トークン (alternative token) とは <literal>and</literal> (<literal>&amp;</literal>) や <literal>bitor</literal>
+  (<literal>|</literal>) などのことだが、<literal>identifier</literal>
+  の構文上の要件を満たさないような代替トークンなどあるのか？
+  疑問に思って調べたところ、代替トークンという語にはダイグラフも含まれるらしい
+  (参考:
+  <link xl:href="https://timsong-cpp.github.io/cppwp/n4659/lex.digraph">同ドラフト</link>)</simpara>
+<itemizedlist>
+  <listitem>
+    <simpara><literal>&lt;%</literal> → <literal>{</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>%&gt;</literal> → <literal>}</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>&lt;:</literal> → <literal>[</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>:&gt;</literal> → <literal>]</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>%:</literal> → <literal>#</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>%:%:</literal> → <literal>##</literal></simpara>
+  </listitem>
+</itemizedlist>
+<simpara>「<literal>identifier</literal>
+  の構文上の要件を満たさないような代替トークン」はこれらが当てはまると思われる。</simpara>
+<simpara>調べた感想: 字句解析器か構文解析器が辛そう</simpara>
+</article>

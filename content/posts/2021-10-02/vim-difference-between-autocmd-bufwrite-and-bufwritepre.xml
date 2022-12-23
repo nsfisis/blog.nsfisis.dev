@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>[Vim] autocmd events の BufWrite/BufWritePre の違い</title>
+    <abstract>
+      Vim の autocmd events における BufWrite/BufWritePre がどう違うのかを調べた結果、違いはないことがわかった。
+    </abstract>
+    <keywordset>
+      <keyword>vim</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2021-10-02</date>
+        <revremark>Qiita から移植</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <simpara>この記事は Qiita から移植してきたものです。 元 URL:
+  <link xl:href="https://qiita.com/nsfisis/items/79ab4db8564032de0b25">https://qiita.com/nsfisis/items/79ab4db8564032de0b25</link></simpara>
+<simpara><hr/></simpara>
+<section xml:id="_tl_dr">
+  <title>TL; DR</title>
+  <simpara>違いはない。ただのエイリアス。</simpara>
+</section>
+<section xml:id="_調査記録">
+  <title>調査記録</title>
+  <simpara>Vim の autocmd events には似通った名前のものがいくつかある。大抵は
+  <literal>:help</literal>
+  に説明があるが、この記事のタイトルにある2つを含めた以下のイベントには、その違いについて説明がない。</simpara>
+<itemizedlist>
+  <listitem>
+    <simpara><literal>BufRead</literal>/<literal>BufReadPost</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>BufWrite</literal>/<literal>BufWritePre</literal></simpara>
+  </listitem>
+  <listitem>
+    <simpara><literal>BufAdd</literal>/<literal>BufCreate</literal></simpara>
+  </listitem>
+</itemizedlist>
+<simpara>このうち、<literal>BufAdd</literal>/<literal>BufCreate</literal> に関しては、<literal>:help BufCreate</literal> に</simpara>
+<blockquote>
+  <simpara>The BufCreate event is for historic reasons.</simpara>
+</blockquote>
+<simpara>とあり、おそらくは <literal>BufAdd</literal>
+  のエイリアスであろうということがわかる。他の2組も同様ではないかと予想されるが、確認のため
+  vim と neovim のソースコードを調査した。</simpara>
+<blockquote>
+  <simpara>ソースコードへのリンク
+  <link xl:href="https://github.com/vim/vim/tree/8e6be34338f13a6a625f19bcef82019c9adc65f2">vim
+  (調査時点での master branch)</link>
+<link xl:href="https://github.com/neovim/neovim/tree/71d4f5851f068eeb432af34850dddda8cc1c71e3">neovim
+(上に同じ)</link></simpara>
+</blockquote>
+<section xml:id="_vim_のソースコード">
+  <title>vim のソースコード</title>
+  <simpara>以下は、autocmd events
+  の名前と内部で使われている整数値とのマッピングを定義している箇所である。見ての通り、上でエイリアスではないかと述べた3組には、それぞれ同じ内部値が使われている。</simpara>
+<simpara><link xl:href="https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L85-L86">https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L85-L86</link></simpara>
+<programlisting language="c" linenumbering="unnumbered">    {"BufAdd",      EVENT_BUFADD},
+{"BufCreate",   EVENT_BUFADD},</programlisting>
+<simpara><link xl:href="https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L95-L97">https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L95-L97</link></simpara>
+<programlisting language="c" linenumbering="unnumbered">    {"BufRead",     EVENT_BUFREADPOST},
+{"BufReadCmd",  EVENT_BUFREADCMD},
+{"BufReadPost", EVENT_BUFREADPOST},</programlisting>
+<simpara><link xl:href="https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L103-L105">https://github.com/vim/vim/blob/8e6be34338f13a6a625f19bcef82019c9adc65f2/src/autocmd.c#L103-L105</link></simpara>
+<programlisting language="c" linenumbering="unnumbered">    {"BufWrite",    EVENT_BUFWRITEPRE},
+{"BufWritePost",    EVENT_BUFWRITEPOST},
+{"BufWritePre", EVENT_BUFWRITEPRE},</programlisting>
+</section>
+<section xml:id="_neovim_のソースコード">
+  <title>neovim のソースコード</title>
+  <simpara>neovim の場合でも同様のマッピングが定義されているが、こちらの場合は Lua
+  で書かれている。以下にある通り、はっきり <literal>aliases</literal> と書かれている。</simpara>
+<simpara><link xl:href="https://github.com/neovim/neovim/blob/71d4f5851f068eeb432af34850dddda8cc1c71e3/src/nvim/auevents.lua#L119-L124">https://github.com/neovim/neovim/blob/71d4f5851f068eeb432af34850dddda8cc1c71e3/src/nvim/auevents.lua#L119-L124</link></simpara>
+<programlisting language="lua" linenumbering="unnumbered">  aliases = {
+BufCreate = 'BufAdd',
+BufRead = 'BufReadPost',
+BufWrite = 'BufWritePre',
+FileEncoding = 'EncodingChanged',
+},</programlisting>
+<simpara>ところで、上では取り上げなかった <literal>FileEncoding</literal> だが、これは
+<literal>:help FileEncoding</literal> にしっかりと書いてある。</simpara>
+<literallayout class="monospaced">                                                           *FileEncoding*
+FileEncoding                    Obsolete.  It still works and is equivalent
+to |EncodingChanged|.</literallayout>
+</section>
+<section xml:id="_まとめ">
+  <title>まとめ</title>
+  <simpara>記事タイトルについて言えば、どちらも変わらないので好きな方を使えばよい。あえて言えば、次のようになるだろう。</simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara><literal>BufAdd</literal>/<literal>BufCreate</literal></simpara>
+      <itemizedlist>
+        <listitem>
+          <simpara>→ <literal>BufCreate</literal> は歴史的な理由により (<literal>`for historic reasons'')
+          存在しているため、新しい方 (`BufAdd</literal>) を使う</simpara>
+    </listitem>
+  </itemizedlist>
+</listitem>
+<listitem>
+  <simpara><literal>BufRead</literal>/<literal>BufReadPost</literal></simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara>→ <literal>BufReadPre</literal> との対称性のため、あるいは <literal>BufWritePost</literal>
+        との対称性のため <literal>BufReadPost</literal> を使う</simpara>
+    </listitem>
+  </itemizedlist>
+</listitem>
+<listitem>
+  <simpara><literal>BufWrite</literal>/<literal>BufWritePre</literal></simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara>→ <literal>BufWritePost</literal> との対称性のため、あるいは <literal>BufReadPre</literal>
+        との対称性のため <literal>BufWritePre</literal> を使う</simpara>
+    </listitem>
+  </itemizedlist>
+</listitem>
+<listitem>
+  <simpara><literal>FileEncoding</literal>/<literal>EncodingChanged</literal></simpara>
+  <itemizedlist>
+    <listitem>
+      <simpara>→ <literal>FileEncoding</literal> は <literal>`Obsolete''
+      と明言されているので、`EncodingChanged</literal> を使う</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+<simpara>ところでこの調査で知ったのだが、<literal>BufRead</literal> と <literal>BufWrite</literal>
+  は上にある通り発火するタイミングが「後」と「前」で対称性がない。可能なら
+  <literal>Pre</literal>/<literal>Post</literal> 付きのものを使った方が分かりやすいだろう。</simpara>
+</section>
+</section>
+</article>
