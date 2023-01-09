@@ -59,6 +59,15 @@
           </section>
           <%= _content %>
         </div>
+        <% if footnotes? %>
+          <div id="footnotes">
+            <% for footnote in footnotes %>
+              <div class="footnote" id="_footnotedef_<%= footnote.index %>">
+                <a href="#_footnoteref_<%= footnote.index %>"><%= footnote.index %></a>. <%= footnote.text %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </article>
     </main>
     <footer class="footer">

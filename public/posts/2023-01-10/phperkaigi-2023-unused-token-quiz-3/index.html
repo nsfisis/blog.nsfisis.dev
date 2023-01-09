@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="nsfisis">
+    <meta name="copyright" content="&copy;  nsfisis">
+    <meta name="description" content="来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、 ボツになった問題を公開する (その 3)。">
+    <meta name="keywords" content="PHP,PHPerKaigi">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>PHPerKaigi 2023: ボツになったトークン問題 その 3 | REPL: Rest-Eat-Program Loop</title>
+    
+      <link rel="stylesheet" href="/hl.css?208c52e3b7c9db1cad782c5d30b4698f">
+    
+      <link rel="stylesheet" href="/style.css?779b1a3debcaeba619f6fe500e93d525">
+    
+      <link rel="stylesheet" href="/custom.css?a649ea3528d4b626fb636505d94c1144">
+    
+  </head>
+  <body class="single">
+    <header class="header">
+      <nav class="nav">
+        <p class="logo">
+          <a href="/">REPL: Rest-Eat-Program Loop</a>
+        </p>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <h1 class="post-title">PHPerKaigi 2023: ボツになったトークン問題 その 3</h1>
+          
+            <ul class="post-tags">
+              
+                <li class="tag">
+                  <a href="/tags/php/">PHP</a>
+                </li>
+              
+                <li class="tag">
+                  <a href="/tags/phperkaigi/">PHPerKaigi</a>
+                </li>
+              
+            </ul>
+          
+        </header>
+        <div class="post-content">
+          <section>
+            <h2 id="changelog">更新履歴</h2>
+            <ol>
+              
+                <li class="revision">
+                  <time datetime="2023-01-10">2023-01-10</time>: 公開
+                </li>
+              
+            </ol>
+          </section>
+          <section class="section-1">
+  <h2 id="" class="section-header">
+    
+      はじめに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>2023 年 3 月 23 日から 25 日にかけて開催予定 (記事執筆時点) の <a href="https://phperkaigi.jp/2023/">PHPerKaigi 2023</a> において、
+昨年と同様に、弊社 <a href="https://www.dgcircus.com/">デジタルサーカス株式会社</a> からトークン問題を出題予定である。</p>
+</div>
+<div class="paragraph">
+<p>昨年のトークン問題の記事はこちら: <a href="/posts/2022-04-09/phperkaigi-2022-tokens/">PHPerKaigi 2022 トークン問題の解説</a></p>
+</div>
+<div class="paragraph">
+<p>すでに 2023 年用の問題は作成済みであるが、その制作過程の中でいくつかボツ問ができた。せっかくなので、PHPerKaigi 開催を待つ間に紹介しようと思う。</p>
+</div>
+<div class="paragraph">
+<p>10 月から 2 月まで、毎月 1 記事ずつ公開していく予定 (忘れていなければ → 忘れていたので 12 月公開予定だった記事を今書いている)。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>その 1 はこちら: <a href="/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/">PHPerKaigi 2023: ボツになったトークン問題 その 1</a></p>
+</li>
+<li>
+<p>その 2 はこちら: <a href="/posts/2022-11-19/phperkaigi-2023-unused-token-quiz-2/">PHPerKaigi 2023: ボツになったトークン問題 その 2</a></p>
+</li>
+</ul>
+</div>
+  </div>
+</section>
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      問題
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>注意: これはボツ問なので、得られたトークンを PHPerKaigi で入力してもポイントにはならない。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+<span class="k">try</span> <span class="p">{</span>
+  <span class="nf">f</span><span class="p">(</span><span class="nf">g</span><span class="p">()</span> <span class="o">/</span> <span class="k">__LINE__</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nc">Throwable</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$e</span> <span class="o">=</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getPrevious</span><span class="p">())</span> <span class="nb">printf</span><span class="p">(</span><span class="s1">'%c'</span><span class="p">,</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getLine</span><span class="p">()</span> <span class="o">+</span> <span class="mi">23</span><span class="p">);</span>
+  <span class="k">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">function</span> <span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="nf">f</span><span class="p">();</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="k">match</span> <span class="p">(</span><span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+      <span class="mi">15</span><span class="p">,</span> <span class="mi">36</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">14</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">37</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+
+
+
+
+
+
+      <span class="mi">6</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">5</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">22</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+      <span class="mi">34</span><span class="p">,</span> <span class="mi">35</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+
+
+
+
+      <span class="mi">25</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">17</span><span class="p">,</span> <span class="mi">21</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">24</span><span class="p">,</span> <span class="mi">32</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+
+
+
+      <span class="mi">33</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">16</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+      <span class="mi">18</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+
+
+
+
+      <span class="mi">7</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">2</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">10</span><span class="p">,</span> <span class="mi">28</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">26</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+
+
+      <span class="mi">31</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">29</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">11</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+
+      <span class="mi">3</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">23</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+
+      <span class="mi">27</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="mi">30</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">};</span>
+  <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="nf">f</span><span class="p">(</span><span class="nv">$i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+
+
+
+
+
+<span class="k">function</span> <span class="n">g</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">__LINE__</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>"Catchline" と名付けた作品。実行するとトークン <code>#base64_decode('SGVsbG8sIFdvcmxkIQ==')</code> が得られる。</p>
+</div>
+<div class="paragraph">
+<p>トークンは PHP の式になっていて、評価すると <code>Hello, World!</code> という文字列になる。PHPer チャレンジのトークンには空白を含められないという制約があるが、こういった形でトークンにすれば回避できる。</p>
+</div>
+  </div>
+</section>
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      解説
+    
+  </h2>
+  <div class="section-body">
+    <section class="section-2">
+  <h3 id="" class="section-header">
+    
+      概要
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>例外が発生した行数にデータをエンコードし、それを <code>catch</code> で捕まえて表示している。</p>
+</div>
+  </div>
+</section>
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      例外オブジェクトの連鎖
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p><a href="https://www.php.net/class.Exception"><code>Exception</code></a> や <a href="https://www.php.net/class.Error"><code>Error</code></a> には <code>$previous</code> というプロパティがあり、コンストラクタの第3引数から渡すことができる。主に 2つの用法がある:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>エラーを処理している途中に起こった別のエラーに、元のエラー情報を含める</p>
+</li>
+<li>
+<p>内部エラーをラップして作られたエラーに、内部エラーの情報を含める</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>このうち 1つ目のケースは、 <code>finally</code> 節の中でエラーを投げると PHP 処理系が勝手に <code>$previous</code> を設定してくれる。</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="k">try</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nc">Exception</span><span class="p">(</span><span class="s2">"Error 1"</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nc">Exception</span><span class="p">(</span><span class="s2">"Error 2"</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nc">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">echo</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getMessage</span><span class="p">()</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">;</span>
+  <span class="c1">// =&gt; Error 2</span>
+  <span class="k">echo</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getPrevious</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">getMessage</span><span class="p">()</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">;</span>
+  <span class="c1">// =&gt; Error 1</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>この知識を元に、トークンの出力部を解析してみる。</p>
+</div>
+  </div>
+</section>
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      出力部の解析
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p>出力部をコメントや改行を追加して再掲する:</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+<span class="k">try</span> <span class="p">{</span>
+  <span class="nf">f</span><span class="p">(</span><span class="nf">g</span><span class="p">()</span> <span class="o">/</span> <span class="k">__LINE__</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nc">Throwable</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$e</span> <span class="o">=</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getPrevious</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nb">printf</span><span class="p">(</span><span class="s1">'%c'</span><span class="p">,</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getLine</span><span class="p">()</span> <span class="o">+</span> <span class="mi">23</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">echo</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>出力をおこなう <code>catch</code> 節を見てみると、 <code>Throwable::getPrevious()</code> を呼び出してエラーチェインを辿り、 <code>Throwable::getLine()</code> でエラーが発生した行数を取得している。その行数に <code>23</code> なるマジックナンバーを足し、フォーマット指定子 <code>%c</code> で出力している。</p>
+</div>
+<div class="paragraph">
+<p>フォーマット指定子 <code>%c</code> は、整数を ASCII コード<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> と見做して印字する。トークン <code>#base64_decode('SGVsbG8sIFdvcmxkIQ==')</code> の <code>b</code> であれば、ASCII コード <code>98</code> なので、75 行目で発生したエラー、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>      1, 20 =&gt; 0 / 0,</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>によって表現されている。エラーを起こす方法はいろいろと考えられるが、今回はゼロ除算を使った。</p>
+</div>
+<div class="paragraph">
+<p>それでは、エラーチェインを作る箇所、関数 <code>f()</code> を見ていく。</p>
+</div>
+  </div>
+</section>
+<section class="section-2">
+  <h3 id="" class="section-header">
+    
+      データ構成部の解析
+    
+  </h3>
+  <div class="section-body">
+    <div class="paragraph">
+<p><code>f()</code> の定義を再掲する (エラーオブジェクトの行数を利用しているので、一部分だけ抜き出すと値が変わることに注意):</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="k">function</span> <span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="nf">f</span><span class="p">();</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="k">match</span> <span class="p">(</span><span class="nv">$i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="mi">0</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// 12 行目</span>
+
+
+
+      <span class="mi">15</span><span class="p">,</span> <span class="mi">36</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">14</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="mi">37</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span>
+
+      <span class="c1">// (略)</span>
+
+      <span class="mi">30</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="o">/</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// 97 行目</span>
+    <span class="p">};</span>
+  <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="nf">f</span><span class="p">(</span><span class="nv">$i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>前述のように、 <code>finally</code> 節でエラーを投げると PHP 処理系が <code>$previous</code> を設定する。ここでは、エラーを繋げるために <code>f()</code> を再帰呼び出ししている。最初に <code>f()</code> を呼び出している箇所を確認すると、</p>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="o">&lt;?</span><span class="n">php</span>
+<span class="k">try</span> <span class="p">{</span>
+  <span class="nf">f</span><span class="p">(</span><span class="nf">g</span><span class="p">()</span> <span class="o">/</span> <span class="k">__LINE__</span><span class="p">);</span> <span class="c1">// 3 行目</span></code></pre>
+</div>
+</div>
+<div id="source." class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="php"><span class="k">function</span> <span class="n">g</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">__LINE__</span><span class="p">;</span> <span class="c1">// 111 行目</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>f()</code> には <code>111 / 3</code> で <code>37</code> が渡されることがわかる。そこから 1 ずつ減らして再帰呼び出ししていき、0 より小さくなったら <code>f()</code> を引数なしで呼び出す。引数の数が足りないと呼び出しに失敗するので、再帰はここで止まる。</p>
+</div>
+<div class="paragraph">
+<p>エラーチェインは、最後に発生したエラーを先頭とした単方向連結リストになっているので、順に</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>f()</code> の引数が足りないことによる呼び出し失敗</p>
+</li>
+<li>
+<p><code>f(0)</code> の呼び出しで発生したゼロ除算</p>
+</li>
+<li>
+<p><code>f(1)</code> の呼び出しで発生したゼロ除算</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+<li>
+<p><code>f(37)</code> の呼び出しで発生したゼロ除算</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>となっている。出力の際は <code>catch</code> したエラーの <code>getPrevious()</code> から処理を始めるので、1 番目の <code>f()</code> によるエラーは無視され、 <code>f(0)</code> によるエラー、 <code>f(1)</code> によるエラー、 <code>f(2)</code> によるエラー、と出力が進む。</p>
+</div>
+<div class="paragraph">
+<p><code>f()</code> に <code>0</code> を渡したときは 12 行目にある <code>match</code> の <code>0</code> でゼロ除算が起こるので、行数が 12 となったエラーが投げられる。出力部ではこれに 23 を足した数を ASCII コードとして表示しているのだった。 <code>12 + 23</code> は <code>35</code>、ASCII コードでは <code>#</code> である。これがトークンの 1文字目にあたる。</p>
+</div>
+  </div>
+</section>
+  </div>
+</section>
+<section class="section-1">
+  <h2 id="" class="section-header">
+    
+      おわりに
+    
+  </h2>
+  <div class="section-body">
+    <div class="paragraph">
+<p>「行数」というのはトークン文字列をデコードする対象として優れている。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>トークンの一部や全部が陽に現れない</p>
+</li>
+<li>
+<p><code>__LINE__</code> で容易に取得できる</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>しかし、こういった「変な」プログラムを何度も読んだり書いたりしていると、 <code>__LINE__</code> を使うのはあまりにありきたりで退屈になる。では、他に行数を取得する手段はないか。こうして <code>Throwable</code> を思いつき、続けてエラーオブジェクトには <code>$previous</code> があることを思い出した。</p>
+</div>
+<div class="paragraph">
+<p>今回エラーを投げるのにゼロ除算を用いたのは、それがエラーを投げる最も短いコードだと考えたからである。もし 3バイト未満で <code>Throwable</code> なオブジェクトを投げる手段をご存じのかたがいらっしゃれば、ぜひご教示いただきたい。……と締める予定だったのだが、<code>0/0</code> のところを存在しない定数にすれば、簡単に 1バイトを達成できた。ゼロ除算している箇所はちょうど 26 箇所あるので、アルファベットにでもしておけば意味ありげで良かったかもしれない。</p>
+</div>
+  </div>
+</section>
+        </div>
+        
+          <div id="footnotes">
+            
+              <div class="footnote" id="_footnotedef_1">
+                <a href="#_footnoteref_1">1</a>. RAS syndrome
+              </div>
+            
+          </div>
+        
+      </article>
+    </main>
+    <footer class="footer">
+      &copy; 2021 nsfisis
+    </footer>
+  </body>
+</html>

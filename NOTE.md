@@ -12,7 +12,7 @@ Create a new post.
 
 ```
 $ mkdir -p content/posts/$(date +'%Y-%m-%d')
-$ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].md
+$ touch content/posts/$(date +'%Y-%m-%d')/[TITLE].adoc
 ```
 
 ## TODO

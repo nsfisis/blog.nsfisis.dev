@@ -155,11 +155,11 @@ module NulDoc
             when 'site-name'; @config[:site_name]
             when 'lang'; 'ja-JP' # TODO
             when 'copyright-year'; @config[:site_copyright_year]
-            when 'description'; '記事一覧'
+            when 'description'; '投稿した記事の一覧'
             else raise "Unknown attr: #{name}"
             end
           end
-          def title; 'Posts'; end
+          def title; '投稿一覧'; end
           def posts; @posts; end
         end).new(@config, posts.reverse, stylesheets)
       )
