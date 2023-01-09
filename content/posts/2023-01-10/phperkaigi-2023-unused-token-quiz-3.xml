@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0">
+  <info>
+    <title>PHPerKaigi 2023: ボツになったトークン問題 その 3</title>
+    <abstract>
+      来年の PHPerKaigi 2023 でデジタルサーカス株式会社から出題予定のトークン問題のうち、ボツになった問題を公開する (その 3)。
+    </abstract>
+    <keywordset>
+      <keyword>php</keyword>
+      <keyword>phperkaigi</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <date>2023-01-10</date>
+        <revremark>公開</revremark>
+      </revision>
+    </revhistory>
+  </info>
+  <section xml:id="_はじめに">
+    <title>はじめに</title>
+    <simpara>2023 年 3 月 23 日から 25 日にかけて開催予定 (記事執筆時点) の <link xl:href="https://phperkaigi.jp/2023/">PHPerKaigi 2023</link> において、
+      昨年と同様に、弊社 <link xl:href="https://www.dgcircus.com/">デジタルサーカス株式会社</link> からトークン問題を出題予定である。</simpara>
+    <simpara>昨年のトークン問題の記事はこちら: <link xl:href="/posts/2022-04-09/phperkaigi-2022-tokens/">PHPerKaigi 2022 トークン問題の解説</link></simpara>
+    <simpara>すでに 2023 年用の問題は作成済みであるが、その制作過程の中でいくつかボツ問ができた。せっかくなので、PHPerKaigi 開催を待つ間に紹介しようと思う。</simpara>
+    <simpara>10 月から 2 月まで、毎月 1 記事ずつ公開していく予定 (忘れていなければ → 忘れていたので 12 月公開予定だった記事を今書いている)。</simpara>
+    <itemizedlist>
+      <listitem>
+        <simpara>その 1 はこちら: <link xl:href="/posts/2022-10-23/phperkaigi-2023-unused-token-quiz-1/">PHPerKaigi 2023: ボツになったトークン問題 その 1</link></simpara>
+      </listitem>
+      <listitem>
+        <simpara>その 2 はこちら: <link xl:href="/posts/2022-11-19/phperkaigi-2023-unused-token-quiz-2/">PHPerKaigi 2023: ボツになったトークン問題 その 2</link></simpara>
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section xml:id="_問題">
+    <title>問題</title>
+    <simpara>注意: これはボツ問なので、得られたトークンを PHPerKaigi で入力してもポイントにはならない。</simpara>
+    <programlisting language="php" linenumbering="unnumbered">&lt;?php
+    try {
+    f(g() / __LINE__);
+    } catch (Throwable $e) {
+    while ($e = $e-&gt;getPrevious()) printf('%c', $e-&gt;getLine() + 23);
+    echo "\n";
+    }
+    function f(int $i) {
+    if ($i &lt; 0) f();
+    try {
+    match ($i) {
+    0 =&gt; 0 / 0,
+
+
+
+    15, 36 =&gt; 0 / 0,
+    14 =&gt; 0 / 0,
+    37 =&gt; 0 / 0,
+
+
+
+
+
+
+
+
+
+
+    6 =&gt; 0 / 0,
+
+    5 =&gt; 0 / 0,
+
+    22 =&gt; 0 / 0,
+
+
+
+
+    34, 35 =&gt; 0 / 0,
+
+
+
+
+
+
+
+
+    25 =&gt; 0 / 0,
+    17, 21 =&gt; 0 / 0,
+
+    24, 32 =&gt; 0 / 0,
+
+
+
+
+
+
+
+    33 =&gt; 0 / 0,
+
+    16 =&gt; 0 / 0,
+
+
+    18 =&gt; 0 / 0,
+
+
+
+
+
+
+
+
+    7 =&gt; 0 / 0,
+
+    2 =&gt; 0 / 0,
+    1, 20 =&gt; 0 / 0,
+    10, 28 =&gt; 0 / 0,
+    8, 12, 26 =&gt; 0 / 0,
+    4, 9, 13 =&gt; 0 / 0,
+
+
+
+
+
+    31 =&gt; 0 / 0,
+
+    29 =&gt; 0 / 0,
+
+    11 =&gt; 0 / 0,
+
+
+
+    3, 19, 23 =&gt; 0 / 0,
+
+
+    27 =&gt; 0 / 0,
+
+    30 =&gt; 0 / 0,
+    };
+    } finally {
+    f($i - 1);
+    }
+    }
+
+
+
+
+
+
+
+    function g() {
+    return __LINE__;
+      }</programlisting>
+    <simpara>"Catchline" と名付けた作品。実行するとトークン <literal>#base64_decode('SGVsbG8sIFdvcmxkIQ==')</literal> が得られる。</simpara>
+    <simpara>トークンは PHP の式になっていて、評価すると <literal>Hello, World!</literal> という文字列になる。PHPer チャレンジのトークンには空白を含められないという制約があるが、こういった形でトークンにすれば回避できる。</simpara>
+  </section>
+  <section xml:id="_解説">
+    <title>解説</title>
+    <section xml:id="_概要">
+      <title>概要</title>
+      <simpara>例外が発生した行数にデータをエンコードし、それを <literal>catch</literal> で捕まえて表示している。</simpara>
+    </section>
+    <section xml:id="_例外オブジェクトの連鎖">
+      <title>例外オブジェクトの連鎖</title>
+      <simpara><link xl:href="https://www.php.net/class.Exception"><literal>Exception</literal></link> や <link xl:href="https://www.php.net/class.Error"><literal>Error</literal></link> には <literal>$previous</literal> というプロパティがあり、コンストラクタの第3引数から渡すことができる。主に 2つの用法がある:</simpara>
+      <itemizedlist>
+        <listitem>
+          <simpara>エラーを処理している途中に起こった別のエラーに、元のエラー情報を含める</simpara>
+        </listitem>
+        <listitem>
+          <simpara>内部エラーをラップして作られたエラーに、内部エラーの情報を含める</simpara>
+        </listitem>
+      </itemizedlist>
+      <simpara>このうち 1つ目のケースは、 <literal>finally</literal> 節の中でエラーを投げると PHP 処理系が勝手に <literal>$previous</literal> を設定してくれる。</simpara>
+      <programlisting language="php" linenumbering="unnumbered">&lt;?php
+
+      try {
+      try {
+      throw new Exception("Error 1");
+      } finally {
+      throw new Exception("Error 2");
+      }
+      } catch (Exception $e) {
+      echo $e-&gt;getMessage() . PHP_EOL;
+      // =&gt; Error 2
+      echo $e-&gt;getPrevious()-&gt;getMessage() . PHP_EOL;
+      // =&gt; Error 1
+        }</programlisting>
+      <simpara>この知識を元に、トークンの出力部を解析してみる。</simpara>
+    </section>
+    <section xml:id="_出力部の解析">
+      <title>出力部の解析</title>
+      <simpara>出力部をコメントや改行を追加して再掲する:</simpara>
+      <programlisting language="php" linenumbering="unnumbered">&lt;?php
+      try {
+      f(g() / __LINE__);
+      } catch (Throwable $e) {
+      while ($e = $e-&gt;getPrevious()) {
+      printf('%c', $e-&gt;getLine() + 23);
+      }
+      echo "\n";
+        }</programlisting>
+      <simpara>出力をおこなう <literal>catch</literal> 節を見てみると、 <literal>Throwable::getPrevious()</literal> を呼び出してエラーチェインを辿り、 <literal>Throwable::getLine()</literal> でエラーが発生した行数を取得している。その行数に <literal>23</literal> なるマジックナンバーを足し、フォーマット指定子 <literal>%c</literal> で出力している。</simpara>
+      <simpara>フォーマット指定子 <literal>%c</literal> は、整数を ASCII コード<footnote>RAS syndrome</footnote> と見做して印字する。トークン <literal>#base64_decode('SGVsbG8sIFdvcmxkIQ==')</literal> の <literal>b</literal> であれば、ASCII コード <literal>98</literal> なので、75 行目で発生したエラー、</simpara>
+      <screen linenumbering="unnumbered">      1, 20 =&gt; 0 / 0,</screen>
+      <simpara>によって表現されている。エラーを起こす方法はいろいろと考えられるが、今回はゼロ除算を使った。</simpara>
+      <simpara>それでは、エラーチェインを作る箇所、関数 <literal>f()</literal> を見ていく。</simpara>
+    </section>
+    <section xml:id="_データ構成部の解析">
+      <title>データ構成部の解析</title>
+      <simpara><literal>f()</literal> の定義を再掲する (エラーオブジェクトの行数を利用しているので、一部分だけ抜き出すと値が変わることに注意):</simpara>
+      <programlisting language="php" linenumbering="unnumbered">function f(int $i) {
+      if ($i &lt; 0) f();
+      try {
+      match ($i) {
+      0 =&gt; 0 / 0, // 12 行目
+
+
+
+      15, 36 =&gt; 0 / 0,
+      14 =&gt; 0 / 0,
+      37 =&gt; 0 / 0,
+
+      // (略)
+
+      30 =&gt; 0 / 0, // 97 行目
+      };
+      } finally {
+      f($i - 1);
+      }
+        }</programlisting>
+      <simpara>前述のように、 <literal>finally</literal> 節でエラーを投げると PHP 処理系が <literal>$previous</literal> を設定する。ここでは、エラーを繋げるために <literal>f()</literal> を再帰呼び出ししている。最初に <literal>f()</literal> を呼び出している箇所を確認すると、</simpara>
+      <programlisting language="php" linenumbering="unnumbered">&lt;?php
+      try {
+        f(g() / __LINE__); // 3 行目</programlisting>
+      <programlisting language="php" linenumbering="unnumbered">function g() {
+      return __LINE__; // 111 行目
+        }</programlisting>
+      <simpara><literal>f()</literal> には <literal>111 / 3</literal> で <literal>37</literal> が渡されることがわかる。そこから 1 ずつ減らして再帰呼び出ししていき、0 より小さくなったら <literal>f()</literal> を引数なしで呼び出す。引数の数が足りないと呼び出しに失敗するので、再帰はここで止まる。</simpara>
+      <simpara>エラーチェインは、最後に発生したエラーを先頭とした単方向連結リストになっているので、順に</simpara>
+      <orderedlist numeration="arabic">
+        <listitem>
+          <simpara><literal>f()</literal> の引数が足りないことによる呼び出し失敗</simpara>
+        </listitem>
+        <listitem>
+          <simpara><literal>f(0)</literal> の呼び出しで発生したゼロ除算</simpara>
+        </listitem>
+        <listitem>
+          <simpara><literal>f(1)</literal> の呼び出しで発生したゼロ除算</simpara>
+        </listitem>
+        <listitem>
+          <simpara>&#8230;&#8203;</simpara>
+        </listitem>
+        <listitem>
+          <simpara><literal>f(37)</literal> の呼び出しで発生したゼロ除算</simpara>
+        </listitem>
+      </orderedlist>
+      <simpara>となっている。出力の際は <literal>catch</literal> したエラーの <literal>getPrevious()</literal> から処理を始めるので、1 番目の <literal>f()</literal> によるエラーは無視され、 <literal>f(0)</literal> によるエラー、 <literal>f(1)</literal> によるエラー、 <literal>f(2)</literal> によるエラー、と出力が進む。</simpara>
+      <simpara><literal>f()</literal> に <literal>0</literal> を渡したときは 12 行目にある <literal>match</literal> の <literal>0</literal> でゼロ除算が起こるので、行数が 12 となったエラーが投げられる。出力部ではこれに 23 を足した数を ASCII コードとして表示しているのだった。 <literal>12 + 23</literal> は <literal>35</literal>、ASCII コードでは <literal>#</literal> である。これがトークンの 1文字目にあたる。</simpara>
+    </section>
+  </section>
+  <section xml:id="_おわりに">
+    <title>おわりに</title>
+    <simpara>「行数」というのはトークン文字列をデコードする対象として優れている。</simpara>
+    <itemizedlist>
+      <listitem>
+        <simpara>トークンの一部や全部が陽に現れない</simpara>
+      </listitem>
+      <listitem>
+        <simpara><literal>__LINE__</literal> で容易に取得できる</simpara>
+      </listitem>
+    </itemizedlist>
+    <simpara>しかし、こういった「変な」プログラムを何度も読んだり書いたりしていると、 <literal>__LINE__</literal> を使うのはあまりにありきたりで退屈になる。では、他に行数を取得する手段はないか。こうして <literal>Throwable</literal> を思いつき、続けてエラーオブジェクトには <literal>$previous</literal> があることを思い出した。</simpara>
+    <simpara>今回エラーを投げるのにゼロ除算を用いたのは、それがエラーを投げる最も短いコードだと考えたからである。もし 3バイト未満で <literal>Throwable</literal> なオブジェクトを投げる手段をご存じのかたがいらっしゃれば、ぜひご教示いただきたい。……と締める予定だったのだが、<literal>0/0</literal> のところを存在しない定数にすれば、簡単に 1バイトを達成できた。ゼロ除算している箇所はちょうど 26 箇所あるので、アルファベットにでもしておけば意味ありげで良かったかもしれない。</simpara>
+  </section>
+</article>
